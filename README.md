@@ -1,1 +1,1 @@
-# fractal_regression_manuscript
+# Fractal regression manuscript
