@@ -1,0 +1,264 @@
+---
+title             : "fractalRegression: An R package for multiscale regression and fractal analyses"
+shorttitle        : "FRACTAL REGRESSION"
+author: 
+  - name          : "Aaron D. Likens"
+    affiliation   : "1"
+    corresponding : yes    # Define only one corresponding author
+    address       : "Postal address"
+    email         : "alikens@unomaha.edu"
+    role:         # Contributorship roles (e.g., CRediT, https://casrai.org/credit/)
+      - Conceptualization
+      - Software
+      - Writing - Original Draft Preparation
+      - Writing - Review & Editing
+  - name          : "Travis J. Wiltshire"
+    affiliation   : "2"
+    role:
+      - Writing - Original Draft Preparation
+      - Writing - Review & Editing
+      - Software
+affiliation:
+  - id            : "1"
+    institution   : "Department of Biomechanics, University of Nebraska at Omaha"
+  - id            : "2"
+    institution   : "Department of Cognitive Science & Artificial Intelligence, Tilburg University"
+authornote: |
+  Add complete departmental affiliations for each author here. Each new line herein must be indented, like this line.
+  Enter author note here.
+abstract: |
+  Time series data from scientific fields as diverse as astrophysics, economics, human movement science, and neuroscience all exhibit fractal properties. That is, these time series often exhibit self-similarity and long-range correlations. This `fractalRegression` package implements a number of univariate and bivariate time series tools appropriate for analyzing noisy data exhibiting these properties. These methods, especially the bivariate tools [@kristoufekDetrendedFluctuationAnalysis2015; @likensStatisticalPropertiesMultiscale2019] have yet to be implemented in an open source and complete package for the R Statistical Software environment. As both practitioners and developers of these methods, we expect these tools will be of interest to a wide audience of scientists who use R, especially those from fields such as the human movement, cognitive, and other behavioral sciences. The algorithms have been developed in C++ using the popular Rcpp [@eddelbuettelRcppSeamlessIntegration2011] and RcppArmadillo [@eddelbuettelRcppArmadilloAcceleratingHighperformance2014] packages. The result is a collection of efficient functions that perform well even on long time series (e.g., $\geq$ 10,000 data points). In this work, we motivate introduce the package, each of the functions, and give examples of their use as well as issues to consider to correctly use these methods.
+  
+  
+  <!-- https://tinyurl.com/ybremelq -->
+keywords          : "long range correlation, fractal, multiscale, dynamics"
+wordcount         : "X"
+bibliography      : ["library.bib"]
+floatsintext      : no
+figurelist        : no
+tablelist         : no
+footnotelist      : no
+linenumbers       : yes
+mask              : no
+draft             : no
+documentclass     : "apa6"
+classoption       : "man"
+output            : papaja::apa6_pdf
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r setup, include = FALSE}
+library("papaja")
+r_refs("library.bib")
+```
+
+```{r analysis-preferences}
+# Seed for random number generation
+set.seed(42)
+knitr::opts_chunk$set(cache.extra = knitr::rand_seed)
+```
+
+# Introduction
+
+Fractal analysis, in its many forms, has become an important framework
+in virtually every area of science, often serving as an indicator of
+system health [@goldbergerFractalDynamicsPhysiology2002], adaptability
+[@bakSelforganizedCriticalityExplanation1987], control
+[@likensExperimentalControlScaling2015], cognitive function
+[@eulerWorkingMemoryPerformance2016], and multi-scale interactions
+[@kelty-stephenThreadingMultifractalSocial2017]. In particular, various
+methods related to Detrended Fluctuation Analysis (DFA)
+[@pengMosaicOrganizationDNA1994] have rose to prominence due to their
+ease of understanding and broad applicability to stationary and
+nonstationary time series, alike. The basic DFA algorithm has been
+implemented in numerous packages and software programs. However,
+advanced methods such as Multifractal Detrended Fluctuation Analysis
+(MFDFA) [@kantelhardtMultifractalDetrendedFluctuation2002], Detrended
+Cross Correlation (DCCA) [@zebendeDCCACrosscorrelationCoefficient2011;
+@podobnikDetrendedCrossCorrelationAnalysis2008], and, in particular,
+fractal regression techniques such as Multiscale Regression Analysis
+(MRA) [@kristoufekDetrendedFluctuationAnalysis2015;
+@likensStatisticalPropertiesMultiscale2019] have not yet been
+implemented in a comprehensive CRAN Package for the R Statistical
+Software Environment. Thus, there is a clear need for a package that
+incorporates this functionality in order to advance theoretical research
+focused on understanding the time varying properties of natural
+phenomena and applied research that uses those insights in important
+areas such as healthcare [@cavanaugh2017] and education [@snow2016].
+
+<!-- - Mention the broad appeal here for behavioral research methods papers (draw from short paper and extend a bit) -->
+
+<!-- - Include the complexity matching aspect -->
+
+<!-- - Connect better to regression part (see 2019 paper from Aaron in Nia Multiscale regression intro and discussion) -->
+
+# Package Overview
+
+<!-- - Functions included and general usage (overview table like in Coco & Dale, 2014) -->
+
+Some foundational efforts in fractal analyses, which partially overlap
+with the functionality of this package, have been implemented elsewhere.
+For example, a number of univariate fractal and multifractal analyses
+have been implemented in the 'fracLab' library for MATLAB [@legrand2003]
+and other toolboxes that are mainly targeted at multifractal analysis
+[@ihlen2010; @ihlenIntroductionMultifractalDetrended2012]. In terms of
+open access packages, there are other packages that implement some, but
+not all of the same functions such as the `fathon` package
+[@bianchi2020] that has been implemented in Python as well as the R
+packages: `fractal` [\@], `nonlinearTseries`
+[@garciaNonlinearTseriesNonlinearTime2020], and `MFDFA`
+[@laibMultifractalAnalysisTime2018]. However, none of the above packages
+incorporate univariate monofractal and multifractal DFA with bivariate
+DCCA and MRA nor do they run on a C++ architecture. Our
+`fractalRegression` package is unique in this combination of analyses
+and efficiency. For instance, we are not aware of any other packages
+that feature MRA and Multiscale Lagged Regression (MLRA).
+
+# Methodological Details and Examples
+
+In order to demonstrate the methods within the 'fractalRegression'
+package, we group this into univariate (DFA, MFDFA) and bivariate
+methods (DCCA, MRA, MRLA). For each method, we 1) highlight the key
+question(s) that can be answered with that method, 2) briefly describe
+the algorithm with sources for additional details, 3) describe some key
+consideration for appropriately applying the algorithm, and demonstrate
+the use of the functions on a 4) simulated and 5) empirical application
+of the function.
+
+```{r table2, echo=FALSE, message=FALSE, warnings=FALSE, results='asis'}
+tabl <- "  # simple table creation here
+| Function | Objective | Output    |
+|----------|:---------:|---------:|
+| dfa      | text here | text here |
+| mfdfa    | text here | text here |
+| dcca     | text here | text here |
+| mra      | text here | text here |
+| mrla     | text here | text here |
+| fgn_sim  | text here | text here |
+"
+cat(tabl) # output the table in a format good for HTML/PDF/docx conversion
+```
+
+## Univariate Methods
+
+### Detrended Fluctuation Analysis
+
+The key questions that can be answered by Detrended Fluctuation Analysis
+(DFA) [@pengMosaicOrganizationDNA1994] is INSERT KEY QUESTION HERE. DFA
+has been described extensively elsewhere
+[@kantelhardtDetectingLongrangeCorrelations2001] and visualized nicely
+[@kelty-stephenMultifractalTemporalCorrelations2016]; so we provide a
+brief summary here. DFA entails splitting a time series into several
+small bins (e.g., 16). In each bin, the least squares regression is fit
+and subtracted within each window. Residuals are squared and averaged
+within each window. Then, the square root is taken of the average
+squared residual across all windows of a given size. This process
+repeats for larger window sizes, growing by, say a power of 2, up to
+N/4, where N is the length of the series. In a final step, the logarithm
+of those scaled root mean squared residuals (i.e., fluctuations) is
+regressed on the logarithm of window sizes. The slope of this line is
+termed $\alpha$ and it provides a measure of the long range correlation.
+Conventional interpretation of $\alpha$ is:
+
+-   $\alpha < 0.5 =$ anti-correlated
+-   $\alpha ~= 0.5 =$ uncorrelated, white noise
+-   $\alpha > 0.5 =$ temporally correlated
+-   $\alpha ~= 1 =$ 1/f-noise, pink noise
+-   $\alpha > 1 =$ non-stationary and unbounded
+-   $\alpha ~= 1.5 =$ fractional brownian motion
+
+#### DFA Examples
+
+INCLUDE EXAMPLES HERE
+
+#### DFA Considerations
+
+We recommend a few points of consideration here in using this function.
+One is to be sure to verify there are not cross-over points in the
+logScale-logFluctuation plots (Peng et al., 1995; Perakakis et al .,
+2009). Cross-over points (or a visible change in the slope as a function
+of of scale) indicate that a mono-fractal characterization does not
+sufficiently characterize the data. If cross-over points are evident, we
+recommend proceeding to using the 'mfdfa()' to estimate the
+multi-fractal fluctuation dynamics across scales.
+
+While it is common to use only linear detrending with DFA, it is
+important to inspect the trends in the data to determine if it would be
+more appropriate to use a higher order polynomial for detrending, and/or
+compare the DFA output for different polynomial orders (see Kantelhardt
+et al., 2001).
+
+General recommendations for choosing the min and max scale are an sc_min
+= 10 and sc_max = (N/4), where N is the number of observations. See Eke
+et al. (2002) and Gulich and Zunino (2014) for additional
+considerations. - Key Question and method description. - Simulated data:
+fGN - Empirical data: EPICLE Movement Data? - MFDFA - Key Question(s) -
+Simulated data: mfbrownian motion from Ihlen matlab (Aaron might have R
+port) see mbm_mgn for R from aaron - Empirical data: EPICLE Movement
+Data?
+
+### Multifractal Detrended Fluctuation Analysis
+
+Multifractal Detrended Fluctuation Analysis (MFDFA; Kantelhardt et al.,
+2002) is an extension of DFA by generalizing the fluctuation function to
+a range of exponents of the qth order.
+
+## Bivariate Methods
+
+-   DCCA
+
+    -   Key Question: What the timescale(s) of coordination?
+    -   Simulated data: MC-ARFIMA
+    -   Empirical data: EPICLE Movement Data?
+
+-   MRA
+
+    -   Key Question
+    -   Simulated data:
+    -   Empirical data: FNIRS from Aaron?
+
+-   MLRA
+
+    -   Key Question
+    -   Simulated data: Equation from Aaron from grant on MLRA
+    -   Empirical data: FNIRS from Aaron?
+
+## Surrogate Methods (and 'full' data analysis)
+
+Methods are ranked in terms of increasing levels of rigor.
+
+-   Randomization - Estimates should be different.
+-   IAAFT - Estimates should be different.
+-   Model based surrogate (Simulated exponents) - See Likens 2019 paper
+    with model of postural sway/control, taking an educated guess about
+    the data generating process underlying the time series. Estimates
+    should not be different. See Roume et al 2018 windowed detrended CCA
+-   Can we incorporate lags into MC-ARFIMA?
+
+# General Discussion
+
+-   General value of methods and the types of questions
+-   Practical consideration of univariate methods
+-   Practical consideration of bivariate methods
+-   Unique contribution of the methods
+
+# Acknowledgements
+
+Author AL receives support from a National Institutes of Health Center
+grant (P20GM109090).
+
+\newpage
+
+# References
+
+```{=tex}
+\begingroup
+\setlength{\parindent}{-0.5in}
+\setlength{\leftskip}{0.5in}
+```
+::: {#refs custom-style="Bibliography"}
+:::
+
+\endgroup

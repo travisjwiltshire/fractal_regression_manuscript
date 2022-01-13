@@ -1,0 +1,13 @@
+\begin{longtable}[]{@{}lll@{}}
+\toprule
+Function & Objective & Output \\
+\midrule
+\endhead
+dfa & text here & text here \\
+mfdfa & text here & text here \\
+dcca & text here & text here \\
+mra & text here & text here \\
+mrla & text here & text here \\
+fgn\_sim & text here & text here \\
+\bottomrule
+\end{longtable}

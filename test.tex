@@ -1,0 +1,286 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+  english,
+  man]{apa6}
+\usepackage{amsmath,amssymb}
+\usepackage{lmodern}
+\usepackage{ifxetex,ifluatex}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={The title},
+  pdfauthor={First Author1 \& Ernst-August Doelle1,2},
+  pdflang={en-EN},
+  pdfkeywords={keywords},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+% Make \paragraph and \subparagraph free-standing
+\ifx\paragraph\undefined\else
+  \let\oldparagraph\paragraph
+  \renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+  \let\oldsubparagraph\subparagraph
+  \renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+% Manuscript styling
+\usepackage{upgreek}
+\captionsetup{font=singlespacing,justification=justified}
+
+% Table formatting
+\usepackage{longtable}
+\usepackage{lscape}
+% \usepackage[counterclockwise]{rotating}   % Landscape page setup for large tables
+\usepackage{multirow}		% Table styling
+\usepackage{tabularx}		% Control Column width
+\usepackage[flushleft]{threeparttable}	% Allows for three part tables with a specified notes section
+\usepackage{threeparttablex}            % Lets threeparttable work with longtable
+
+% Create new environments so endfloat can handle them
+% \newenvironment{ltable}
+%   {\begin{landscape}\centering\begin{threeparttable}}
+%   {\end{threeparttable}\end{landscape}}
+\newenvironment{lltable}{\begin{landscape}\centering\begin{ThreePartTable}}{\end{ThreePartTable}\end{landscape}}
+
+% Enables adjusting longtable caption width to table width
+% Solution found at http://golatex.de/longtable-mit-caption-so-breit-wie-die-tabelle-t15767.html
+\makeatletter
+\newcommand\LastLTentrywidth{1em}
+\newlength\longtablewidth
+\setlength{\longtablewidth}{1in}
+\newcommand{\getlongtablewidth}{\begingroup \ifcsname LT@\roman{LT@tables}\endcsname \global\longtablewidth=0pt \renewcommand{\LT@entry}[2]{\global\advance\longtablewidth by ##2\relax\gdef\LastLTentrywidth{##2}}\@nameuse{LT@\roman{LT@tables}} \fi \endgroup}
+
+% \setlength{\parindent}{0.5in}
+% \setlength{\parskip}{0pt plus 0pt minus 0pt}
+
+% \usepackage{etoolbox}
+\makeatletter
+\patchcmd{\HyOrg@maketitle}
+  {\section{\normalfont\normalsize\abstractname}}
+  {\section*{\normalfont\normalsize\abstractname}}
+  {}{\typeout{Failed to patch abstract.}}
+\patchcmd{\HyOrg@maketitle}
+  {\section{\protect\normalfont{\@title}}}
+  {\section*{\protect\normalfont{\@title}}}
+  {}{\typeout{Failed to patch title.}}
+\makeatother
+\shorttitle{Title}
+\keywords{keywords\newline\indent Word count: X}
+\DeclareDelayedFloatFlavor{ThreePartTable}{table}
+\DeclareDelayedFloatFlavor{lltable}{table}
+\DeclareDelayedFloatFlavor*{longtable}{table}
+\makeatletter
+\renewcommand{\efloat@iwrite}[1]{\immediate\expandafter\protected@write\csname efloat@post#1\endcsname{}}
+\makeatother
+\usepackage{lineno}
+
+\linenumbers
+\usepackage{csquotes}
+\ifxetex
+  % Load polyglossia as late as possible: uses bidi with RTL langages (e.g. Hebrew, Arabic)
+  \usepackage{polyglossia}
+  \setmainlanguage[]{english}
+\else
+  \usepackage[main=english]{babel}
+% get rid of language-specific shorthands (see #6817):
+\let\LanguageShortHands\languageshorthands
+\def\languageshorthands#1{}
+\fi
+\ifluatex
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\newlength{\cslhangindent}
+\setlength{\cslhangindent}{1.5em}
+\newlength{\csllabelwidth}
+\setlength{\csllabelwidth}{3em}
+\newenvironment{CSLReferences}[2] % #1 hanging-ident, #2 entry spacing
+ {% don't indent paragraphs
+  \setlength{\parindent}{0pt}
+  % turn on hanging indent if param 1 is 1
+  \ifodd #1 \everypar{\setlength{\hangindent}{\cslhangindent}}\ignorespaces\fi
+  % set entry spacing
+  \ifnum #2 > 0
+  \setlength{\parskip}{#2\baselineskip}
+  \fi
+ }%
+ {}
+\usepackage{calc}
+\newcommand{\CSLBlock}[1]{#1\hfill\break}
+\newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{#1}}
+\newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{#1}\break}
+\newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
+
+\title{The title}
+\author{First Author\textsuperscript{1} \& Ernst-August Doelle\textsuperscript{1,2}}
+\date{}
+
+
+\authornote{
+
+Add complete departmental affiliations for each author here. Each new line herein must be indented, like this line.
+
+Enter author note here.
+
+The authors made the following contributions. First Author: Conceptualization, Writing - Original Draft Preparation, Writing - Review \& Editing; Ernst-August Doelle: Writing - Review \& Editing.
+
+Correspondence concerning this article should be addressed to First Author, Postal address. E-mail: \href{mailto:my@email.com}{\nolinkurl{my@email.com}}
+
+}
+
+\affiliation{\vspace{0.5cm}\textsuperscript{1} Wilhelm-Wundt-University\\\textsuperscript{2} Konstanz Business School}
+
+\abstract{
+Time series data from scientific fields as diverse as astrophysics, economics, human movement science, and neuroscience all exhibit fractal properties. That is, these time series often exhibit self-similarity and long-range correlations. This \texttt{fractalRegression} package implements a number of univariate and bivariate time series tools appropriate for analyzing noisy data exhibiting these properties. These methods, especially the bivariate tools (Kristoufek, 2015; Likens, Amazeen, West, \& Gibbons, 2019) have yet to be implemented in a complete package for the R Statistical Software environment. As both practitioners and developers of these methods, we expect these tools will be of interest to a wide audience of R users, especially those from fields such as the human movement, cognitive, and other behavioral sciences. The algorithms have been developed in C++ using the popular Rcpp (Eddelbuettel \& Francois, 2011) and RcppArmadillo (Eddelbuettel \& Sanderson, 2014) packages. The result is a collection of efficient functions that perform well even on long time series (e.g., \(\geq\) 10,000 data points).
+}
+
+
+
+\begin{document}
+\maketitle
+
+\hypertarget{introduction}{%
+\section{Introduction}\label{introduction}}
+
+Fractal analysis, in its many forms, has become an important framework in virtually every area of science, often serving as an indicator of system health (Goldberger et al., 2002), adaptability (Bak, Tang, \& Wiesenfeld, 1987), control (Likens, Fine, Amazeen, \& Amazeen, 2015), cognitive function (Euler, Wiltshire, Niermeyer, \& Butner, 2016), and multi-scale interactions (Kelty-Stephen, 2017). In particular, various methods related to Detrended Fluctuation Analysis (DFA) (Peng et al., 1994) have rose to prominence due to their ease of understanding and broad applicability to stationary and nonstationary time series, alike. The basic DFA algorithm has been implemented in numerous packages and software programs. However, advanced methods such as Multifractal Detrended Fluctuation Analysis (MFDFA) (Kantelhardt et al., 2002), Detrended Cross Correlation (DCCA) (Podobnik, Jiang, Zhou, \& Stanley, 2011; Zebende, 2011), and, in particular, fractal regression techniques such as Multiscale Regression Analysis (MRA) (Kristoufek, 2015; Likens, Amazeen, West, \& Gibbons, 2019) have not yet been implemented in a comprehensive CRAN Package for the R Statistical Software Environment. Thus, there is a clear need for a package that incorporates this functionality in order to advance theoretical research focused on understanding the time varying properties of natural phenomena and applied research that uses those insights in important areas such as healthcare (Cavanaugh, Kelty-Stephen, \& Stergiou, 2017) and education(Snow, Likens, Allen, \& McNamara, 2016).
+
+\hypertarget{methods}{%
+\section{Methods}\label{methods}}
+
+\hypertarget{comparison-to-other-packages}{%
+\subsection{Comparison to other Packages}\label{comparison-to-other-packages}}
+
+Some foundational efforts in fractal analyses, which partially overlap with the functionality of this package, have been implemented elsewhere. For example, a number of univariate fractal and multifractal analyses have been implemented in the `fracLab' library for MATLAB (Legrand \& Véhel, 2003) and other toolboxes that are mainly targeted at multifractal analysis (Ihlen et al., 2012; Ihlen \& Vereijken, 2010). In terms of open access packages, there are other packages that implement some, but not all of the same functions such as the \texttt{fathon} package (Bianchi, 2020) that has been implemented in Python as well as the R packages: \texttt{fractal} {[}@{]}, \texttt{nonlinearTseries} (Garcia, 2020), and \texttt{MFDFA} (Laib, Golay, Telesca, \& Kanevski, 2018). However, none of the above packages incorporate monofractal and multifractal DFA with DCCA and MRA and run on a C++ architecture. Our \texttt{fractalRegression} package is unique in this combination of analyses, efficiency. For instance, we are not aware of any other packages that feature MRA and Multiscale Lagged Regression (MLRA).
+
+\hypertarget{results}{%
+\section{Results}\label{results}}
+
+\hypertarget{discussion}{%
+\section{Discussion}\label{discussion}}
+
+\newpage
+
+\hypertarget{references}{%
+\section{References}\label{references}}
+
+\begingroup
+\setlength{\parindent}{-0.5in}
+\setlength{\leftskip}{0.5in}
+
+\hypertarget{refs}{}
+\begin{CSLReferences}{1}{0}
+\leavevmode\hypertarget{ref-bak1987}{}%
+Bak, P., Tang, C., \& Wiesenfeld, K. (1987). Self-organized criticality: An explanation of the 1/f noise. \emph{Physical Review Letters}, \emph{59}(4), 381--384. \url{https://doi.org/10.1103/PhysRevLett.59.381}
+
+\leavevmode\hypertarget{ref-bianchi2020}{}%
+Bianchi, S. (2020). Fathon: A python package for a fast computation of detrendend fluctuation analysis and related algorithms. \emph{Journal of Open Source Software}, \emph{5}(45), 1828.
+
+\leavevmode\hypertarget{ref-cavanaugh2017}{}%
+Cavanaugh, J. T., Kelty-Stephen, D. G., \& Stergiou, N. (2017). Multifractality, Interactivity, and the Adaptive Capacity of the Human Movement System: A Perspective for Advancing the Conceptual Basis of Neurologic Physical Therapy. Retrieved from \url{https://www.ingentaconnect.com/content/wk/npt/2017/00000041/00000004/art00007}
+
+\leavevmode\hypertarget{ref-eddelbuettel2011}{}%
+Eddelbuettel, D., \& Francois, R. (2011). Rcpp: Seamless R and C++ Integration. \emph{Journal of Statistical Software}, \emph{40}(1), 1--18. \url{https://doi.org/10.18637/jss.v040.i08}
+
+\leavevmode\hypertarget{ref-eddelbuettel2014}{}%
+Eddelbuettel, D., \& Sanderson, C. (2014). RcppArmadillo: Accelerating R with high-performance C++ linear algebra. \emph{Computational Statistics \& Data Analysis}, \emph{71}, 1054--1063. \url{https://doi.org/10.1016/j.csda.2013.02.005}
+
+\leavevmode\hypertarget{ref-euler2016}{}%
+Euler, M. J., Wiltshire, T. J., Niermeyer, M. A., \& Butner, J. E. (2016). Working memory performance inversely predicts spontaneous delta and theta-band scaling relations. \emph{Brain Research}, \emph{1637}, 22--33. \url{https://doi.org/10.1016/j.brainres.2016.02.008}
+
+\leavevmode\hypertarget{ref-garcia2020}{}%
+Garcia, C. A. (2020). \emph{nonlinearTseries: Nonlinear time series analysis}. Retrieved from \url{https://CRAN.R-project.org/package=nonlinearTseries}
+
+\leavevmode\hypertarget{ref-goldberger2002}{}%
+Goldberger, A. L., Amaral, L. A. N., Hausdorff, J. M., Ivanov, P. C., Peng, C.-K., \& Stanley, H. E. (2002). Fractal dynamics in physiology: Alterations with disease and aging. \emph{Proceedings of the National Academy of Sciences}, \emph{99}(suppl 1), 2466--2472. \url{https://doi.org/10.1073/pnas.012579499}
+
+\leavevmode\hypertarget{ref-ihlen2012}{}%
+Ihlen, E. A. F., Sletvold, O., Goihl, T., Wik, P. B., Vereijken, B., \& Helbostad, J. (2012). Older adults have unstable gait kinematics during weight transfer. \emph{Journal of Biomechanics}, \emph{45}(9), 1559--1565. \url{https://doi.org/10.1016/j.jbiomech.2012.04.021}
+
+\leavevmode\hypertarget{ref-ihlen2010}{}%
+Ihlen, E. A. F., \& Vereijken, B. (2010). Interaction-dominant dynamics in human cognition: Beyond 1/{{}}? fluctuation. \emph{Journal of Experimental Psychology: General}, \emph{139}(3), 436--463. \url{https://doi.org/10.1037/a0019098}
+
+\leavevmode\hypertarget{ref-kantelhardt2002}{}%
+Kantelhardt, J. W., Zschiegner, S. A., Koscielny-Bunde, E., Havlin, S., Bunde, A., \& Stanley, H. E. (2002). Multifractal detrended fluctuation analysis of nonstationary time series. \emph{Physica A: Statistical Mechanics and Its Applications}, \emph{316}(1), 87--114. \url{https://doi.org/10.1016/S0378-4371(02)01383-3}
+
+\leavevmode\hypertarget{ref-kelty-stephen2017}{}%
+Kelty-Stephen, D. G. (2017). Threading a multifractal social psychology through within-organism coordination to within-group interactions: A tale of coordination in three acts. \emph{Chaos, Solitons \& Fractals}, \emph{104}, 363--370. \url{https://doi.org/10.1016/j.chaos.2017.08.037}
+
+\leavevmode\hypertarget{ref-kristoufek2015}{}%
+Kristoufek, L. (2015). Detrended fluctuation analysis as a regression framework: Estimating dependence at different scales. \emph{Physical Review E}, \emph{91}(2), 022802. \url{https://doi.org/10.1103/PhysRevE.91.022802}
+
+\leavevmode\hypertarget{ref-laib2018}{}%
+Laib, M., Golay, J., Telesca, L., \& Kanevski, M. (2018). Multifractal analysis of the time series of daily means of wind speed in complex regions. \emph{Chaos, Solitons \& Fractals}, \emph{109}, 118--127. \url{https://doi.org/10.1016/j.chaos.2018.02.024}
+
+\leavevmode\hypertarget{ref-legrand2003}{}%
+Legrand, P., \& Véhel, J. L. (2003). Signal and image processing with FracLab. \emph{Thinking in Patterns: Fractals and Related Phenomena in Nature}, 321322.
+
+\leavevmode\hypertarget{ref-likens2019}{}%
+Likens, A. D., Amazeen, P. G., West, S. G., \& Gibbons, C. T. (2019). Statistical properties of Multiscale Regression Analysis: Simulation and application to human postural control. \emph{Physica A: Statistical Mechanics and Its Applications}, \emph{532}, 121580. \url{https://doi.org/10.1016/j.physa.2019.121580}
+
+\leavevmode\hypertarget{ref-likens2015}{}%
+Likens, A. D., Fine, J. M., Amazeen, E. L., \& Amazeen, P. G. (2015). Experimental control of scaling behavior: what is not fractal? \emph{Experimental Brain Research}, \emph{233}(10), 2813--2821. \url{https://doi.org/10.1007/s00221-015-4351-4}
+
+\leavevmode\hypertarget{ref-peng1994}{}%
+Peng, C. K., Buldyrev, S. V., Havlin, S., Simons, M., Stanley, H. E., \& Goldberger, A. L. (1994). Mosaic organization of DNA nucleotides. \emph{Physical Review E}, \emph{49}(2), 1685--1689. \url{https://doi.org/10.1103/PhysRevE.49.1685}
+
+\leavevmode\hypertarget{ref-podobnik2011}{}%
+Podobnik, B., Jiang, Z.-Q., Zhou, W.-X., \& Stanley, H. E. (2011). Statistical tests for power-law cross-correlated processes. \emph{Physical Review E}, \emph{84}(6), 066118.
+
+\leavevmode\hypertarget{ref-snow2016}{}%
+Snow, E. L., Likens, A. D., Allen, L. K., \& McNamara, D. S. (2016). Taking Control: Stealth Assessment of Deterministic Behaviors Within a Game-Based System. \emph{International Journal of Artificial Intelligence in Education}, \emph{26}(4), 1011--1032. \url{https://doi.org/10.1007/s40593-015-0085-5}
+
+\leavevmode\hypertarget{ref-zebende2011}{}%
+Zebende, G. F. (2011). DCCA cross-correlation coefficient: Quantifying level of cross-correlation. \emph{Physica A: Statistical Mechanics and Its Applications}, \emph{390}(4), 614--618. \url{https://doi.org/10.1016/j.physa.2010.10.022}
+
+\end{CSLReferences}
+
+\endgroup
+
+
+\end{document}
