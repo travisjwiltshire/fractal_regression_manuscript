@@ -44,6 +44,16 @@
   hidelinks,
   pdfcreator={LaTeX via pandoc}}
 \urlstyle{same} % disable monospaced font for URLs
+\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
 \usepackage{graphicx}
 \makeatletter
 \def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
@@ -244,15 +254,21 @@ consideration for appropriately applying the algorithm, and demonstrate
 the use of the functions on a 4) simulated and 5) empirical application
 of the function.
 
-\# simple table creation here
-\textbar{} Function \textbar{} Objective \textbar{} Output \textbar{}
-\textbar----------\textbar:---------:\textbar---------:\textbar{}
-\textbar{} dfa \textbar{} text here \textbar{} text here \textbar{}
-\textbar{} mfdfa \textbar{} text here \textbar{} text here \textbar{}
-\textbar{} dcca \textbar{} text here \textbar{} text here \textbar{}
-\textbar{} mra \textbar{} text here \textbar{} text here \textbar{}
-\textbar{} mrla \textbar{} text here \textbar{} text here \textbar{}
-\textbar{} fgn\_sim \textbar{} text here \textbar{} text here \textbar{}
+Table 1. Overview of package functions, objectives, and output.
+
+\begin{longtable}[]{@{}lll@{}}
+\toprule
+Function & Objective & Output \\
+\midrule
+\endhead
+& & \\
+& & \\
+& & \\
+& & \\
+& & \\
+& & \\
+\bottomrule
+\end{longtable}
 
 \hypertarget{univariate-methods}{%
 \subsection{Univariate Methods}\label{univariate-methods}}
