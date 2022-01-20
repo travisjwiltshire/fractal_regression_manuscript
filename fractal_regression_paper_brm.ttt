@@ -3,11 +3,12 @@
 Function & Objective & Output \\
 \midrule
 \endhead
-& & \\
-& & \\
-& & \\
-& & \\
-& & \\
-& & \\
+dfa & & \\
+mfdfa & & \\
+dcca & & \\
+mra & & \\
+mlra & & \\
+fgn\_sim & & \\
+iaaft & & \\
 \bottomrule
 \end{longtable}

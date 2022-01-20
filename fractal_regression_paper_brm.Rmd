@@ -47,6 +47,7 @@ output            : papaja::apa6_pdf
 editor_options: 
   markdown: 
     wrap: 72
+bibliography: library.bib #DELETE THIS BEFORE KNIT NEEDED FOR ZOTERO COMPATIBILITY
 ---
 
 ```{r setup, include = FALSE}
@@ -62,31 +63,9 @@ knitr::opts_chunk$set(cache.extra = knitr::rand_seed)
 
 # Introduction
 
-Fractal analysis, in its many forms, has become an important framework
-in virtually every area of science, often serving as an indicator of
-system health [@goldbergerFractalDynamicsPhysiology2002], adaptability
-[@bakSelforganizedCriticalityExplanation1987], control
-[@likensExperimentalControlScaling2015], cognitive function
-[@eulerWorkingMemoryPerformance2016], and multi-scale interactions
-[@kelty-stephenThreadingMultifractalSocial2017]. In particular, various
-methods related to Detrended Fluctuation Analysis (DFA)
-[@pengMosaicOrganizationDNA1994] have rose to prominence due to their
-ease of understanding and broad applicability to stationary and
-nonstationary time series, alike. The basic DFA algorithm has been
-implemented in numerous packages and software programs. However,
-advanced methods such as Multifractal Detrended Fluctuation Analysis
-(MFDFA) [@kantelhardtMultifractalDetrendedFluctuation2002], Detrended
-Cross Correlation (DCCA) [@zebendeDCCACrosscorrelationCoefficient2011;
-@podobnikDetrendedCrossCorrelationAnalysis2008], and, in particular,
-fractal regression techniques such as Multiscale Regression Analysis
-(MRA) [@kristoufekDetrendedFluctuationAnalysis2015;
-@likensStatisticalPropertiesMultiscale2019] have not yet been
-implemented in a comprehensive CRAN Package for the R Statistical
-Software Environment. Thus, there is a clear need for a package that
-incorporates this functionality in order to advance theoretical research
-focused on understanding the time varying properties of natural
-phenomena and applied research that uses those insights in important
-areas such as healthcare [@cavanaugh2017] and education [@snow2016].
+Fractal analysis, in its many forms, has become an important framework in virtually every area of science, often serving as an indicator of system health [@goldbergerFractalDynamicsPhysiology2002], adaptability [@bakSelforganizedCriticalityExplanation1987], control [@likensExperimentalControlScaling2015], cognitive function [@eulerWorkingMemoryPerformance2016], and multi-scale interactions [@kelty-stephenThreadingMultifractalSocial2017]. In particular, various methods related to Detrended Fluctuation Analysis (DFA) [@pengMosaicOrganizationDNA1994] have rose to prominence due to their ease of understanding and broad applicability to stationary and nonstationary time series, alike.
+
+The basic DFA algorithm has been implemented in numerous packages and software programs. However, advanced methods such as Multifractal Detrended Fluctuation Analysis (MFDFA) [@kantelhardtMultifractalDetrendedFluctuation2002], Detrended Cross Correlation (DCCA) [@zebendeDCCACrosscorrelationCoefficient2011; @podobnikDetrendedCrossCorrelationAnalysis2008], and, in particular, fractal regression techniques such as Multiscale Regression Analysis (MRA) [@kristoufekDetrendedFluctuationAnalysis2015; @likensStatisticalPropertiesMultiscale2019] have not yet been implemented in a comprehensive CRAN Package for the R Statistical Software Environment. Thus, there is a clear need for a package that incorporates this functionality in order to advance theoretical research focused on understanding the time varying properties of natural phenomena and applied research that uses those insights in important areas such as healthcare [@cavanaugh2017] and education [@snow2016].
 
 <!-- - Mention the broad appeal here for behavioral research methods papers (draw from short paper and extend a bit) -->
 
@@ -98,34 +77,11 @@ areas such as healthcare [@cavanaugh2017] and education [@snow2016].
 
 <!-- - Functions included and general usage (overview table like in Coco & Dale, 2014) -->
 
-Some foundational efforts in fractal analyses, which partially overlap
-with the functionality of this package, have been implemented elsewhere.
-For example, a number of univariate fractal and multifractal analyses
-have been implemented in the 'fracLab' library for MATLAB [@legrand2003]
-and other toolboxes that are mainly targeted at multifractal analysis
-[@ihlen2010; @ihlenIntroductionMultifractalDetrended2012]. In terms of
-open access packages, there are other packages that implement some, but
-not all of the same functions such as the `fathon` package
-[@bianchi2020] that has been implemented in Python as well as the R
-packages: `fractal` [\@], `nonlinearTseries`
-[@garciaNonlinearTseriesNonlinearTime2020], and `MFDFA`
-[@laibMultifractalAnalysisTime2018]. However, none of the above packages
-incorporate univariate monofractal and multifractal DFA with bivariate
-DCCA and MRA nor do they run on a C++ architecture. Our
-`fractalRegression` package is unique in this combination of analyses
-and efficiency. For instance, we are not aware of any other packages
-that feature MRA and Multiscale Lagged Regression (MLRA).
+Some foundational efforts in fractal analyses, which partially overlap with the functionality of this package, have been implemented elsewhere. For example, a number of univariate fractal and multifractal analyses have been implemented in the 'fracLab' library for MATLAB [@legrand2003] and other toolboxes that are mainly targeted at multifractal analysis [@ihlen2010; @ihlenIntroductionMultifractalDetrended2012]. In terms of open access packages, there are other packages that implement some, but not all of the same functions such as the `fathon` package [@bianchi2020] that has been implemented in Python as well as the R packages: `fractal` [\@], `nonlinearTseries` [@garciaNonlinearTseriesNonlinearTime2020], and `MFDFA` [@laibMultifractalAnalysisTime2018]. However, none of the above packages incorporate univariate monofractal and multifractal DFA with bivariate DCCA and MRA nor do they run on a C++ architecture. Our `fractalRegression` package is unique in this combination of analyses and efficiency. For instance, we are not aware of any other packages that feature MRA and Multiscale Lagged Regression (MLRA).
 
 # Methodological Details and Examples
 
-In order to demonstrate the methods within the 'fractalRegression'
-package, we group this into univariate (DFA, MFDFA) and bivariate
-methods (DCCA, MRA, MRLA). For each method, we 1) highlight the key
-question(s) that can be answered with that method, 2) briefly describe
-the algorithm with sources for additional details, 3) describe some key
-consideration for appropriately applying the algorithm, and demonstrate
-the use of the functions on a 4) simulated and 5) empirical application
-of the function.
+In order to demonstrate the methods within the 'fractalRegression' package, we group this into univariate (DFA, MFDFA) and bivariate methods (DCCA, MRA, MRLA). For each method, we 1) highlight the key question(s) that can be answered with that method, 2) briefly describe the algorithm with sources for additional details, 3) describe some key consideration for appropriately applying the algorithm, and demonstrate the use of the functions on a 4) simulated and 5) empirical application of the function.
 
 Table 1. Overview of package functions, objectives, and output.
 
@@ -143,23 +99,7 @@ Table 1. Overview of package functions, objectives, and output.
 
 ### Detrended Fluctuation Analysis
 
-The key question that can be answered by Detrended Fluctuation Analysis
-(DFA) [@pengMosaicOrganizationDNA1994] is: *what is the magnitude and
-direction of long range correlation in a single time series?* DFA has
-been described extensively elsewhere
-[@kantelhardtDetectingLongrangeCorrelations2001] and visualized nicely
-[@kelty-stephenMultifractalTemporalCorrelations2016]; so we provide a
-brief summary here. DFA entails splitting a time series into several
-small bins (e.g., 16). In each bin, the least squares regression is fit
-and subtracted within each window. Residuals are squared and averaged
-within each window. Then, the square root is taken of the average
-squared residual across all windows of a given size. This process
-repeats for larger window sizes, growing by, say a power of 2, up to
-N/4, where N is the length of the series. In a final step, the logarithm
-of those scaled root mean squared residuals (i.e., fluctuations) is
-regressed on the logarithm of window sizes. The slope of this line is
-termed $\alpha$ and it provides a measure of the long range correlation.
-Conventional interpretation of $\alpha$ is:
+The key question that can be answered by Detrended Fluctuation Analysis (DFA) [@pengMosaicOrganizationDNA1994] is: *what is the magnitude and direction of long range correlation in a single time series?* DFA has been described extensively elsewhere [@kantelhardtDetectingLongrangeCorrelations2001] and visualized nicely [@kelty-stephenMultifractalTemporalCorrelations2016]; so we provide a brief summary here. DFA entails splitting a time series into several small bins (e.g., 16). In each bin, the least squares regression is fit and subtracted within each window. Residuals are squared and averaged within each window. Then, the square root is taken of the average squared residual across all windows of a given size. This process repeats for larger window sizes, growing by, say a power of 2, up to N/4, where N is the length of the series. In a final step, the logarithm of those scaled root mean squared residuals (i.e., fluctuations) is regressed on the logarithm of window sizes. The slope of this line is termed $\alpha$ and it provides a measure of the long range correlation. Conventional interpretation of $\alpha$ is:
 
 -   $\alpha < 0.5 =$ anti-correlated
 -   $\alpha ~= 0.5 =$ uncorrelated, white noise
@@ -172,50 +112,27 @@ Conventional interpretation of $\alpha$ is:
 
 INCLUDE EXAMPLES HERE
 
-#### DFA Considerations
-
-We recommend a few points of consideration here in using this function.
-One is to be sure to verify there are not cross-over points in the
-logScale-logFluctuation plots (Peng et al., 1995; Perakakis et al .,
-2009). Cross-over points (or a visible change in the slope as a function
-of of scale) indicate that a mono-fractal characterization does not
-sufficiently characterize the data. If cross-over points are evident, we
-recommend proceeding to using the 'mfdfa()' to estimate the
-multi-fractal fluctuation dynamics across scales.
-
-While it is common to use only linear detrending with DFA, it is
-important to inspect the trends in the data to determine if it would be
-more appropriate to use a higher order polynomial for detrending, and/or
-compare the DFA output for different polynomial orders (see Kantelhardt
-et al., 2001).
-
-General recommendations for choosing the min and max scale are an sc_min
-= 10 and sc_max = (N/4), where N is the number of observations. See Eke
-et al. (2002) and Gulich and Zunino (2014) for additional
-considerations. - Key Question and method description. - Simulated data:
-fGN - Empirical data: EPICLE Movement Data? - MFDFA - Key Question(s) -
-Simulated data: mfbrownian motion from Ihlen matlab (Aaron might have R
-port) see mbm_mgn for R from aaron - Empirical data: EPICLE Movement
-Data?
-
 ### Multifractal Detrended Fluctuation Analysis
 
-Multifractal Detrended Fluctuation Analysis (MFDFA; Kantelhardt et al.,
-2002) is an extension of DFA by generalizing the fluctuation function to
-a range of exponents of the qth order. The key question that can be
-answered by MFDFA is: *how does the magnitude and direction of long
-range correlation change over time within a single time series?*
+Multifractal Detrended Fluctuation Analysis (MFDFA; @kantelhardtMultifractalDetrendedFluctuation2002) is an extension of DFA by generalizing the fluctuation function to a range of exponents of the qth order. The key question that can be answered by MFDFA is: *how does the magnitude and direction of long range correlation change over time within a single time series?*
+
+### MFDFA Examples
+
+INCLUDE EXAMPLES HERE
+
+#### DFA and MFDFA Considerations
+
+We recommend a few points of consideration here in using this function. One is to be sure to verify there are not cross-over points in the logScale-logFluctuation plots [@pengMosaicOrganizationDNA1994; @perakakis2009]. Cross-over points (or a visible change in the slope as a function of of scale) indicate that a mono-fractal characterization does not sufficiently characterize the data. If cross-over points are evident, we recommend proceeding to using the 'mfdfa()' to estimate the multi-fractal fluctuation dynamics across scales.
+
+While it is common to use only linear detrending with DFA, it is important to inspect the trends in the data to determine if it would be more appropriate to use a higher order polynomial for detrending, and/or compare the DFA output for different polynomial orders [@kantelhardtDetectingLongrangeCorrelations2001].
+
+General recommendations for choosing the min and max scale are an sc_min = 10 and sc_max = (N/4), where N is the number of observations. See Eke et al. (2002) [@ekeFractalCharacterizationComplexity2002] and Gulich and Zunino (2014) [@gulichCriterionDeterminationOptimal2014] for additional considerations. - Key Question and method description. - Simulated data: fGN - Empirical data: EPICLE Movement Data? - MFDFA - Key Question(s) - Simulated data: mfbrownian motion from Ihlen matlab (Aaron might have R port) see mbm_mgn for R from aaron - Empirical data: EPICLE Movement Data?
 
 ## Bivariate Methods
 
 ### Detrended Cross-Correlation Analysis
 
-Detrended Cross-Correlation Analysis (DCCA; CITE) is a bivariate
-extension of the DFA algorithm. The key questions that can be asked it
-are: a) *How does correlation between two time series change as a
-function of scale?* and b) *What is/are the dominant (time) scale(s) of
-coordination? (those that are beyond a threshold, or statistically
-significant given a criteria, or of a certain magnitude?*
+Detrended Cross-Correlation Analysis (DCCA; CITE) is a bivariate extension of the DFA algorithm. The key questions that can be asked it are: a) *How does correlation between two time series change as a function of scale?* and b) *What is/are the dominant (time) scale(s) of coordination? (those that are beyond a threshold, or statistically significant given a criteria, or of a certain magnitude?*
 
 #### DCCA Examples
 
@@ -226,12 +143,7 @@ significant given a criteria, or of a certain magnitude?*
 
 ### Multi-scale Regression Analysis
 
-Multi-scale regression analysis (MRA) is an adaptation of DCCA that
-brings the analyses into a predictive framework (CITE). The key
-questions that can be answered by it are: a) *How does the influence of
-one time series on another time series change as a function of scale?*
-and b) *What is/are the dominant (time) scale(s) of influence of one
-time series on another time series?*
+Multi-scale regression analysis (MRA) is an adaptation of DCCA that brings the analyses into a predictive framework @kristoufek2015 . The key questions that can be answered by it are: a) *How does the influence of one time series on another time series change as a function of scale?* and b) *What is/are the dominant (time) scale(s) of influence of one time series on another time series?*
 
 #### MRA Examples
 
@@ -242,13 +154,7 @@ time series on another time series?*
 
 ### Multi-scale Lagged Regression Analysis
 
-Multi-scale lagged regression analysis is an extension of MRA that
-allows for examining the influence as a function of scale, but also of
-time lag. In parituclar, the key questions that can be asked with MLRA
-are: a) *How does the influence of one time series on another time
-series change as a function of scale at different time lags?* and b)
-*Does the dominant time scale of influence change over successive time
-lags?*
+Multi-scale lagged regression analysis is an extension of MRA that allows for examining the influence as a function of scale, but also of time lag. In parituclar, the key questions that can be asked with MLRA are: a) *How does the influence of one time series on another time series change as a function of scale at different time lags?* and b) *Does the dominant time scale of influence change over successive time lags?*
 
 #### MLRA Examples
 
@@ -264,10 +170,7 @@ Methods are ranked in terms of increasing levels of rigor.
 
 -   Randomization - Estimates should be different.
 -   IAAFT - Estimates should be different.
--   Model based surrogate (Simulated exponents) - See Likens 2019 paper
-    with model of postural sway/control, taking an educated guess about
-    the data generating process underlying the time series. Estimates
-    should not be different. See Roume et al 2018 windowed detrended CCA
+-   Model based surrogate (Simulated exponents) - See Likens 2019 paper with model of postural sway/control, taking an educated guess about the data generating process underlying the time series. Estimates should not be different. See Roume et al 2018 windowed detrended CCA
 -   Can we incorporate lags into MC-ARFIMA?
 
 # General Discussion
@@ -279,8 +182,7 @@ Methods are ranked in terms of increasing levels of rigor.
 
 # Acknowledgements
 
-Author AL receives support from a National Institutes of Health Center
-grant (P20GM109090).
+Author AL receives support from a National Institutes of Health Center grant (P20GM109090).
 
 \newpage
 

@@ -210,7 +210,7 @@ ease of understanding and broad applicability to stationary and
 nonstationary time series, alike. The basic DFA algorithm has been
 implemented in numerous packages and software programs. However,
 advanced methods such as Multifractal Detrended Fluctuation Analysis
-(MFDFA) (Jan W. Kantelhardt et al., 2002), Detrended
+(MFDFA) (Kantelhardt et al., 2002), Detrended
 Cross Correlation (DCCA) (Podobnik \& Stanley, 2008; Zebende, 2011), and, in particular,
 fractal regression techniques such as Multiscale Regression Analysis
 (MRA) (Kristoufek, 2015; Likens, Amazeen, West, \& Gibbons, 2019) have not yet been
@@ -229,7 +229,7 @@ with the functionality of this package, have been implemented elsewhere.
 For example, a number of univariate fractal and multifractal analyses
 have been implemented in the `fracLab' library for MATLAB (Legrand \& Véhel, 2003)
 and other toolboxes that are mainly targeted at multifractal analysis
-(E. A. F. E. A. F. I. Ihlen, 2012; E. A. F. Ihlen \& Vereijken, 2010). In terms of
+(Ihlen, 2012; Ihlen \& Vereijken, 2010). In terms of
 open access packages, there are other packages that implement some, but
 not all of the same functions such as the \texttt{fathon} package
 (Bianchi, 2020) that has been implemented in Python as well as the R
@@ -261,12 +261,13 @@ Table 1. Overview of package functions, objectives, and output.
 Function & Objective & Output \\
 \midrule
 \endhead
-& & \\
-& & \\
-& & \\
-& & \\
-& & \\
-& & \\
+dfa & & \\
+mfdfa & & \\
+dcca & & \\
+mra & & \\
+mlra & & \\
+fgn\_sim & & \\
+iaaft & & \\
 \bottomrule
 \end{longtable}
 
@@ -276,10 +277,11 @@ Function & Objective & Output \\
 \hypertarget{detrended-fluctuation-analysis}{%
 \subsubsection{Detrended Fluctuation Analysis}\label{detrended-fluctuation-analysis}}
 
-The key questions that can be answered by Detrended Fluctuation Analysis
-(DFA) (Peng et al., 1994) is INSERT KEY QUESTION HERE. DFA
-has been described extensively elsewhere
-(Jan W. Kantelhardt, Koscielny-Bunde, Rego, Havlin, \& Bunde, 2001) and visualized nicely
+The key question that can be answered by Detrended Fluctuation Analysis
+(DFA) (Peng et al., 1994) is: \emph{what is the magnitude and
+direction of long range correlation in a single time series?} DFA has
+been described extensively elsewhere
+(Kantelhardt, Koscielny-Bunde, Rego, Havlin, \& Bunde, 2001) and visualized nicely
 (Kelty-Stephen, Stirling, \& Lipsitz, 2016); so we provide a
 brief summary here. DFA entails splitting a time series into several
 small bins (e.g., 16). In each bin, the least squares regression is fit
@@ -314,68 +316,116 @@ Conventional interpretation of \(\alpha\) is:
 
 INCLUDE EXAMPLES HERE
 
-\hypertarget{dfa-considerations}{%
-\paragraph{DFA Considerations}\label{dfa-considerations}}
+\hypertarget{multifractal-detrended-fluctuation-analysis}{%
+\subsubsection{Multifractal Detrended Fluctuation Analysis}\label{multifractal-detrended-fluctuation-analysis}}
+
+Multifractal Detrended Fluctuation Analysis (MFDFA;
+Kantelhardt et al. (2002)) is an extension of DFA
+by generalizing the fluctuation function to a range of exponents of the
+qth order. The key question that can be answered by MFDFA is: \emph{how does
+the magnitude and direction of long range correlation change over time
+within a single time series?}
+
+\hypertarget{mfdfa-examples}{%
+\subsubsection{MFDFA Examples}\label{mfdfa-examples}}
+
+INCLUDE EXAMPLES HERE
+
+\hypertarget{dfa-and-mfdfa-considerations}{%
+\paragraph{DFA and MFDFA Considerations}\label{dfa-and-mfdfa-considerations}}
 
 We recommend a few points of consideration here in using this function.
 One is to be sure to verify there are not cross-over points in the
-logScale-logFluctuation plots (Peng et al., 1995; Perakakis et al .,
-2009). Cross-over points (or a visible change in the slope as a function
-of of scale) indicate that a mono-fractal characterization does not
-sufficiently characterize the data. If cross-over points are evident, we
-recommend proceeding to using the `mfdfa()' to estimate the
+logScale-logFluctuation plots (Peng et al., 1994; Perakakis, Taylor, Martinez-Nieto, Revithi, \& Vila, 2009). Cross-over points (or a visible change in the slope as
+a function of of scale) indicate that a mono-fractal characterization
+does not sufficiently characterize the data. If cross-over points are
+evident, we recommend proceeding to using the `mfdfa()' to estimate the
 multi-fractal fluctuation dynamics across scales.
 
 While it is common to use only linear detrending with DFA, it is
 important to inspect the trends in the data to determine if it would be
 more appropriate to use a higher order polynomial for detrending, and/or
-compare the DFA output for different polynomial orders (see Kantelhardt
-et al., 2001).
+compare the DFA output for different polynomial orders
+(Kantelhardt, Koscielny-Bunde, Rego, Havlin, \& Bunde, 2001).
 
 General recommendations for choosing the min and max scale are an sc\_min
 = 10 and sc\_max = (N/4), where N is the number of observations. See Eke
-et al.~(2002) and Gulich and Zunino (2014) for additional
+et al.~(2002) (Eke, Herman, Kocsis, \& Kozak, 2002) and Gulich and
+Zunino (2014) (Gulich \& Zunino, 2014) for additional
 considerations. - Key Question and method description. - Simulated data:
 fGN - Empirical data: EPICLE Movement Data? - MFDFA - Key Question(s) -
 Simulated data: mfbrownian motion from Ihlen matlab (Aaron might have R
 port) see mbm\_mgn for R from aaron - Empirical data: EPICLE Movement
 Data?
 
-\hypertarget{multifractal-detrended-fluctuation-analysis}{%
-\subsubsection{Multifractal Detrended Fluctuation Analysis}\label{multifractal-detrended-fluctuation-analysis}}
-
-Multifractal Detrended Fluctuation Analysis (MFDFA; Kantelhardt et al.,
-2002) is an extension of DFA by generalizing the fluctuation function to
-a range of exponents of the qth order.
-
 \hypertarget{bivariate-methods}{%
 \subsection{Bivariate Methods}\label{bivariate-methods}}
 
+\hypertarget{detrended-cross-correlation-analysis}{%
+\subsubsection{Detrended Cross-Correlation Analysis}\label{detrended-cross-correlation-analysis}}
+
+Detrended Cross-Correlation Analysis (DCCA; CITE) is a bivariate
+extension of the DFA algorithm. The key questions that can be asked it
+are: a) \emph{How does correlation between two time series change as a
+function of scale?} and b) \emph{What is/are the dominant (time) scale(s) of
+coordination? (those that are beyond a threshold, or statistically
+significant given a criteria, or of a certain magnitude?}
+
+\hypertarget{dcca-examples}{%
+\paragraph{DCCA Examples}\label{dcca-examples}}
+
 \begin{itemize}
 \item
-  DCCA
-
   \begin{itemize}
   \tightlist
-  \item
-    Key Question: What the timescale(s) of coordination?
   \item
     Simulated data: MC-ARFIMA
   \item
     Empirical data: EPICLE Movement Data?
   \end{itemize}
+\end{itemize}
+
+\hypertarget{multi-scale-regression-analysis}{%
+\subsubsection{Multi-scale Regression Analysis}\label{multi-scale-regression-analysis}}
+
+Multi-scale regression analysis (MRA) is an adaptation of DCCA that
+brings the analyses into a predictive framework . The key questions that
+can be answered by it are: a) \emph{How does the influence of one time series
+on another time series change as a function of scale?} and b) \emph{What
+is/are the dominant (time) scale(s) of influence of one time series on
+another time series?}
+
+\hypertarget{mra-examples}{%
+\paragraph{MRA Examples}\label{mra-examples}}
+
+\begin{itemize}
 \item
   MRA
 
   \begin{itemize}
   \tightlist
   \item
-    Key Question
-  \item
     Simulated data:
   \item
     Empirical data: FNIRS from Aaron?
   \end{itemize}
+\end{itemize}
+
+\hypertarget{multi-scale-lagged-regression-analysis}{%
+\subsubsection{Multi-scale Lagged Regression Analysis}\label{multi-scale-lagged-regression-analysis}}
+
+Multi-scale lagged regression analysis is an extension of MRA that
+allows for examining the influence as a function of scale, but also of
+time lag. In parituclar, the key questions that can be asked with MLRA
+are: a) \emph{How does the influence of one time series on another time
+series change as a function of scale at different time lags?} and b)
+\emph{Does the dominant time scale of influence change over successive time
+lags?}
+
+\hypertarget{mlra-examples}{%
+\paragraph{MLRA Examples}\label{mlra-examples}}
+
+\begin{itemize}
 \item
   MLRA
 
@@ -457,6 +507,9 @@ Eddelbuettel, D., \& Francois, R. (2011). Rcpp: {Seamless} {R} and {C}++ {Integr
 \leavevmode\hypertarget{ref-eddelbuettelRcppArmadilloAcceleratingHighperformance2014}{}%
 Eddelbuettel, D., \& Sanderson, C. (2014). {RcppArmadillo}: {Accelerating} {R} with high-performance {C}++~linear algebra. \emph{Computational Statistics \& Data Analysis}, \emph{71}, 1054--1063. \url{https://doi.org/10.1016/j.csda.2013.02.005}
 
+\leavevmode\hypertarget{ref-ekeFractalCharacterizationComplexity2002}{}%
+Eke, A., Herman, P., Kocsis, L., \& Kozak, L. R. (2002). Fractal characterization of complexity in temporal physiological signals. \emph{Physiological Measurement}, \emph{23}(1), R1--R38. \url{https://doi.org/10.1088/0967-3334/23/1/201}
+
 \leavevmode\hypertarget{ref-eulerWorkingMemoryPerformance2016}{}%
 Euler, M. J., Wiltshire, T. J., Niermeyer, M. A., \& Butner, J. E. (2016). Working memory performance inversely predicts spontaneous delta and theta-band scaling relations. \emph{Brain Research}, \emph{1637}, 22--33. \url{https://doi.org/10.1016/j.brainres.2016.02.008}
 
@@ -466,17 +519,20 @@ Garcia, C. A. (2020). {nonlinearTseries}: {Nonlinear} {Time} {Series} {Analysis}
 \leavevmode\hypertarget{ref-goldbergerFractalDynamicsPhysiology2002}{}%
 Goldberger, A. L., Amaral, L. A. N., Hausdorff, J. M., Ivanov, P. C., Peng, C.-K., \& Stanley, H. E. (2002). Fractal dynamics in physiology: {Alterations} with disease and aging. \emph{Proceedings of the National Academy of Sciences}, \emph{99}(suppl 1), 2466--2472. \url{https://doi.org/10.1073/pnas.012579499}
 
+\leavevmode\hypertarget{ref-gulichCriterionDeterminationOptimal2014}{}%
+Gulich, D., \& Zunino, L. (2014). A criterion for the determination of optimal scaling ranges in {DFA} and {MF}-{DFA}. \emph{Physica A: Statistical Mechanics and Its Applications}, \emph{397}, 17--30. \url{https://doi.org/10.1016/j.physa.2013.11.029}
+
 \leavevmode\hypertarget{ref-ihlenIntroductionMultifractalDetrended2012}{}%
-Ihlen, E. A. F. E. A. F. I. (2012). Introduction to {Multifractal} {Detrended} {Fluctuation} {Analysis} in {Matlab}. \emph{Frontiers in Physiology}, \emph{3}. \url{https://doi.org/10.3389/fphys.2012.00141}
+Ihlen, E. A. F. (2012). Introduction to {Multifractal} {Detrended} {Fluctuation} {Analysis} in {Matlab}. \emph{Frontiers in Physiology}, \emph{3}. \url{https://doi.org/10.3389/fphys.2012.00141}
 
 \leavevmode\hypertarget{ref-ihlen2010}{}%
 Ihlen, E. A. F., \& Vereijken, B. (2010). Interaction-dominant dynamics in human cognition: Beyond 1/{{}}? fluctuation. \emph{Journal of Experimental Psychology: General}, \emph{139}(3), 436--463. \url{https://doi.org/10.1037/a0019098}
 
 \leavevmode\hypertarget{ref-kantelhardtDetectingLongrangeCorrelations2001}{}%
-Kantelhardt, Jan W., Koscielny-Bunde, E., Rego, H. H. A., Havlin, S., \& Bunde, A. (2001). Detecting long-range correlations with detrended fluctuation analysis. \emph{Physica A: Statistical Mechanics and Its Applications}, \emph{295}(3), 441--454. \url{https://doi.org/10.1016/S0378-4371(01)00144-3}
+Kantelhardt, J. W., Koscielny-Bunde, E., Rego, H. H. A., Havlin, S., \& Bunde, A. (2001). Detecting long-range correlations with detrended fluctuation analysis. \emph{Physica A: Statistical Mechanics and Its Applications}, \emph{295}(3), 441--454. \url{https://doi.org/10.1016/S0378-4371(01)00144-3}
 
 \leavevmode\hypertarget{ref-kantelhardtMultifractalDetrendedFluctuation2002}{}%
-Kantelhardt, Jan W., Zschiegner, S. A., Koscielny-Bunde, E., Havlin, S., Bunde, A., \& Stanley, H. E. (2002). Multifractal detrended fluctuation analysis of nonstationary time series. \emph{Physica A: Statistical Mechanics and Its Applications}, \emph{316}(1), 87--114. \url{https://doi.org/10.1016/S0378-4371(02)01383-3}
+Kantelhardt, J. W., Zschiegner, S. A., Koscielny-Bunde, E., Havlin, S., Bunde, A., \& Stanley, H. E. (2002). Multifractal detrended fluctuation analysis of nonstationary time series. \emph{Physica A: Statistical Mechanics and Its Applications}, \emph{316}(1), 87--114. \url{https://doi.org/10.1016/S0378-4371(02)01383-3}
 
 \leavevmode\hypertarget{ref-kelty-stephenThreadingMultifractalSocial2017}{}%
 Kelty-Stephen, D. G. (2017). Threading a multifractal social psychology through within-organism coordination to within-group interactions: {A} tale of coordination in three acts. \emph{Chaos, Solitons \& Fractals}, \emph{104}, 363--370. \url{https://doi.org/10.1016/j.chaos.2017.08.037}
@@ -501,6 +557,9 @@ Likens, A. D., Fine, J. M., Amazeen, E. L., \& Amazeen, P. G. (2015). Experiment
 
 \leavevmode\hypertarget{ref-pengMosaicOrganizationDNA1994}{}%
 Peng, C.-K., Buldyrev, S. V., Havlin, S., Simons, M., Stanley, H. E., \& Goldberger, A. L. (1994). Mosaic organization of {DNA} nucleotides. \emph{Physical Review E}, \emph{49}(2), 1685--1689. \url{https://doi.org/10.1103/PhysRevE.49.1685}
+
+\leavevmode\hypertarget{ref-perakakis2009}{}%
+Perakakis, P., Taylor, M., Martinez-Nieto, E., Revithi, I., \& Vila, J. (2009). Breathing frequency bias in fractal analysis of heart rate variability. \emph{Biological Psychology}, \emph{82}(1), 82--88. \url{https://doi.org/10.1016/j.biopsycho.2009.06.004}
 
 \leavevmode\hypertarget{ref-podobnikDetrendedCrossCorrelationAnalysis2008}{}%
 Podobnik, B., \& Stanley, H. E. (2008). Detrended {Cross}-{Correlation} {Analysis}: {A} {New} {Method} for {Analyzing} {Two} {Nonstationary} {Time} {Series}. \emph{Physical Review Letters}, \emph{100}(8), 084102. \url{https://doi.org/10.1103/PhysRevLett.100.084102}
