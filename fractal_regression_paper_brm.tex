@@ -44,6 +44,46 @@
   hidelinks,
   pdfcreator={LaTeX via pandoc}}
 \urlstyle{same} % disable monospaced font for URLs
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
 \usepackage{longtable,booktabs,array}
 \usepackage{calc} % for calculating minipage widths
 % Correct order of tables after \paragraph or \subparagraph
@@ -186,7 +226,7 @@ Correspondence concerning this article should be addressed to Aaron D. Likens, P
 \affiliation{\vspace{0.5cm}\textsuperscript{1} Department of Biomechanics, University of Nebraska at Omaha\\\textsuperscript{2} Department of Cognitive Science \& Artificial Intelligence, Tilburg University}
 
 \abstract{
-Time series data from scientific fields as diverse as astrophysics, economics, human movement science, and neuroscience all exhibit fractal properties. That is, these time series often exhibit self-similarity and long-range correlations. This \texttt{fractalRegression} package implements a number of univariate and bivariate time series tools appropriate for analyzing noisy data exhibiting these properties. These methods, especially the bivariate tools (Kristoufek, 2015; Likens, Amazeen, West, \& Gibbons, 2019) have yet to be implemented in an open source and complete package for the R Statistical Software environment. As both practitioners and developers of these methods, we expect these tools will be of interest to a wide audience of scientists who use R, especially those from fields such as the human movement, cognitive, and other behavioral sciences. The algorithms have been developed in C++ using the popular Rcpp (Eddelbuettel \& Francois, 2011) and RcppArmadillo (Eddelbuettel \& Sanderson, 2014) packages. The result is a collection of efficient functions that perform well even on long time series (e.g., \(\geq\) 10,000 data points). In this work, we motivate introduce the package, each of the functions, and give examples of their use as well as issues to consider to correctly use these methods.
+Time series data from scientific fields as diverse as astrophysics, economics, human movement science, and neuroscience all exhibit fractal properties. That is, these time series often exhibit self-similarity and long-range correlations. This \texttt{fractalRegression} package implements a number of univariate and bivariate time series tools appropriate for analyzing noisy data exhibiting these properties. These methods, especially the bivariate tools (Kristoufek, 2015a; Likens, Amazeen, West, \& Gibbons, 2019) have yet to be implemented in an open source and complete package for the R Statistical Software environment. As both practitioners and developers of these methods, we expect these tools will be of interest to a wide audience of scientists who use R, especially those from fields such as the human movement, cognitive, and other behavioral sciences. The algorithms have been developed in C++ using the popular Rcpp (Eddelbuettel \& Francois, 2011) and RcppArmadillo (Eddelbuettel \& Sanderson, 2014) packages. The result is a collection of efficient functions that perform well even on long time series (e.g., \(\geq\) 10,000 data points). In this work, we motivate introduce the package, each of the functions, and give examples of their use as well as issues to consider to correctly use these methods.
 }
 
 
@@ -207,13 +247,15 @@ system health (Goldberger et al., 2002), adaptability
 methods related to Detrended Fluctuation Analysis (DFA)
 (Peng et al., 1994) have rose to prominence due to their
 ease of understanding and broad applicability to stationary and
-nonstationary time series, alike. The basic DFA algorithm has been
-implemented in numerous packages and software programs. However,
-advanced methods such as Multifractal Detrended Fluctuation Analysis
-(MFDFA) (Kantelhardt et al., 2002), Detrended
-Cross Correlation (DCCA) (Podobnik \& Stanley, 2008; Zebende, 2011), and, in particular,
+nonstationary time series, alike.
+
+The basic DFA algorithm has been implemented in numerous packages and
+software programs. However, advanced methods such as Multifractal
+Detrended Fluctuation Analysis (MFDFA)
+(Kantelhardt et al., 2002), Detrended Cross
+Correlation (DCCA) (Podobnik \& Stanley, 2008; Zebende, 2011), and, in particular,
 fractal regression techniques such as Multiscale Regression Analysis
-(MRA) (Kristoufek, 2015; Likens, Amazeen, West, \& Gibbons, 2019) have not yet been
+(MRA) (Kristoufek, 2015a; Likens, Amazeen, West, \& Gibbons, 2019) have not yet been
 implemented in a comprehensive CRAN Package for the R Statistical
 Software Environment. Thus, there is a clear need for a package that
 incorporates this functionality in order to advance theoretical research
@@ -256,7 +298,10 @@ of the function.
 
 Table 1. Overview of package functions, objectives, and output.
 
-\begin{longtable}[]{@{}lll@{}}
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.31}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.38}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.31}}@{}}
 \toprule
 Function & Objective & Output \\
 \midrule
@@ -279,42 +324,50 @@ iaaft & & \\
 
 The key question that can be answered by Detrended Fluctuation Analysis
 (DFA) (Peng et al., 1994) is: \emph{what is the magnitude and
-direction of long range correlation in a single time series?} DFA has
-been described extensively elsewhere
+direction of long range correlation in a single time series?} While DFA
+has been described extensively elsewhere
 (Kantelhardt, Koscielny-Bunde, Rego, Havlin, \& Bunde, 2001) and visualized nicely
-(Kelty-Stephen, Stirling, \& Lipsitz, 2016); so we provide a
-brief summary here. DFA entails splitting a time series into several
-small bins (e.g., 16). In each bin, the least squares regression is fit
-and subtracted within each window. Residuals are squared and averaged
-within each window. Then, the square root is taken of the average
-squared residual across all windows of a given size. This process
-repeats for larger window sizes, growing by, say a power of 2, up to
-N/4, where N is the length of the series. In a final step, the logarithm
-of those scaled root mean squared residuals (i.e., fluctuations) is
-regressed on the logarithm of window sizes. The slope of this line is
-termed \(\alpha\) and it provides a measure of the long range correlation.
-Conventional interpretation of \(\alpha\) is:
-
-\begin{itemize}
-\tightlist
-\item
-  \(\alpha < 0.5 =\) anti-correlated
-\item
-  \(\alpha ~= 0.5 =\) uncorrelated, white noise
-\item
-  \(\alpha > 0.5 =\) temporally correlated
-\item
-  \(\alpha ~= 1 =\) 1/f-noise, pink noise
-\item
-  \(\alpha > 1 =\) non-stationary and unbounded
-\item
-  \(\alpha ~= 1.5 =\) fractional brownian motion
-\end{itemize}
+(Kelty-Stephen, Stirling, \& Lipsitz, 2016), we provide a brief
+summary here. DFA entails splitting a time series into several small
+bins (e.g., 16). In each bin, the least squares regression is fit and
+subtracted within each window. Residuals are squared and averaged within
+each window. Then, the square root is taken of the average squared
+residual across all windows of a given size. This process repeats for
+larger window sizes, growing by, say a power of 2, up to N/4, where N is
+the length of the series. In a final step, the logarithm of those scaled
+root mean squared residuals (i.e., fluctuations) is regressed on the
+logarithm of window sizes. The slope of this line is termed \(\alpha\) and
+it provides a measure of the long range correlation. Conventional
+interpretation of \(\alpha\) is: \(\alpha < 0.5\) is anti-correlated,
+\(\alpha ~= 0.5\) is uncorrelated, white noise, \(\alpha > 0.5\) is
+temporally correlated, \(\alpha ~= 1\) is long-range correlated,
+1/f-noise, pink noise, \(\alpha > 1\) is non-stationary and unbounded, and
+\(\alpha ~= 1.5\) is fractional brownian motion.
 
 \hypertarget{dfa-examples}{%
 \paragraph{DFA Examples}\label{dfa-examples}}
 
-INCLUDE EXAMPLES HERE
+To demonstrate the use of \texttt{dfa()} we simulate three time series using
+the \texttt{fgn\_sim} function. In particular, we simulate white noise, pink
+noise, and anti-correlated fractional Gaussian noise.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Generate pink noise}
+\FunctionTok{set.seed}\NormalTok{(}\DecValTok{34534534}\NormalTok{)}
+\NormalTok{pink.noise }\OtherTok{\textless{}{-}} \FunctionTok{fgn\_sim}\NormalTok{(}\AttributeTok{n =} \DecValTok{5000}\NormalTok{, }\AttributeTok{H =} \FloatTok{0.9}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Then we can run DFA on these using the example code below.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Run DFA on pink noise}
+\NormalTok{dfa.pink.out }\OtherTok{\textless{}{-}} \FunctionTok{dfa}\NormalTok{(}\AttributeTok{x =}\NormalTok{ pink.noise, }\AttributeTok{order =} \DecValTok{1}\NormalTok{, }\AttributeTok{verbose =} \DecValTok{1}\NormalTok{,}
+                \AttributeTok{sc\_min =} \DecValTok{16}\NormalTok{, }\AttributeTok{sc\_max =} \FunctionTok{length}\NormalTok{(pink.noise)}\SpecialCharTok{/}\DecValTok{4}\NormalTok{, }\AttributeTok{scale\_ratio =} \DecValTok{2}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
 
 \hypertarget{multifractal-detrended-fluctuation-analysis}{%
 \subsubsection{Multifractal Detrended Fluctuation Analysis}\label{multifractal-detrended-fluctuation-analysis}}
@@ -389,11 +442,11 @@ significant given a criteria, or of a certain magnitude?}
 \subsubsection{Multi-scale Regression Analysis}\label{multi-scale-regression-analysis}}
 
 Multi-scale regression analysis (MRA) is an adaptation of DCCA that
-brings the analyses into a predictive framework . The key questions that
-can be answered by it are: a) \emph{How does the influence of one time series
-on another time series change as a function of scale?} and b) \emph{What
-is/are the dominant (time) scale(s) of influence of one time series on
-another time series?}
+brings the analyses into a predictive framework Kristoufek (2015b) . The
+key questions that can be answered by it are: a) \emph{How does the influence
+of one time series on another time series change as a function of
+scale?} and b) \emph{What is/are the dominant (time) scale(s) of influence of
+one time series on another time series?}
 
 \hypertarget{mra-examples}{%
 \paragraph{MRA Examples}\label{mra-examples}}
@@ -541,7 +594,10 @@ Kelty-Stephen, D. G. (2017). Threading a multifractal social psychology through 
 Kelty-Stephen, D. G., Stirling, L. A., \& Lipsitz, L. A. (2016). Multifractal temporal correlations in circle-tracing behaviors are associated with the executive function of rule-switching assessed by the {Trail} {Making} {Test}. \emph{Psychological Assessment}, \emph{28}(2), 171--180. \url{https://doi.org/10.1037/pas0000177}
 
 \leavevmode\hypertarget{ref-kristoufekDetrendedFluctuationAnalysis2015}{}%
-Kristoufek, L. (2015). Detrended fluctuation analysis as a regression framework: {Estimating} dependence at different scales. \emph{Physical Review E}, \emph{91}(2), 022802. \url{https://doi.org/10.1103/PhysRevE.91.022802}
+Kristoufek, L. (2015a). Detrended fluctuation analysis as a regression framework: {Estimating} dependence at different scales. \emph{Physical Review E}, \emph{91}(2), 022802. \url{https://doi.org/10.1103/PhysRevE.91.022802}
+
+\leavevmode\hypertarget{ref-kristoufek2015}{}%
+Kristoufek, L. (2015b). Detrended fluctuation analysis as a regression framework: Estimating dependence at different scales. \emph{Physical Review E}, \emph{91}(2), 022802. \url{https://doi.org/10.1103/PhysRevE.91.022802}
 
 \leavevmode\hypertarget{ref-laibMultifractalAnalysisTime2018}{}%
 Laib, M., Golay, J., Telesca, L., \& Kanevski, M. (2018). Multifractal analysis of the time series of daily means of wind speed in complex regions. \emph{Chaos, Solitons \& Fractals}, \emph{109}, 118--127. \url{https://doi.org/10.1016/j.chaos.2018.02.024}
