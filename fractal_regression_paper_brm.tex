@@ -275,7 +275,7 @@ and other toolboxes that are mainly targeted at multifractal analysis
 open access packages, there are other packages that implement some, but
 not all of the same functions such as the \texttt{fathon} package
 (Bianchi, 2020) that has been implemented in Python as well as the R
-packages: \texttt{fractal} {[}@{]}, \texttt{nonlinearTseries}
+packages: \texttt{fractal} {[}defunct{]}, \texttt{nonlinearTseries}
 (Garcia, 2020), and \texttt{MFDFA}
 (Laib, Golay, Telesca, \& Kanevski, 2018). However, none of the above packages
 incorporate univariate monofractal and multifractal DFA with bivariate
@@ -299,20 +299,106 @@ of the function.
 Table 1. Overview of package functions, objectives, and output.
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.31}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.38}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.11}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.21}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.31}}@{}}
 \toprule
-Function & Objective & Output \\
+Fun
+ction & Objective & Output \\
 \midrule
 \endhead
-dfa & & \\
-mfdfa & & \\
-dcca & & \\
-mra & & \\
-mlra & & \\
-fgn\_sim & & \\
-iaaft & & \\
+dfa & Estimate
+long-range
+correlation
+in a time
+series & Object containing
+the overall
+\(\alpha\) estimate
+and, if desired the
+\texttt{logScales} and
+\texttt{logRMS} \\
+mfdfa & Estimate the
+magnitude
+and range of
+long-range
+correlations
+in a time
+series & Object containing
+the \(\log_2\) scales
+used for the
+analysis, the
+\(\log_2\)
+fluctuation
+function for each
+scale and \(q\), the
+various q-order
+exponents, \(Hq\),
+\(Tau\), \(h\), and
+\(Dh\) \\
+dcca & Estimates of
+sc
+ale-specific
+correlation
+between two
+time-series & Object containing
+the scales used for
+the analysis and
+the \(\rho\) '\texttt{rho\textquotesingle{}}
+values for each
+scale \\
+mra & Estimates
+the scale
+specific
+regression
+coefficients
+for a
+predictor
+time series
+on and
+outcome time
+series & Object containing
+the scales and
+scale specific
+\(\beta\) estimates,
+\(R^2\), and \(t\)
+statistics \\
+mlra & Estimates
+the scale
+specific
+regression
+coefficients
+for a
+predictor
+time series
+on and
+outcome time
+series at
+p
+re-specified
+lags & Object with
+lag-specific
+\(\beta\)
+coefficients \\
+fg
+n\_sim & Simulate
+fractional
+Gaussian
+noise & Returns a vector of
+length \texttt{n}
+according to the
+specified \texttt{H} Hurst
+exponent \\
+iaaft & Generate
+surrogate
+series using
+the
+iterative
+amplitude
+adjusted
+Fourier
+transform & Returns a vector of
+same length as
+input time series \\
 \bottomrule
 \end{longtable}
 
@@ -337,7 +423,9 @@ larger window sizes, growing by, say a power of 2, up to N/4, where N is
 the length of the series. In a final step, the logarithm of those scaled
 root mean squared residuals (i.e., fluctuations) is regressed on the
 logarithm of window sizes. The slope of this line is termed \(\alpha\) and
-it provides a measure of the long range correlation. Conventional
+it provides a measure of the long range correlation. \(\alpha\) is
+commonly used an as estimator of the Hurst exponent (H), where
+\(\alpha<1\) = \(H\), and for \(\alpha>1\), \(H = 1 - \alpha\). Conventional
 interpretation of \(\alpha\) is: \(\alpha < 0.5\) is anti-correlated,
 \(\alpha ~= 0.5\) is uncorrelated, white noise, \(\alpha > 0.5\) is
 temporally correlated, \(\alpha ~= 1\) is long-range correlated,
@@ -363,7 +451,7 @@ below.
 \end{Shaded}
 
 Then we can run DFA on these using the example code below. Note that
-this example use an linear detrending with minimum scale (\texttt{sc\_min}) of
+this example uses a linear detrending with minimum scale (\texttt{sc\_min}) of
 16, a maximum scale (\texttt{sc\_max}) of 1/4 the time series length, and
 logarithmically spaced scale factor (\texttt{scale\_ratio}) of 2.
 
@@ -387,10 +475,19 @@ function, one commonly inspects the \texttt{logScales}-\texttt{logRms} plots. Gi
 the estimates above, we see that the slopes for white noise, pink noise,
 and anti-correlated noise conform to our expectations.
 
-\includegraphics{fractal_regression_paper_brm_files/figure-latex/unnamed-chunk-3-1.pdf}
+\begin{verbatim}
+
+
+
+\begin{figure}
+\centering
+\includegraphics{fractal_regression_paper_brm_files/figure-latex/my-figure-1.pdf}
+\caption{\label{fig:my-figure}My caption.
+\end{verbatim}}
+\end{figure}
 
 For an empirical example, we apply the \texttt{dfa()} function to DESCRIBE DATA
-HERE.
+HERE. Movement Data?
 
 \hypertarget{multifractal-detrended-fluctuation-analysis}{%
 \subsubsection{Multifractal Detrended Fluctuation Analysis}\label{multifractal-detrended-fluctuation-analysis}}
@@ -400,12 +497,35 @@ Kantelhardt et al. (2002)) is an extension of DFA
 by generalizing the fluctuation function to a range of exponents of the
 qth order. The key question that can be answered by MFDFA is: \emph{how does
 the magnitude and direction of long range correlation change over time
-within a single time series?}
+within a single time series?} Like DFA, MFDFA entails splitting a time
+series into several small bins (e.g., 16). In each bin, the least
+squares regression is fit and subtracted within each window. However,
+the residuals are raised to a range of exponents \(q\) and averaged within
+each window. So when \(q = 2\), DFA is equal to MFDFA. When \(q >2\), larger
+residual are emphasized and when \(q < 2\), smaller residuals are
+emphasized. The rest of the DFA algorithm is performed for each window
+and windows size for all values of \(q\). We refer the reader to the work
+of Kelty-Stephens and colleagues
+Kelty-Stephen, Stirling, and Lipsitz (2016) Figure 3 for a
+visualization of the algorithm and to Kantelhardt and colleagues
+Kantelhardt et al. (2002) for additional
+mathematical description.
 
 \hypertarget{mfdfa-examples}{%
 \subsubsection{MFDFA Examples}\label{mfdfa-examples}}
 
-INCLUDE EXAMPLES HERE
+To demonstrate the use of \texttt{mfdfa()}, we work with data included in our
+package (\texttt{fractaldata}), that was originally provided by
+Ihlen (2012) . It includes a white noise
+time series, monofractal time series, and a multifractal time series.
+Investigation of the properties could also examine simulated
+multifractal Brownian motion and multifractal Gaussian noise.
+
+\includegraphics{fractal_regression_paper_brm_files/figure-latex/unnamed-chunk-3-1.pdf}
+
+Simulated data: mfbrownian motion from Ihlen matlab (Aaron might have R
+port) see mbm\_mgn for R from aaron - Empirical data: EPICLE Movement
+Data?
 
 \hypertarget{dfa-and-mfdfa-considerations}{%
 \paragraph{DFA and MFDFA Considerations}\label{dfa-and-mfdfa-considerations}}
@@ -428,11 +548,7 @@ General recommendations for choosing the min and max scale are an sc\_min
 = 10 and sc\_max = (N/4), where N is the number of observations. See Eke
 et al.~(2002) (Eke, Herman, Kocsis, \& Kozak, 2002) and Gulich and
 Zunino (2014) (Gulich \& Zunino, 2014) for additional
-considerations. - Key Question and method description. - Simulated data:
-fGN - Empirical data: EPICLE Movement Data? - MFDFA - Key Question(s) -
-Simulated data: mfbrownian motion from Ihlen matlab (Aaron might have R
-port) see mbm\_mgn for R from aaron - Empirical data: EPICLE Movement
-Data?
+considerations.
 
 \hypertarget{bivariate-methods}{%
 \subsection{Bivariate Methods}\label{bivariate-methods}}
@@ -440,12 +556,16 @@ Data?
 \hypertarget{detrended-cross-correlation-analysis}{%
 \subsubsection{Detrended Cross-Correlation Analysis}\label{detrended-cross-correlation-analysis}}
 
-Detrended Cross-Correlation Analysis (DCCA; CITE) is a bivariate
-extension of the DFA algorithm. The key questions that can be asked it
-are: a) \emph{How does correlation between two time series change as a
-function of scale?} and b) \emph{What is/are the dominant (time) scale(s) of
-coordination? (those that are beyond a threshold, or statistically
-significant given a criteria, or of a certain magnitude?}
+Detrended Cross-Correlation Analysis (DCCA;
+Podobnik and Stanley (2008)) is a bivariate extension
+of the DFA algorithm generalizing it to a correlational case between two
+time series. The key questions that can be asked it are: a) \emph{How does
+correlation between two time series change as a function of scale?} and
+b) \emph{What is/are the dominant (time) scale(s) of coordination? (those
+that are beyond a threshold, or statistically significant given a
+criteria, or of a certain magnitude?} For DCCA, the DFA algorithm gets
+applied to both time series providing the scale-wise estimates for both.
+DESCRIBE DCCA ALGORITHM HERE.
 
 \hypertarget{dcca-examples}{%
 \paragraph{DCCA Examples}\label{dcca-examples}}
@@ -465,11 +585,12 @@ significant given a criteria, or of a certain magnitude?}
 \subsubsection{Multi-scale Regression Analysis}\label{multi-scale-regression-analysis}}
 
 Multi-scale regression analysis (MRA) is an adaptation of DCCA that
-brings the analyses into a predictive framework Kristoufek (2015b) . The
-key questions that can be answered by it are: a) \emph{How does the influence
-of one time series on another time series change as a function of
-scale?} and b) \emph{What is/are the dominant (time) scale(s) of influence of
-one time series on another time series?}
+brings the analyses into a predictive, regression framework
+Kristoufek (2015b) . The key questions that can be answered by it are: a)
+\emph{How does the influence of one time series on another time series change
+as a function of scale?} and b) \emph{What is/are the dominant (time)
+scale(s) of influence of one time series on another time series?}
+DESCRIBE MRA ALGORITHM HERE.
 
 \hypertarget{mra-examples}{%
 \paragraph{MRA Examples}\label{mra-examples}}
@@ -496,7 +617,7 @@ time lag. In parituclar, the key questions that can be asked with MLRA
 are: a) \emph{How does the influence of one time series on another time
 series change as a function of scale at different time lags?} and b)
 \emph{Does the dominant time scale of influence change over successive time
-lags?}
+lags?} DESCRIBE MLRA ALGORITHM HERE.
 
 \hypertarget{mlra-examples}{%
 \paragraph{MLRA Examples}\label{mlra-examples}}

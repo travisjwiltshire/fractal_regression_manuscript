@@ -1,17 +1,103 @@
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.31}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.38}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.11}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.21}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.31}}@{}}
 \toprule
-Function & Objective & Output \\
+Fun
+ction & Objective & Output \\
 \midrule
 \endhead
-dfa & & \\
-mfdfa & & \\
-dcca & & \\
-mra & & \\
-mlra & & \\
-fgn\_sim & & \\
-iaaft & & \\
+dfa & Estimate
+long-range
+correlation
+in a time
+series & Object containing
+the overall
+\(\alpha\) estimate
+and, if desired the
+\texttt{logScales} and
+\texttt{logRMS} \\
+mfdfa & Estimate the
+magnitude
+and range of
+long-range
+correlations
+in a time
+series & Object containing
+the \(\log_2\) scales
+used for the
+analysis, the
+\(\log_2\)
+fluctuation
+function for each
+scale and \(q\), the
+various q-order
+exponents, \(Hq\),
+\(Tau\), \(h\), and
+\(Dh\) \\
+dcca & Estimates of
+sc
+ale-specific
+correlation
+between two
+time-series & Object containing
+the scales used for
+the analysis and
+the \(\rho\) '\texttt{rho\textquotesingle{}}
+values for each
+scale \\
+mra & Estimates
+the scale
+specific
+regression
+coefficients
+for a
+predictor
+time series
+on and
+outcome time
+series & Object containing
+the scales and
+scale specific
+\(\beta\) estimates,
+\(R^2\), and \(t\)
+statistics \\
+mlra & Estimates
+the scale
+specific
+regression
+coefficients
+for a
+predictor
+time series
+on and
+outcome time
+series at
+p
+re-specified
+lags & Object with
+lag-specific
+\(\beta\)
+coefficients \\
+fg
+n\_sim & Simulate
+fractional
+Gaussian
+noise & Returns a vector of
+length \texttt{n}
+according to the
+specified \texttt{H} Hurst
+exponent \\
+iaaft & Generate
+surrogate
+series using
+the
+iterative
+amplitude
+adjusted
+Fourier
+transform & Returns a vector of
+same length as
+input time series \\
 \bottomrule
 \end{longtable}

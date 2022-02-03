@@ -81,9 +81,11 @@ Some foundational efforts in fractal analyses, which partially overlap with the 
 
 # Methodological Details and Examples
 
-In order to demonstrate the methods within the 'fractalRegression' package, we group this into univariate (DFA, MFDFA) and bivariate methods (DCCA, MRA, MRLA). For each method, we 1) highlight the key question(s) that can be answered with that method, 2) briefly describe the algorithm with sources for additional details, 3) describe some key consideration for appropriately applying the algorithm, and demonstrate the use of the functions on a 4) simulated and 5) empirical application of the function.
+In order to demonstrate the methods within the 'fractalRegression' package, we group this into univariate (DFA, MFDFA) and bivariate methods (DCCA, MRA, MRLA). For each method, we 1) highlight the key question(s) that can be answered with that method, 2) briefly describe the algorithm with sources for additional details, 3) describe some key consideration for appropriately applying the algorithm, and demonstrate the use of the functions on a 4) simulated and 5) empirical application of the function. An overview of the functions included in the package, the general objective of that function, and the output are shown below in Table 1. The additional details are included in the sections corresponding to those methods, in the package documentation, and in the original sources for the methods.
 
-Table 1. Overview of package functions, objectives, and output.
+**Table 1.**
+
+*Overview of package functions, objectives, and output*
 
 +----------+-----------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | Function | Objective                                                                                                                         | Output                                                                                                                                                                           |
@@ -120,7 +122,7 @@ anti.corr.noise <- fgn_sim(5000, H = 0.25)
 
 ```
 
-Then we can run DFA on these using the example code below. Note that this example use an linear detrending with minimum scale (`sc_min`) of 16, a maximum scale (`sc_max`) of 1/4 the time series length, and logarithmically spaced scale factor (`scale_ratio`) of 2.
+Then we can run DFA on these using the example code below. Note that this example uses a linear detrending with minimum scale (`sc_min`) of 16, a maximum scale (`sc_max`) of 1/4 the time series length, and logarithmically spaced scale factor (`scale_ratio`) of 2.
 
 ```{r, echo = TRUE}
 dfa.white <- dfa(x = white.noise, order = 1, verbose = 1,
@@ -131,7 +133,11 @@ dfa.anti.corr <- dfa(x = anti.corr.noise, order = 1, verbose = 1,
                 sc_min = 16, sc_max = length(pink.noise)/4, scale_ratio = 2)
 ```
 
-In terms of output from the above examples, for white noise, we observed that $\alpha$ = `r dfa.white$alpha`, for pink noise we observed that $\alpha$ = `r dfa.pink$alpha`, and since we simulated anti-correlated noise with H = 0.25, we observed a close estimate of the $\alpha$ = `r dfa.anti.corr$alpha`. In terms of the objects saved from the `dfa()` function, one commonly inspects the `logScales`-`logRms` plots. Given the estimates above, we see that the slopes for white noise, pink noise, and anti-correlated noise conform to our expectations.
+In terms of output from the above examples, for white noise, we observed that $\alpha$ = `r dfa.white$alpha`, for pink noise we observed that $\alpha$ = `r dfa.pink$alpha`, and since we simulated anti-correlated noise with H = 0.25, we observed a close estimate of the $\alpha$ = `r dfa.anti.corr$alpha`. In terms of the objects saved from the `dfa()` function, one commonly inspects the `logScales`-`logRms` plots. Given the estimates above, we see in Figure 1 that the slopes for white noise, pink noise, and anti-correlated noise conform to our expectations.
+
+**Figure 1**
+
+*LogScale-LogFluctuation plots for white noise (left), pink noise (middle), and anti-correlated noise (right)*
 
 ```{r echo=FALSE, warning=FALSE}
 dfa.white.df <- as.data.frame(cbind(dfa.white$logScales,dfa.white$logRms))
@@ -169,15 +175,31 @@ ylim(-1,6)
 gridExtra::grid.arrange(p1,p2,p3,nrow=1)
 ```
 
-For an empirical example, we apply the `dfa()` function to DESCRIBE DATA HERE. Movement Data? - MFDFA - Key Question(s) -
+For an empirical example, we apply the `dfa()` function to DESCRIBE DATA HERE. Movement Data?
 
 ### Multifractal Detrended Fluctuation Analysis
 
-Multifractal Detrended Fluctuation Analysis (MFDFA; @kantelhardtMultifractalDetrendedFluctuation2002) is an extension of DFA by generalizing the fluctuation function to a range of exponents of the qth order. The key question that can be answered by MFDFA is: *how does the magnitude and direction of long range correlation change over time within a single time series?* DESCRIBE MFDFA ALGORITHM HERE.
+Multifractal Detrended Fluctuation Analysis (MFDFA; @kantelhardtMultifractalDetrendedFluctuation2002) is an extension of DFA by generalizing the fluctuation function to a range of exponents of the qth order. The key question that can be answered by MFDFA is: *how does the magnitude and direction of long range correlation change over time within a single time series?* Like DFA, MFDFA entails splitting a time series into several small bins (e.g., 16). In each bin, the least squares regression is fit and subtracted within each window. However, the residuals are raised to a range of exponents $q$ and averaged within each window. So when $q = 2$, DFA is equal to MFDFA. When $q >2$, larger residual are emphasized and when $q < 2$, smaller residuals are emphasized. The rest of the DFA algorithm is performed for each window and windows size for all values of $q$. We refer the reader to the work of Kelty-Stephens and colleagues @kelty-stephenMultifractalTemporalCorrelations2016 Figure 3 for a visualization of the algorithm and to Kantelhardt and colleagues @kantelhardtMultifractalDetrendedFluctuation2002 for additional mathematical description.
 
 ### MFDFA Examples
 
-INCLUDE EXAMPLES HERE
+To demonstrate the use of `mfdfa()`, we work with data included in our package (`fractaldata`), that was originally provided by @ihlenIntroductionMultifractalDetrended2012 . It includes a white noise time series, monofractal time series, and a multifractal time series. Investigation of the properties could also examine simulated multifractal Brownian motion and multifractal Gaussian noise.
+
+```{r, echo=FALSE}
+# Let's load that data
+
+# load("~/GitHub/fractalRegression/data/fractaldata.rda")
+
+data("fractaldata")
+
+white.plot <- ggplot(fractaldata, aes(y=whitenoise, x=time))+geom_line()+ggtitle("white noise")+ylab("signal amplitude")
+
+mono.plot <- ggplot(fractaldata, aes(y=monofractal, x=time))+geom_line()+ggtitle("monofractal")+ylab("signal amplitude")
+
+multi.plot <- ggplot(fractaldata, aes(y=multifractal, x=time))+geom_line()+ggtitle("multifractal")+ylab("signal amplitude")
+
+gridExtra::grid.arrange(white.plot,mono.plot,multi.plot,nrow=3)
+```
 
 Simulated data: mfbrownian motion from Ihlen matlab (Aaron might have R port) see mbm_mgn for R from aaron - Empirical data: EPICLE Movement Data?
 
