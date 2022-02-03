@@ -348,26 +348,49 @@ temporally correlated, \(\alpha ~= 1\) is long-range correlated,
 \paragraph{DFA Examples}\label{dfa-examples}}
 
 To demonstrate the use of \texttt{dfa()} we simulate three time series using
-the \texttt{fgn\_sim} function. In particular, we simulate white noise, pink
-noise, and anti-correlated fractional Gaussian noise.
+the \texttt{fgn\_sim()} function. This is a simple function based on the former
+\texttt{fARMA} R package. It only requires the number of observations \texttt{n}, and
+the Hurst exponent \texttt{H}. In particular, we simulate white noise, pink
+noise, and anti-correlated fractional Gaussian noise using the code
+below.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Generate pink noise}
-\FunctionTok{set.seed}\NormalTok{(}\DecValTok{34534534}\NormalTok{)}
+\NormalTok{white.noise }\OtherTok{\textless{}{-}} \FunctionTok{rnorm}\NormalTok{(}\DecValTok{5000}\NormalTok{)}
 \NormalTok{pink.noise }\OtherTok{\textless{}{-}} \FunctionTok{fgn\_sim}\NormalTok{(}\AttributeTok{n =} \DecValTok{5000}\NormalTok{, }\AttributeTok{H =} \FloatTok{0.9}\NormalTok{)}
+\NormalTok{anti.corr.noise }\OtherTok{\textless{}{-}} \FunctionTok{fgn\_sim}\NormalTok{(}\DecValTok{5000}\NormalTok{, }\AttributeTok{H =} \FloatTok{0.25}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
-Then we can run DFA on these using the example code below.
+Then we can run DFA on these using the example code below. Note that
+this example use an linear detrending with minimum scale (\texttt{sc\_min}) of
+16, a maximum scale (\texttt{sc\_max}) of 1/4 the time series length, and
+logarithmically spaced scale factor (\texttt{scale\_ratio}) of 2.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Run DFA on pink noise}
-\NormalTok{dfa.pink.out }\OtherTok{\textless{}{-}} \FunctionTok{dfa}\NormalTok{(}\AttributeTok{x =}\NormalTok{ pink.noise, }\AttributeTok{order =} \DecValTok{1}\NormalTok{, }\AttributeTok{verbose =} \DecValTok{1}\NormalTok{,}
+\NormalTok{dfa.white }\OtherTok{\textless{}{-}} \FunctionTok{dfa}\NormalTok{(}\AttributeTok{x =}\NormalTok{ white.noise, }\AttributeTok{order =} \DecValTok{1}\NormalTok{, }\AttributeTok{verbose =} \DecValTok{1}\NormalTok{,}
+                \AttributeTok{sc\_min =} \DecValTok{16}\NormalTok{, }\AttributeTok{sc\_max =} \FunctionTok{length}\NormalTok{(pink.noise)}\SpecialCharTok{/}\DecValTok{4}\NormalTok{, }\AttributeTok{scale\_ratio =} \DecValTok{2}\NormalTok{)}
+\NormalTok{dfa.pink }\OtherTok{\textless{}{-}} \FunctionTok{dfa}\NormalTok{(}\AttributeTok{x =}\NormalTok{ pink.noise, }\AttributeTok{order =} \DecValTok{1}\NormalTok{, }\AttributeTok{verbose =} \DecValTok{1}\NormalTok{,}
+                \AttributeTok{sc\_min =} \DecValTok{16}\NormalTok{, }\AttributeTok{sc\_max =} \FunctionTok{length}\NormalTok{(pink.noise)}\SpecialCharTok{/}\DecValTok{4}\NormalTok{, }\AttributeTok{scale\_ratio =} \DecValTok{2}\NormalTok{)}
+\NormalTok{dfa.anti.corr }\OtherTok{\textless{}{-}} \FunctionTok{dfa}\NormalTok{(}\AttributeTok{x =}\NormalTok{ anti.corr.noise, }\AttributeTok{order =} \DecValTok{1}\NormalTok{, }\AttributeTok{verbose =} \DecValTok{1}\NormalTok{,}
                 \AttributeTok{sc\_min =} \DecValTok{16}\NormalTok{, }\AttributeTok{sc\_max =} \FunctionTok{length}\NormalTok{(pink.noise)}\SpecialCharTok{/}\DecValTok{4}\NormalTok{, }\AttributeTok{scale\_ratio =} \DecValTok{2}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
+
+In terms of output from the above examples, for white noise, we observed
+that \(\alpha\) = 0.52, for pink noise we observed that
+\(\alpha\) = 0.91, and since we simulated anti-correlated
+noise with H = 0.25, we observed a close estimate of the \(\alpha\) =
+0.26. In terms of the objects saved from the \texttt{dfa()}
+function, one commonly inspects the \texttt{logScales}-\texttt{logRms} plots. Given
+the estimates above, we see that the slopes for white noise, pink noise,
+and anti-correlated noise conform to our expectations.
+
+\includegraphics{fractal_regression_paper_brm_files/figure-latex/unnamed-chunk-3-1.pdf}
+
+For an empirical example, we apply the \texttt{dfa()} function to DESCRIBE DATA
+HERE.
 
 \hypertarget{multifractal-detrended-fluctuation-analysis}{%
 \subsubsection{Multifractal Detrended Fluctuation Analysis}\label{multifractal-detrended-fluctuation-analysis}}
