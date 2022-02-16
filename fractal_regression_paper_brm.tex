@@ -294,9 +294,15 @@ question(s) that can be answered with that method, 2) briefly describe
 the algorithm with sources for additional details, 3) describe some key
 consideration for appropriately applying the algorithm, and demonstrate
 the use of the functions on a 4) simulated and 5) empirical application
-of the function.
+of the function. An overview of the functions included in the package,
+the general objective of that function, and the output are shown below
+in Table 1. The additional details are included in the sections
+corresponding to those methods, in the package documentation, and in the
+original sources for the methods.
 
-Table 1. Overview of package functions, objectives, and output.
+\textbf{Table 1.}
+
+\emph{Overview of package functions, objectives, and output}
 
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.11}}
@@ -472,22 +478,22 @@ that \(\alpha\) = 0.52, for pink noise we observed that
 noise with H = 0.25, we observed a close estimate of the \(\alpha\) =
 0.26. In terms of the objects saved from the \texttt{dfa()}
 function, one commonly inspects the \texttt{logScales}-\texttt{logRms} plots. Given
-the estimates above, we see that the slopes for white noise, pink noise,
-and anti-correlated noise conform to our expectations.
+the estimates above, we see in Figure 1 that the slopes for white noise,
+pink noise, and anti-correlated noise conform to our expectations.
 
-\begin{verbatim}
+\textbf{Figure 1}
 
+\emph{LogScale-LogFluctuation plots for white noise (left), pink noise
+(middle), and anti-correlated noise (right)}
 
-
-\begin{figure}
-\centering
-\includegraphics{fractal_regression_paper_brm_files/figure-latex/my-figure-1.pdf}
-\caption{\label{fig:my-figure}My caption.
-\end{verbatim}}
-\end{figure}
+\includegraphics{fractal_regression_paper_brm_files/figure-latex/unnamed-chunk-3-1.pdf}
 
 For an empirical example, we apply the \texttt{dfa()} function to DESCRIBE DATA
 HERE. Movement Data?
+
+\textbf{Figure 2}
+
+\emph{LogScale-LogFluctuation plots for empirical time series (ADD ME)}
 
 \hypertarget{multifractal-detrended-fluctuation-analysis}{%
 \subsubsection{Multifractal Detrended Fluctuation Analysis}\label{multifractal-detrended-fluctuation-analysis}}
@@ -521,7 +527,7 @@ time series, monofractal time series, and a multifractal time series.
 Investigation of the properties could also examine simulated
 multifractal Brownian motion and multifractal Gaussian noise.
 
-\includegraphics{fractal_regression_paper_brm_files/figure-latex/unnamed-chunk-3-1.pdf}
+\includegraphics{fractal_regression_paper_brm_files/figure-latex/unnamed-chunk-4-1.pdf}
 
 Simulated data: mfbrownian motion from Ihlen matlab (Aaron might have R
 port) see mbm\_mgn for R from aaron - Empirical data: EPICLE Movement
