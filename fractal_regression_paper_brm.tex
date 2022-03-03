@@ -237,35 +237,62 @@ Time series data from scientific fields as diverse as astrophysics, economics, h
 \hypertarget{introduction}{%
 \section{Introduction}\label{introduction}}
 
-Fractal analysis, in its many forms, has become an important framework
-in virtually every area of science, often serving as an indicator of
-system health (Goldberger et al., 2002), adaptability
-(Bak, Tang, \& Wiesenfeld, 1987), control
+Over time, many signals from living and complex systems exhibit
+systematic regularities and dependencies across spatial and temporal
+scales (\textbf{kello2010?}). These regularities often follow a power-law (i.e.,
+self-similarity across scales) that are estimated using fractal
+analyses. Fractal analysis, in its many forms, has become an important
+framework in virtually every area of science, often serving as an
+indicator of system health (Goldberger et al., 2002),
+adaptability (Bak, Tang, \& Wiesenfeld, 1987), control
 (Likens, Fine, Amazeen, \& Amazeen, 2015), cognitive function
 (Euler, Wiltshire, Niermeyer, \& Butner, 2016), and multi-scale interactions
-(Kelty-Stephen, 2017). In particular, various
-methods related to Detrended Fluctuation Analysis (DFA)
-(Peng et al., 1994) have rose to prominence due to their
-ease of understanding and broad applicability to stationary and
-nonstationary time series, alike.
+(Kelty-Stephen, 2017).
 
-The basic DFA algorithm has been implemented in numerous packages and
-software programs. However, advanced methods such as Multifractal
-Detrended Fluctuation Analysis (MFDFA)
+In particular, various methods related to Detrended Fluctuation Analysis
+(DFA) (Peng et al., 1994) have rose to prominence due to
+their relative ease of understanding and broad applicability to
+stationary and non-stationary time series, alike. More specifically, in
+areas of the social and cognitive sciences, DFA, or variants of DFA,
+have been used to study, for example, reaction times
+(Van Orden, Holden, \& Turvey, 2003), eye gaze
+(Stephen, Boncoddo, Magnuson, \& Dixon, 2009), gait
+(\textbf{delignières2009?}), limb movements
+(Delignières, Torre, \& Lemoine, 2008), heart rate
+(Goldberger et al., 2002), and neurophysiological
+oscillations Euler, Wiltshire, Niermeyer, \& Butner (2016). And, beyond an individual level,
+the methods have been used to study human-machine system interaction
+(Likens, Fine, Amazeen, \& Amazeen, 2015), tool use
+(\textbf{favela2021?}), and
+interpersonal coordination in a variety of modalities
+Delignières, Almurad, Roume, \& Marmelat (2016).
+
+Thus, there is a broad scientific appeal for these fractal-based
+analyses. While, the basic DFA algorithm has been implemented in
+numerous packages and software programs, more advanced methods such as
+Multifractal Detrended Fluctuation Analysis (MFDFA)
 (Kantelhardt et al., 2002), Detrended Cross
 Correlation (DCCA) (Podobnik \& Stanley, 2008; Zebende, 2011), and, in particular,
 fractal regression techniques such as Multiscale Regression Analysis
 (MRA) (Kristoufek, 2015a; Likens, Amazeen, West, \& Gibbons, 2019) have not yet been
-implemented in a comprehensive CRAN Package for the R Statistical
-Software Environment. Thus, there is a clear need for a package that
-incorporates this functionality in order to advance theoretical research
-focused on understanding the time varying properties of natural
-phenomena and applied research that uses those insights in important
-areas such as healthcare (Cavanaugh, Kelty-Stephen, \& Stergiou, 2017) and education (Snow, Likens, Allen, \& McNamara, 2016).
+implemented in a comprehensive software package. Thus, there is a clear
+need for a package that incorporates this functionality in order to
+advance theoretical research focused on understanding the time varying
+properties of natural phenomena and applied research that uses those
+insights in important areas such as healthcare (Cavanaugh, Kelty-Stephen, \& Stergiou, 2017) and
+education (Snow, Likens, Allen, \& McNamara, 2016). In this work, we provide an overview of our
+\texttt{fractalRegression} package, provide simulated and empirical examples of
+it's functions, and provide practical advice on the successful
+application of these methods.
 
 \hypertarget{package-overview}{%
 \section{Package Overview}\label{package-overview}}
 
+Our \texttt{fractalRegression} package for R
+(Team, 2018) is built on a C++
+architecture and includes a variety of uni- and bivariate fractal
+methods as well as functions for simulating data with known fractional
+properties (e.g., scaling, dependence, etc.), and surrogate testing.
 Some foundational efforts in fractal analyses, which partially overlap
 with the functionality of this package, have been implemented elsewhere.
 For example, a number of univariate fractal and multifractal analyses
@@ -280,9 +307,13 @@ packages: \texttt{fractal} {[}defunct{]}, \texttt{nonlinearTseries}
 (Laib, Golay, Telesca, \& Kanevski, 2018). However, none of the above packages
 incorporate univariate monofractal and multifractal DFA with bivariate
 DCCA and MRA nor do they run on a C++ architecture. Our
-\texttt{fractalRegression} package is unique in this combination of analyses
-and efficiency. For instance, we are not aware of any other packages
-that feature MRA and Multiscale Lagged Regression (MLRA).
+\texttt{fractalRegression} package is this unique in this combination of
+analyses and efficiency (particularly for long time series). For
+instance, we are not aware of any other packages that feature MRA and
+Multiscale Lagged Regression (MLRA). In addition, we expect that
+featuring simulation methods as well as surrogate testing strongly
+bolsters the accessibility of these methods for the social and cognitive
+science community in particular, but also science, more generally.
 
 \hypertarget{methodological-details-and-examples}{%
 \section{Methodological Details and Examples}\label{methodological-details-and-examples}}
@@ -305,105 +336,84 @@ original sources for the methods.
 \emph{Overview of package functions, objectives, and output}
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.11}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.21}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.31}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.05}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.40}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.55}}@{}}
 \toprule
-Fun
-ction & Objective & Output \\
+F
+u
+n
+c
+t
+i
+o
+n & Objective & Output \\
 \midrule
 \endhead
-dfa & Estimate
-long-range
-correlation
-in a time
-series & Object containing
-the overall
-\(\alpha\) estimate
-and, if desired the
-\texttt{logScales} and
-\texttt{logRMS} \\
-mfdfa & Estimate the
-magnitude
-and range of
-long-range
-correlations
-in a time
-series & Object containing
-the \(\log_2\) scales
-used for the
-analysis, the
-\(\log_2\)
-fluctuation
-function for each
-scale and \(q\), the
-various q-order
-exponents, \(Hq\),
-\(Tau\), \(h\), and
-\(Dh\) \\
-dcca & Estimates of
-sc
-ale-specific
-correlation
-between two
-time-series & Object containing
-the scales used for
-the analysis and
-the \(\rho\) '\texttt{rho\textquotesingle{}}
-values for each
-scale \\
-mra & Estimates
-the scale
-specific
-regression
-coefficients
-for a
-predictor
-time series
-on and
-outcome time
-series & Object containing
-the scales and
-scale specific
-\(\beta\) estimates,
-\(R^2\), and \(t\)
-statistics \\
-mlra & Estimates
-the scale
-specific
-regression
-coefficients
-for a
-predictor
-time series
-on and
-outcome time
-series at
-p
-re-specified
-lags & Object with
-lag-specific
-\(\beta\)
+d
+f
+a & Estimate long-range
+correlation in a time
+series & Object containing the overall
+\(\alpha\) estimate and, if desired the
+\texttt{logScales} and \texttt{logRMS} \\
+m
+f
+d
+f
+a & Estimate the magnitude and
+range of long-range
+correlations in a time
+series & Object containing the \(\log_2\) scales
+used for the analysis, the \(\log_2\)
+fluctuation function for each scale
+and \(q\), the various q-order
+exponents, \(Hq\), \(Tau\), \(h\), and \(Dh\) \\
+d
+c
+c
+a & Estimates of
+scale-specific correlation
+between two time-series & Object containing the scales used for
+the analysis and the \(\rho\) '\texttt{rho\textquotesingle{}}
+values for each scale \\
+m
+r
+a & Estimates the scale
+specific regression
+coefficients for a
+predictor time series on
+and outcome time series & Object containing the scales and
+scale specific \(\beta\) estimates,
+\(R^2\), and \(t\) statistics \\
+m
+l
+r
+a & Estimates the scale
+specific regression
+coefficients for a
+predictor time series on
+and outcome time series at
+pre-specified lags & Object with lag-specific \(\beta\)
 coefficients \\
-fg
-n\_sim & Simulate
-fractional
-Gaussian
-noise & Returns a vector of
-length \texttt{n}
-according to the
-specified \texttt{H} Hurst
+f
+g
+n
+\_
+s
+i
+m & Simulate fractional
+Gaussian noise & Returns a vector of length \texttt{n}
+according to the specified \texttt{H} Hurst
 exponent \\
-iaaft & Generate
-surrogate
-series using
-the
-iterative
-amplitude
-adjusted
-Fourier
-transform & Returns a vector of
-same length as
+i
+a
+a
+f
+t & Generate surrogate series
+using the iterative
+amplitude adjusted Fourier
+transform & Returns a vector of same length as
 input time series \\
 \bottomrule
 \end{longtable}
@@ -704,6 +714,15 @@ Bianchi, S. (2020). Fathon: A python package for a fast computation of detrenden
 \leavevmode\hypertarget{ref-cavanaugh2017}{}%
 Cavanaugh, J. T., Kelty-Stephen, D. G., \& Stergiou, N. (2017). Multifractality, Interactivity, and the Adaptive Capacity of the Human Movement System: A Perspective for Advancing the Conceptual Basis of Neurologic Physical Therapy. Retrieved from \url{https://www.ingentaconnect.com/content/wk/npt/2017/00000041/00000004/art00007}
 
+\leavevmode\hypertarget{ref-davisMultiscaleInteractionsInterpersonal2016}{}%
+Davis, T. J., Brooks, T. R., \& Dixon, J. A. (2016). Multi-scale interactions in interpersonal coordination. \emph{Journal of Sport and Health Science}, \emph{5}(1), 25--34. \url{https://doi.org/10.1016/j.jshs.2016.01.015}
+
+\leavevmode\hypertarget{ref-delignieresMultifractalSignaturesComplexity2016}{}%
+Delignières, D., Almurad, Z. M. H., Roume, C., \& Marmelat, V. (2016). Multifractal signatures of complexity matching. \emph{Experimental Brain Research}, \emph{234}(10), 2773--2785. \url{https://doi.org/10.1007/s00221-016-4679-4}
+
+\leavevmode\hypertarget{ref-delignieresFractalModelsEventbased2008}{}%
+Delignières, D., Torre, K., \& Lemoine, L. (2008). Fractal models for event-based and dynamical timers. \emph{Acta Psychologica}, \emph{127}(2), 382--397. \url{https://doi.org/10.1016/j.actpsy.2007.07.007}
+
 \leavevmode\hypertarget{ref-eddelbuettelRcppSeamlessIntegration2011}{}%
 Eddelbuettel, D., \& Francois, R. (2011). Rcpp: {Seamless} {R} and {C}++ {Integration}. \emph{Journal of Statistical Software}, \emph{40}(1), 1--18. \url{https://doi.org/10.18637/jss.v040.i08}
 
@@ -724,6 +743,12 @@ Goldberger, A. L., Amaral, L. A. N., Hausdorff, J. M., Ivanov, P. C., Peng, C.-K
 
 \leavevmode\hypertarget{ref-gulichCriterionDeterminationOptimal2014}{}%
 Gulich, D., \& Zunino, L. (2014). A criterion for the determination of optimal scaling ranges in {DFA} and {MF}-{DFA}. \emph{Physica A: Statistical Mechanics and Its Applications}, \emph{397}, 17--30. \url{https://doi.org/10.1016/j.physa.2013.11.029}
+
+\leavevmode\hypertarget{ref-hardstoneDetrendedFluctuationAnalysis2012}{}%
+Hardstone, R., Poil, S.-S., Schiavone, G., Jansen, R., Nikulin, V. V., Mansvelder, H. D., \& Linkenkaer-Hansen, K. (2012). Detrended {Fluctuation} {Analysis}: {A} {Scale}-{Free} {View} on {Neuronal} {Oscillations}. \emph{Frontiers in Physiology}, \emph{3}. \url{https://doi.org/10.3389/fphys.2012.00450}
+
+\leavevmode\hypertarget{ref-hausdorffFractalDynamicsHuman1996}{}%
+Hausdorff, J. M., Purdon, P. L., Peng, C. K., Ladin, Z., Wei, J. Y., \& Goldberger, A. L. (1996). Fractal dynamics of human gait: Stability of long-range correlations in stride interval fluctuations. \emph{Journal of Applied Physiology}, \emph{80}(5), 1448--1457. \url{https://doi.org/10.1152/jappl.1996.80.5.1448}
 
 \leavevmode\hypertarget{ref-ihlenIntroductionMultifractalDetrended2012}{}%
 Ihlen, E. A. F. (2012). Introduction to {Multifractal} {Detrended} {Fluctuation} {Analysis} in {Matlab}. \emph{Frontiers in Physiology}, \emph{3}. \url{https://doi.org/10.3389/fphys.2012.00141}
@@ -770,8 +795,20 @@ Perakakis, P., Taylor, M., Martinez-Nieto, E., Revithi, I., \& Vila, J. (2009). 
 \leavevmode\hypertarget{ref-podobnikDetrendedCrossCorrelationAnalysis2008}{}%
 Podobnik, B., \& Stanley, H. E. (2008). Detrended {Cross}-{Correlation} {Analysis}: {A} {New} {Method} for {Analyzing} {Two} {Nonstationary} {Time} {Series}. \emph{Physical Review Letters}, \emph{100}(8), 084102. \url{https://doi.org/10.1103/PhysRevLett.100.084102}
 
+\leavevmode\hypertarget{ref-schaworonkowLongitudinalChangesAperiodic2021}{}%
+Schaworonkow, N., \& Voytek, B. (2021). Longitudinal changes in aperiodic and periodic activity in electrophysiological recordings in the first seven months of life. \emph{Developmental Cognitive Neuroscience}, \emph{47}, 100895. \url{https://doi.org/10.1016/j.dcn.2020.100895}
+
 \leavevmode\hypertarget{ref-snow2016}{}%
 Snow, E. L., Likens, A. D., Allen, L. K., \& McNamara, D. S. (2016). Taking Control: Stealth Assessment of Deterministic Behaviors Within a Game-Based System. \emph{International Journal of Artificial Intelligence in Education}, \emph{26}(4), 1011--1032. \url{https://doi.org/10.1007/s40593-015-0085-5}
+
+\leavevmode\hypertarget{ref-stephenDynamicsInsightMathematical2009}{}%
+Stephen, D. G., Boncoddo, R. A., Magnuson, J. S., \& Dixon, J. A. (2009). The dynamics of insight: {Mathematical} discovery as a phase transition. \emph{Memory \& Cognition}, \emph{37}(8), 1132--1149. \url{https://doi.org/10.3758/MC.37.8.1132}
+
+\leavevmode\hypertarget{ref-rcoreteamLanguageEnvironmentStatistical2018}{}%
+Team, R. C. (2018). R: {A} language and {Environment} for {Statistical} {Computing}. Vienna, Austria.
+
+\leavevmode\hypertarget{ref-vanordenSelforganizationCognitivePerformance2003}{}%
+Van Orden, G. C., Holden, J. G., \& Turvey, M. T. (2003). Self-organization of cognitive performance. \emph{Journal of Experimental Psychology: General}, \emph{132}(3), 331--350. \url{https://doi.org/10.1037/0096-3445.132.3.331}
 
 \leavevmode\hypertarget{ref-zebendeDCCACrosscorrelationCoefficient2011}{}%
 Zebende, G. F. (2011). {DCCA} cross-correlation coefficient: {Quantifying} level of cross-correlation. \emph{Physica A: Statistical Mechanics and Its Applications}, \emph{390}(4), 614--618. \url{https://doi.org/10.1016/j.physa.2010.10.022}

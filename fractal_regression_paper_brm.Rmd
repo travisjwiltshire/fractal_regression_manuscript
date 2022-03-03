@@ -85,23 +85,17 @@ In order to demonstrate the methods within the 'fractalRegression' package, we g
 
 *Overview of package functions, objectives, and output*
 
-+----------+-----------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Function | Objective                                                                                                                         | Output                                                                                                                                                                           |
-+==========+===================================================================================================================================+==================================================================================================================================================================================+
-| dfa      | Estimate long-range correlation in a time series                                                                                  | Object containing the overall $\alpha$ estimate and, if desired the `logScales` and `logRMS`                                                                                     |
-+----------+-----------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| mfdfa    | Estimate the magnitude and range of long-range correlations in a time series                                                      | Object containing the $\log_2$ scales used for the analysis, the $\log_2$ fluctuation function for each scale and $q$, the various q-order exponents, $Hq$, $Tau$, $h$, and $Dh$ |
-+----------+-----------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| dcca     | Estimates of scale-specific correlation between two time-series                                                                   | Object containing the scales used for the analysis and the $\rho$ '`rho'` values for each scale                                                                                  |
-+----------+-----------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| mra      | Estimates the scale specific regression coefficients for a predictor time series on and outcome time series                       | Object containing the scales and scale specific $\beta$ estimates, $R^2$, and $t$ statistics                                                                                     |
-+----------+-----------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| mlra     | Estimates the scale specific regression coefficients for a predictor time series on and outcome time series at pre-specified lags | Object with lag-specific $\beta$ coefficients                                                                                                                                    |
-+----------+-----------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| fgn_sim  | Simulate fractional Gaussian noise                                                                                                | Returns a vector of length `n` according to the specified `H` Hurst exponent                                                                                                     |
-+----------+-----------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| iaaft    | Generate surrogate series using the iterative amplitude adjusted Fourier transform                                                | Returns a vector of same length as input time series                                                                                                                             |
-+----------+-----------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Function      | Objective                                                                                                                         | Output                                                                                                                                                                           |
+|---------------|-----------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `dfa()`       | Estimate long-range correlation in a time series                                                                                  | Object containing the overall $\alpha$ estimate and, if desired the `logScales` and `logRMS`                                                                                     |
+| `mfdfa()`     | Estimate the magnitude and range of long-range correlations in a time series                                                      | Object containing the $\log_2$ scales used for the analysis, the $\log_2$ fluctuation function for each scale and $q$, the various q-order exponents, $Hq$, $Tau$, $h$, and $Dh$ |
+| `dcca()`      | Estimates of scale-specific correlation between two time-series                                                                   | Object containing the scales used for the analysis and the $\rho$ '`rho'` values for each scale                                                                                  |
+| `mra()`       | Estimates the scale specific regression coefficients for a predictor time series on and outcome time series                       | Object containing the scales and scale specific $\beta$ estimates, $R^2$, and $t$ statistics                                                                                     |
+| `mlra()`      | Estimates the scale specific regression coefficients for a predictor time series on and outcome time series at pre-specified lags | Object with lag-specific $\beta$ coefficients                                                                                                                                    |
+| `fgn_sim()`   | Simulate univariate fractional Gaussian noise                                                                                     | Returns a vector of length `n` according to the specified `H` Hurst exponent                                                                                                     |
+| `mBm_mGn()`   | Simulate univariate multi-fractional Brownian motion and Gaussian noise                                                           | Returns two vectors of length `N` according to the specified $H_t$ series                                                                                                        |
+| `mc_ARFIMA()` | Simulate various types of biariate correlated noise processes.                                                                    | Returns two vectors of length `N` according to the specified noise `process` and parameters                                                                                      |
+| `iaaft()`     | Generate surrogate series using the iterative amplitude adjusted Fourier transform                                                | Returns a vector of same length as input time series                                                                                                                             |
 
 ## Univariate Methods
 
@@ -120,7 +114,7 @@ anti.corr.noise <- fgn_sim(5000, H = 0.25)
 
 ```
 
-Then we can run DFA on these using the example code below. Note that this example uses a linear detrending with minimum scale (`sc_min`) of 16, a maximum scale (`sc_max`) of 1/4 the time series length, and logarithmically spaced scale factor (`scale_ratio`) of 2.
+Then, we can run DFA on these using the example code below. Note that this example uses a linear detrending with minimum scale (`sc_min`) of 16, a maximum scale (`sc_max`) of 1/4 the time series length, and logarithmically spaced scale factor (`scale_ratio`) of 2.
 
 ```{r, echo = TRUE}
 dfa.white <- dfa(x = white.noise, order = 1, verbose = 1,
@@ -173,7 +167,7 @@ ylim(-1,6)
 gridExtra::grid.arrange(p1,p2,p3,nrow=1)
 ```
 
-For an empirical example, we apply the `dfa()` function to DESCRIBE DATA HERE. Movement Data?
+For an empirical example, we apply the `dfa()` function to DESCRIBE DATA HERE. Movement Data. Importantly, regarding the question one can ask using DFA, we observe that ANSWER TO QUESTION HERE.
 
 **Figure 2**
 
@@ -181,7 +175,7 @@ For an empirical example, we apply the `dfa()` function to DESCRIBE DATA HERE. M
 
 ### Multifractal Detrended Fluctuation Analysis
 
-Multifractal Detrended Fluctuation Analysis (MFDFA; @kantelhardtMultifractalDetrendedFluctuation2002) is an extension of DFA by generalizing the fluctuation function to a range of exponents of the qth order. The key question that can be answered by MFDFA is: *how does the magnitude and direction of long range correlation change over time within a single time series?* Like DFA, MFDFA entails splitting a time series into several small bins (e.g., 16). In each bin, the least squares regression is fit and subtracted within each window. However, the residuals are raised to a range of exponents $q$ and averaged within each window. So when $q = 2$, DFA is equal to MFDFA. When $q >2$, larger residual are emphasized and when $q < 2$, smaller residuals are emphasized. The rest of the DFA algorithm is performed for each window and windows size for all values of $q$. We refer the reader to the work of Kelty-Stephens and colleagues @kelty-stephenMultifractalTemporalCorrelations2016 Figure 3 for a visualization of the algorithm and to Kantelhardt and colleagues @kantelhardtMultifractalDetrendedFluctuation2002 for additional mathematical description.
+Multifractal Detrended Fluctuation Analysis (MFDFA; @kantelhardtMultifractalDetrendedFluctuation2002) is an extension of DFA by generalizing the fluctuation function to a range of exponents of the $q$th order. The key question that can be answered by MFDFA is: *how does the magnitude and direction of long range correlation change over time within a single time series?* Like DFA, MFDFA entails splitting a time series into several small bins (e.g., 16). In each bin, the least squares regression is fit and subtracted within each window. However, the residuals are raised to a range of exponents $q$ and averaged within each window. So when $q = 2$, DFA is equal to MFDFA. When $q >2$, larger residual are emphasized and when $q < 2$, smaller residuals are emphasized. The rest of the DFA algorithm is performed for each window and windows size for all values of $q$. We refer the reader to the work of Kelty-Stephens and colleagues @kelty-stephenMultifractalTemporalCorrelations2016 Figure 3 for a visualization of the algorithm and to Kantelhardt and colleagues @kantelhardtMultifractalDetrendedFluctuation2002 for additional mathematical description.
 
 ### MFDFA Examples
 
@@ -204,7 +198,7 @@ Simulated data: mfbrownian motion from Ihlen matlab (Aaron might have R port) se
 
 #### DFA and MFDFA Considerations
 
-We recommend a few points of consideration here in using this function. One is to be sure to verify there are not cross-over points in the logScale-logFluctuation plots [@pengMosaicOrganizationDNA1994; @perakakis2009]. Cross-over points (or a visible change in the slope as a function of of scale) indicate that a mono-fractal characterization does not sufficiently characterize the data. If cross-over points are evident, we recommend proceeding to using the 'mfdfa()' to estimate the multi-fractal fluctuation dynamics across scales.
+We recommend a few points of consideration here in using this function. One is to be sure to verify there are cross-over points in the logScale-logFluctuation plots [@pengMosaicOrganizationDNA1994; @perakakis2009]. Cross-over points (or a visible change in the slope as a function of scale) indicate that a mono-fractal characterization does not sufficiently characterize the data. If cross-over points are evident, we recommend proceeding to using the 'mfdfa()' to estimate the multi-fractal fluctuation dynamics across scales.
 
 While it is common to use only linear detrending with DFA, it is important to inspect the trends in the data to determine if it would be more appropriate to use a higher order polynomial for detrending, and/or compare the DFA output for different polynomial orders [@kantelhardtDetectingLongrangeCorrelations2001].
 
@@ -214,14 +208,76 @@ General recommendations for choosing the min and max scale are an sc_min = 10 an
 
 ### Detrended Cross-Correlation Analysis
 
-Detrended Cross-Correlation Analysis (DCCA; @podobnikDetrendedCrossCorrelationAnalysis2008) is a bivariate extension of the DFA algorithm generalizing it to a correlational case between two time series. The key questions that can be asked it are: a) *How does correlation between two time series change as a function of scale?* and b) *What is/are the dominant (time) scale(s) of coordination? (those that are beyond a threshold, or statistically significant given a criteria, or of a certain magnitude?* For DCCA, the DFA algorithm gets applied to both time series providing the scale-wise estimates for both. DESCRIBE DCCA ALGORITHM HERE.
+Detrended Cross-Correlation Analysis (DCCA; @podobnikDetrendedCrossCorrelationAnalysis2008, @zebendeDCCACrosscorrelationCoefficient2011 ) is a bivariate extension of the DFA algorithm generalizing it to a correlational case between two time series that may be non-stationary. The key questions that can be asked with it are: a) *How does correlation between two time series change as a function of scale?* and b) *What is/are the dominant (time) scale(s) of coordination? (those that are beyond a threshold, or statistically significant given a criteria, or of a certain magnitude?* For DCCA, the DFA algorithm gets applied to both time series providing the scale-wise estimates for both. DESCRIBE DCCA ALGORITHM HERE. Whereas in DFA, the key metric is $\alpha$, in DCCA, one estimates the scale-specific, detrended cross-correlation coefficient $\rho$ for the pair of time series.
 
 #### DCCA Examples
 
--   
+To demonstrate the use of `dcca()`, we used the `mc_arfima()` function from our package to simulate two time series with known properties. Specifically, we use the multicorrelated ARFIMA examples from Kristoufec's work [@kristoufekMixedcorrelatedARFIMAProcesses2013]. In this case, we use the parameters from Kristoufec (2013) for Model 1 (p. 6,487), that generates two time series of length 10,000 that exhibit long range correlations (LRC) as well as long range cross-correlations (LRCC). The code for simulating these two time series is shown below. Additionally, Figure \#, shown below, visualizes a subset of these time series.
 
-    -   Simulated data: MC-ARFIMA
-    -   Empirical data: EPICLE Movement Data?
+```{r}
+set.seed(987345757)
+
+sim1 <- mc_ARFIMA(process="Mixed_ARFIMA_ARFIMA", alpha = 0.2, beta = 1, gamma = 1, delta = 0.2, n = 10000, d1 = 0.4, d2 = 0.3, d3 = 0.3, d4=0.4, rho=0.9)
+
+```
+
+**Figure \#**
+
+*Subset of two time series exhibiting long range correlation and long range cross-correlation*
+
+```{r, echo=FALSE}
+
+plot(sim1[2000:3000,1],type='l', ylab= "Signal Amplitude", xlab='Time', main = "MC-ARFIMA with LRC and LRCC")
+
+lines(sim1[2000:3000,2], col='blue')
+```
+
+To perform the `dcca()` on these time series, we could use the code below, where we first define the `scales` using using the `logScale()` function from the `ifultools` package [@constantine2021] to define a set of logarithmically spaced scales to use for the analysis.
+
+```{r}
+scales <- ifultools::logScale(scale.min = 10, scale.max = 1000, scale.ratio = 1.1)
+
+dcca.out.arfima <- dcca(sim1[,1], sim1[,2], order = 1, scales = scales)
+```
+
+From here, we can visualize the output of the analysis as shown below in Figure \#. We observe that, as expected, the correlation between the MC-ARFIMA processes are consistently high (all $\rho$'s $> .8$) and continue to be high at increasing time scales. We also add standard errors plotted around each point, but note these are based on one simulation only and more robust estimates of standard error could be calculated using many time series.
+
+**Figure \#**
+
+*DCCA output for long range correlation and long range cross-correlation*
+
+```{r, echo=FALSE}
+dcca.out.arfima <- as.data.frame(dcca.out.arfima)
+
+error <- sd(dcca.out.arfima$rho)/sqrt(length(dcca.out.arfima$rho))
+
+dcca.plot <- ggplot(data=dcca.out.arfima, aes(x=scales,y=rho)) + geom_point() +geom_line() + ggtitle("DCCA on MC-ARFIMA processes with LRC and LRCC")+ geom_pointrange(aes(ymin=rho-error,ymax=rho+error))
+
+#geom_smooth(method=lm, formula = y ~ poly(x, 2), se = TRUE)
+
+dcca.plot
+```
+
+As a point of comparison, we can generate a time series in contrast with this that exhibits processes with LRC and short-range cross-correlation (SRCC) using the code below. In contrast to the previous DCCA analysis, Figure \# shows a signal that begins with a high cross-correlation ($\rho$'s $> .6$) , but that begins to deviate and trend substantially lower at increasing scale sizes approaching $\rho = 0$.
+
+```{r}
+sim2 <- mc_ARFIMA(process="Mixed_ARFIMA_AR", alpha = 1,beta = 1,gamma = 1,delta = 1,n =10000,d1=0.4,d2=0.4,theta1=0.8,theta2=0.8,rho=0.9)
+```
+
+**Figure \#**
+
+*DCCA output for long range correlation and short range cross-correlation*
+
+```{r, echo=FALSE}
+scales <- ifultools::logScale(scale.min = 10, scale.max = 1000, scale.ratio = 1.1)
+dcca.out.arfima2 <- dcca(sim2[,1], sim2[,2], order = 1, scales = scales)
+dcca.out.arfima2 <- as.data.frame(dcca.out.arfima2)
+error <- sd(dcca.out.arfima2$rho)/sqrt(length(dcca.out.arfima2$rho))
+dcca.plot2 <- ggplot(data=dcca.out.arfima2, aes(x=scales,y=rho)) + geom_point() +geom_line() + ggtitle("DCCA on MC-ARFIMA processes with LRC and SRCC") + geom_pointrange(aes(ymin=rho-error,ymax=rho+error))
+dcca.plot2
+```
+
+-   Empirical data: EPICLE Movement Data?
 
 ### Multi-scale Regression Analysis
 
@@ -248,10 +304,27 @@ Multi-scale lagged regression analysis is an extension of MRA that allows for ex
 
 ## Surrogate Methods (and 'full' data analysis)
 
-Methods are ranked in terms of increasing levels of rigor.
+In all of the above methods, one gets either a single estimate of a parameter (e.g., $\alpha$) or a range of estimates (e.g., $\rho$, $\beta$). While those estimates are meaningful in and of themselves, it is common place to perform some form of test of a null hypothesis about the estimate. These are generally referred to as surrogate methods. We present several options here that could be ranked in terms of increasing levels of rigor: randomized surrogates, iterative amplitude adjusted Fourier transformed (IAAFT) surrogates, and model based surrogates.
 
--   Randomization - Estimates should be different.
+### Randomized Surrogates
+
+Randomized surrogates generally involve randomly shuffling the order of values of a time series. The idea is generally that the temporal structure is destroyed, yet the other features of the time series still exist [@kantelhardtMultifractalDetrendedFluctuation2002]. Note that additional options exist along these lines (see for example [@dumasInterBrainSynchronizationSocial2010]). The key comparison here would be to compare the estimates extracted from a given analysis (e.g., DFA) on the observed sample of data with the estimates derived from and equally sized sample of the surrogate series (SEE CITES FOR EXAMPLES).
+
+```{r}
+rand.surr <- permute::shuffle(pink.noise)
+
+dfa.rand.surr <- dfa(x = rand.surr, order = 1, verbose = 1,
+                sc_min = 16, sc_max = length(rand.surr)/4, scale_ratio = 2)
+```
+
+Randomizing the pink noise time series, which originally exhibited long range correlation ($\alpha$ = `r dfa.pink$alpha`), and performing DFA on it, now provides an estimate of $\alpha$ = `r dfa.rand.surr$alpha`, which is consistent with a random or white noise process. These values are clearly different, however, performing inferential statistics on a sample of observed estimates compared to surrogate estimates would provide compelling evidence that the temporal dynamics suggested by the observed estimates are different than those derived from a random process.
+
+### Iterative Amplitude Adjusted Fourier Transform Surrogates (IAAFT)
+
 -   IAAFT - Estimates should be different.
+
+### Model-based Surrogates
+
 -   Model based surrogate (Simulated exponents) - See Likens 2019 paper with model of postural sway/control, taking an educated guess about the data generating process underlying the time series. Estimates should not be different. See Roume et al 2018 windowed detrended CCA
 -   Can we incorporate lags into MC-ARFIMA?
 
