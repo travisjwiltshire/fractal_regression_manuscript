@@ -71,7 +71,7 @@ In particular, various methods related to Detrended Fluctuation Analysis (DFA) [
 
 Thus, there is a broad scientific appeal for these fractal-based analyses. While, the basic DFA algorithm has been implemented in numerous packages and software programs, more advanced methods such as Multifractal Detrended Fluctuation Analysis (MFDFA) [@kantelhardtMultifractalDetrendedFluctuation2002], Detrended Cross Correlation (DCCA) [@zebendeDCCACrosscorrelationCoefficient2011; @podobnikDetrendedCrossCorrelationAnalysis2008], and, in particular, fractal regression techniques such as Multiscale Regression Analysis (MRA) [@kristoufekDetrendedFluctuationAnalysis2015; @likensStatisticalPropertiesMultiscale2019] have not yet been implemented in a comprehensive software package. Thus, there is a clear need for a package that incorporates this functionality in order to advance theoretical research focused on understanding the time varying properties of natural phenomena and applied research that uses those insights in important areas such as healthcare [@cavanaugh2017] and education [@snow2016]. In this work, we provide an overview of our `fractalRegression` package, provide simulated and empirical examples of it's functions, and provide practical advice on the successful application of these methods.
 
-<!-- - Connect better to regression part (see 2019 paper from Aaron in Nia Multiscale regression intro and discussion) -->
+<!-- - Connect better to regression part (see 2019 paper from Aaron and Nia Multiscale regression intro and discussion) -->
 
 # Package Overview
 
@@ -85,17 +85,27 @@ In order to demonstrate the methods within the 'fractalRegression' package, we g
 
 *Overview of package functions, objectives, and output*
 
++---------------+-----------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | Function      | Objective                                                                                                                         | Output                                                                                                                                                                           |
-|---------------|-----------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
++===============+===================================================================================================================================+==================================================================================================================================================================================+
 | `dfa()`       | Estimate long-range correlation in a time series                                                                                  | Object containing the overall $\alpha$ estimate and, if desired the `logScales` and `logRMS`                                                                                     |
++---------------+-----------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `mfdfa()`     | Estimate the magnitude and range of long-range correlations in a time series                                                      | Object containing the $\log_2$ scales used for the analysis, the $\log_2$ fluctuation function for each scale and $q$, the various q-order exponents, $Hq$, $Tau$, $h$, and $Dh$ |
++---------------+-----------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `dcca()`      | Estimates of scale-specific correlation between two time-series                                                                   | Object containing the scales used for the analysis and the $\rho$ '`rho'` values for each scale                                                                                  |
++---------------+-----------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `mra()`       | Estimates the scale specific regression coefficients for a predictor time series on and outcome time series                       | Object containing the scales and scale specific $\beta$ estimates, $R^2$, and $t$ statistics                                                                                     |
++---------------+-----------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `mlra()`      | Estimates the scale specific regression coefficients for a predictor time series on and outcome time series at pre-specified lags | Object with lag-specific $\beta$ coefficients                                                                                                                                    |
++---------------+-----------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `fgn_sim()`   | Simulate univariate fractional Gaussian noise                                                                                     | Returns a vector of length `n` according to the specified `H` Hurst exponent                                                                                                     |
++---------------+-----------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `mBm_mGn()`   | Simulate univariate multi-fractional Brownian motion and Gaussian noise                                                           | Returns two vectors of length `N` according to the specified $H_t$ series                                                                                                        |
++---------------+-----------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `mc_ARFIMA()` | Simulate various types of biariate correlated noise processes.                                                                    | Returns two vectors of length `N` according to the specified noise `process` and parameters                                                                                      |
++---------------+-----------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `iaaft()`     | Generate surrogate series using the iterative amplitude adjusted Fourier transform                                                | Returns a vector of same length as input time series                                                                                                                             |
++---------------+-----------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 ## Univariate Methods
 
@@ -281,18 +291,32 @@ dcca.plot2
 
 ### Multi-scale Regression Analysis
 
-Multi-scale regression analysis (MRA) is an adaptation of DCCA that brings the analyses into a predictive, regression framework @kristoufek2015 . The key questions that can be answered by it are: a) *How does the influence of one time series on another time series change as a function of scale?* and b) *What is/are the dominant (time) scale(s) of influence of one time series on another time series?* DESCRIBE MRA ALGORITHM HERE.
+Multi-scale regression analysis (MRA) is an adaptation of DCCA that brings the analyses into a predictive, regression framework @kristoufek2015 . The key questions that can be answered by it are: a) *How does the influence of one time series on another time series change as a function of scale?* and b) *What is/are the dominant (time) scale(s) of influence of one time series on another time series?* The algorithm is largely the same as DCCA, with a key difference being that instead of estimating scale-wise symmetric correlation coefficients, leveraging methods of Ordinary Least Squares (OLS) regression, asymmetric $\beta$ coefficients are estimated (see @likens2019; @kristoufek2015 ).
 
 #### MRA Examples
 
--   MRA
+Considering the LRC and SRCC simulations used for DCCA, we can examine whether the scale-wise fluctuations of one variable can predict the scale-wise fluctuations of the other using `mra()`. As with a traditional regression approach, we will use one of our variables as our predictor ($x_t$) and the other as our outcome ($y_t$). In the example below, we again first define our logarithmically spaced scales. We then apply the `mra()` function to the two simulated time series. In this case, it's important to specify which is variable is `x` (the predictor) and which is `y` (the outcome). For ease of plotting, we convert this to a dataframe in the process.
 
-    -   Simulated data:
-    -   Empirical data: FNIRS from Aaron?
+```{r}
+scales <- logScale(scale.min = 10, scale.max = 1000, scale.ratio = 1.1)
+
+mra.out <- as.data.frame(mra(x = sim1[,1], y = sim1[,2],order = 1, scales = scales))
+```
+
+We can then visualize these results as shown below in Figure \#. Generally, we observe that the $\beta$ coefficients are relatively stable at increasing time scales with a general, perhaps quadratically increasing trend. Here it is also important to investigate the change in $R^2$ as well as the $t$-values. Below we see that the $R^2$ is quite high at most of the time scales with $R^2_{min} =$ `r round(min(mra.out$r2),2)` and $R^2_{max} =$ `r round(max(mra.out$r2),2)` and all of the $t$-values greater than the conventional cut-off at 1.96. So between these two component ARFIMA processes, the output of MRA shows that much of the scale specific variance in $y_t$ is explained and predicted by $x_t$.
+
+```{r echo=FALSE}
+error <- sd(mra.out$betas)/sqrt(length(mra.out$betas))
+mra.plot <- ggplot(data=mra.out, aes(x=scales,y=betas)) + geom_point() +geom_line() +ggtitle("Multiscale Regression Analysis for MC-ARFIMA with LRC and LRCC") + geom_pointrange(aes(ymin=betas-error,ymax=betas+error))
+#geom_smooth(method=lm, formula = y ~ poly(x, 2), se = TRUE)
+mra.plot
+```
+
+-   Empirical data: FNIRS from Aaron?
 
 ### Multi-scale Lagged Regression Analysis
 
-Multi-scale lagged regression analysis is an extension of MRA that allows for examining the influence as a function of scale, but also of time lag. In parituclar, the key questions that can be asked with MLRA are: a) *How does the influence of one time series on another time series change as a function of scale at different time lags?* and b) *Does the dominant time scale of influence change over successive time lags?* DESCRIBE MLRA ALGORITHM HERE.
+Multi-scale lagged regression analysis is an extension of MRA that allows for examining the influence as a function of scale, but also of time lag. In particular, the key questions that can be asked with MLRA are: a) *How does the influence of one time series on another time series change as a function of scale at different time lags?* and b) *Does the dominant time scale of influence change over successive time lags?* DESCRIBE MLRA ALGORITHM HERE.
 
 #### MLRA Examples
 
@@ -302,9 +326,9 @@ Multi-scale lagged regression analysis is an extension of MRA that allows for ex
     -   Simulated data: Equation from Aaron from grant on MLRA
     -   Empirical data: FNIRS from Aaron?
 
-## Surrogate Methods (and 'full' data analysis)
+## Surrogate Methods
 
-In all of the above methods, one gets either a single estimate of a parameter (e.g., $\alpha$) or a range of estimates (e.g., $\rho$, $\beta$). While those estimates are meaningful in and of themselves, it is common place to perform some form of test of a null hypothesis about the estimate. These are generally referred to as surrogate methods. We present several options here that could be ranked in terms of increasing levels of rigor: randomized surrogates, iterative amplitude adjusted Fourier transformed (IAAFT) surrogates, and model based surrogates.
+In all of the above methods, one gets either a single estimate of a parameter (e.g., $\alpha$) or a range of estimates (e.g., $\rho$, $\beta$). While those estimates are meaningful in and of themselves, it is common practice to perform some form of test of a null hypothesis about the estimate. These are generally referred to as surrogate methods. We present several options here that could be ranked in terms of increasing levels of rigor: randomized surrogates, iterative amplitude adjusted Fourier transformed (IAAFT) surrogates, and model based surrogates.
 
 ### Randomized Surrogates
 
@@ -331,11 +355,16 @@ Randomizing the pink noise time series, which originally exhibited long range co
 # General Discussion
 
 -   General value of methods and the types of questions
+
 -   Practical consideration of univariate methods
+
 -   Practical consideration of bivariate methods
+
+    -   Likens et al. 2019 found positive bias of linear and quadratic trends on MRA beta estimates at larger scales that could be mitigated with larger detrending order. This involves checking teh time series with time as a predictor and polynomials.
+
 -   Unique contribution of the methods
 
-# Acknowledgements
+# Acknowledgments
 
 Author AL receives support from a National Institutes of Health Center grant (P20GM109090).
 
