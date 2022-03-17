@@ -328,11 +328,11 @@ Multi-scale lagged regression analysis is an extension of MRA that allows for ex
 
 ## Surrogate Methods
 
-In all of the above methods, one gets either a single estimate of a parameter (e.g., $\alpha$) or a range of estimates (e.g., $\rho$, $\beta$). While those estimates are meaningful in and of themselves, it is common practice to perform some form of test of a null hypothesis about the estimate. These are generally referred to as surrogate methods. We present several options here that could be ranked in terms of increasing levels of rigor: randomized surrogates, iterative amplitude adjusted Fourier transformed (IAAFT) surrogates, and model based surrogates.
+In all of the above methods, one gets either a single estimate of a parameter (e.g., $\alpha$) or a range of estimates (e.g., $\rho$, $\beta$). While those estimates are meaningful in and of themselves, it is common practice to perform some form of null hypothesis test regarding the estimate. These are generally referred to as surrogate methods @kantz2003 . We present several options here that could be ranked in terms of increasing levels of rigor: randomized surrogates, iterative amplitude adjusted Fourier transformed (IAAFT) surrogates, and model based surrogates.
 
 ### Randomized Surrogates
 
-Randomized surrogates generally involve randomly shuffling the order of values of a time series. The idea is generally that the temporal structure is destroyed, yet the other features of the time series still exist [@kantelhardtMultifractalDetrendedFluctuation2002]. Note that additional options exist along these lines (see for example [@dumasInterBrainSynchronizationSocial2010]). The key comparison here would be to compare the estimates extracted from a given analysis (e.g., DFA) on the observed sample of data with the estimates derived from and equally sized sample of the surrogate series (SEE CITES FOR EXAMPLES).
+Randomized surrogates generally involve randomly shuffling the order of values of a time series. The idea is generally that the temporal structure is destroyed, yet the other features of the time series still exist [@kantelhardtMultifractalDetrendedFluctuation2002]. Note that additional options exist along these lines (see for example [@dumasInterBrainSynchronizationSocial2010]). The key comparison here would be to compare the estimates extracted from a given analysis (e.g., DFA) on the observed sample of data with the estimates derived from and equally sized sample of the surrogate series (see @kantz2003 @moulder2018 @wiltshire2019 for examples).
 
 ```{r}
 rand.surr <- permute::shuffle(pink.noise)
@@ -343,9 +343,9 @@ dfa.rand.surr <- dfa(x = rand.surr, order = 1, verbose = 1,
 
 Randomizing the pink noise time series, which originally exhibited long range correlation ($\alpha$ = `r dfa.pink$alpha`), and performing DFA on it, now provides an estimate of $\alpha$ = `r dfa.rand.surr$alpha`, which is consistent with a random or white noise process. These values are clearly different, however, performing inferential statistics on a sample of observed estimates compared to surrogate estimates would provide compelling evidence that the temporal dynamics suggested by the observed estimates are different than those derived from a random process.
 
-### Iterative Amplitude Adjusted Fourier Transform Surrogates (IAAFT)
+### Iterative Amplitude-Adjusted Fourier Transform Surrogates (IAAFT)
 
--   IAAFT - Estimates should be different.
+The IAAFT algorithm was originally developed as a way to be able to evaluate, whether there is nonlinearity @schreiber1996. More recently, it was proposed as a technique that could be use to see whether multifractal indices suggest interaction across scales @ihlen2010. Like with randomized shuffling, estimates derived from IAAFT surrogates should be also be different from the estimates derived from the empirical time series. Although in this case, the comparison is typically made between the multifractal spectra of the observed time series, and the spectra from a set of IAAFT surrogate series.
 
 ### Model-based Surrogates
 
@@ -358,7 +358,11 @@ Randomizing the pink noise time series, which originally exhibited long range co
 
 -   Practical consideration of univariate methods
 
+    -   Length of time series
+
 -   Practical consideration of bivariate methods
+
+    -   Length of time series
 
     -   Likens et al. 2019 found positive bias of linear and quadratic trends on MRA beta estimates at larger scales that could be mitigated with larger detrending order. This involves checking teh time series with time as a predictor and polynomials.
 
