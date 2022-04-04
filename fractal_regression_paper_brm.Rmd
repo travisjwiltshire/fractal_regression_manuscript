@@ -295,7 +295,7 @@ Multi-scale regression analysis (MRA) is an adaptation of DCCA that brings the a
 
 #### MRA Examples
 
-Considering the LRC and SRCC simulations used for DCCA, we can examine whether the scale-wise fluctuations of one variable can predict the scale-wise fluctuations of the other using `mra()`. As with a traditional regression approach, we will use one of our variables as our predictor ($x_t$) and the other as our outcome ($y_t$). In the example below, we again first define our logarithmically spaced scales. We then apply the `mra()` function to the two simulated time series. In this case, it's important to specify which is variable is `x` (the predictor) and which is `y` (the outcome). For ease of plotting, we convert this to a dataframe in the process.
+Considering the LRC and LRCC simulations used for DCCA, we can examine whether the scale-wise fluctuations of one variable can predict the scale-wise fluctuations of the other using `mra()`. As with a traditional regression approach, we will use one of our variables as our predictor ($x_t$) and the other as our outcome ($y_t$). In the example below, we again first define our logarithmically spaced scales. We then apply the `mra()` function to the two simulated time series. In this case, it's important to specify which is variable is `x` (the predictor) and which is `y` (the outcome). For ease of plotting, we convert this to a dataframe in the process.
 
 ```{r}
 scales <- logScale(scale.min = 10, scale.max = 1000, scale.ratio = 1.1)
@@ -304,6 +304,10 @@ mra.out <- as.data.frame(mra(x = sim1[,1], y = sim1[,2],order = 1, scales = scal
 ```
 
 We can then visualize these results as shown below in Figure \#. Generally, we observe that the $\beta$ coefficients are relatively stable at increasing time scales with a general, perhaps quadratically increasing trend. Here it is also important to investigate the change in $R^2$ as well as the $t$-values. Below we see that the $R^2$ is quite high at most of the time scales with $R^2_{min} =$ `r round(min(mra.out$r2),2)` and $R^2_{max} =$ `r round(max(mra.out$r2),2)` and all of the $t$-values greater than the conventional cut-off at 1.96. So between these two component ARFIMA processes, the output of MRA shows that much of the scale specific variance in $y_t$ is explained and predicted by $x_t$.
+
+**Figure \#**
+
+*MRA output for long range correlation and long range cross-correlation*
 
 ```{r echo=FALSE}
 error <- sd(mra.out$betas)/sqrt(length(mra.out$betas))
