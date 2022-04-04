@@ -358,7 +358,7 @@ The IAAFT algorithm was originally developed as a way to be able to evaluate, wh
 
 # General Discussion
 
--   General value of methods and the types of questions
+-   General value of methods and the types of questions (mention the types of data used in empirical examples.
 
 -   Practical consideration of univariate methods
 
@@ -368,9 +368,49 @@ The IAAFT algorithm was originally developed as a way to be able to evaluate, wh
 
     -   Length of time series
 
-    -   Likens et al. 2019 found positive bias of linear and quadratic trends on MRA beta estimates at larger scales that could be mitigated with larger detrending order. This involves checking teh time series with time as a predictor and polynomials.
+    -   Likens et al. 2019 found positive bias of linear and quadratic trends on MRA beta estimates at larger scales that could be mitigated with larger detrending order. This involves checking the time series with time as a predictor and polynomials.
 
 -   Unique contribution of the methods
+
+# Appendix 1: Fundamental Equations
+
+Here we will insert the fundamental equations for showcasing the algorithms.
+
+DFA
+
+$F_X = \sqrt{\frac{\sum^{T-s+1}_{j-1}f^2_X(s,j)}{T-s}}$
+
+where
+
+$f^2_X(s,j) = \frac{\sum^{j+s-1}_{k=j}(X_k -\widehat{X}_{k,j})}{s-1}$
+
+DCCA
+
+$F_Y = \sqrt{\frac{\sum^{T-s+1}_{j-1}f^2_Y(s,j)}{T-s}}$
+
+where
+
+$f^2_Y(s,j) = \frac{\sum^{j+s-1}_{k=j}(Y_k -\widehat{Y}_{k,j})}{s-1}$
+
+and the scale-wise covariance is estimated as:
+
+$f^2_{XY}(s,j) = \frac{\sum^{j+s-1}_{k=j}(X_k -\widehat{X}_{k,j})(Y_k -\widehat{Y}_{k,j})}{s-1}$
+
+which forms the basis for the scale-wise correlation coefficient estimated as:
+
+$\rho(s) = \frac{F^2_{XY}(s)}{F_X(s)F_Y(s)}$
+
+and for the multi-scale regression coefficients, we replace the denominator in the $\rho(s)$ equation with scale-wise variance of the predictor to estimate the scale-wise regression coefficient from regression $Y_t$ on $X_t$ as:
+
+$\widehat{\beta}(s) = \frac{F^2_{XY}(s)}{F^2_X(s)}$
+
+and where the variance of $\widehat{\beta}(s)$ is:
+
+$\sigma_{\widehat{\beta}(s)}^2 = \frac{1}{T-2} \times \frac{F^2_u(s)}{F^2_Y(s)}$
+
+and the scale-wise residual variance, $\widehat{F}^2_u(s)$ is estimated by applying the DFA algorithm to all scale-wise residuals, $\widehat{u}_t(s)$ as:
+
+$\widehat{u}_t(s) = y_t - x_t\widehat{\beta}(s) - \overline{y_t - x_t\widehat{\beta}(s)}$
 
 # Acknowledgments
 
