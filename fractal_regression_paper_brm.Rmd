@@ -102,7 +102,7 @@ In order to demonstrate the methods within the 'fractalRegression' package, we g
 +---------------+-----------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `mBm_mGn()`   | Simulate univariate multi-fractional Brownian motion and Gaussian noise                                                           | Returns two vectors of length `N` according to the specified $H_t$ series                                                                                                        |
 +---------------+-----------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| `mc_ARFIMA()` | Simulate various types of biariate correlated noise processes.                                                                    | Returns two vectors of length `N` according to the specified noise `process` and parameters                                                                                      |
+| `mc_ARFIMA()` | Simulate various types of bivariate correlated noise processes.                                                                   | Returns two vectors of length `N` according to the specified noise `process` and parameters                                                                                      |
 +---------------+-----------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `iaaft()`     | Generate surrogate series using the iterative amplitude adjusted Fourier transform                                                | Returns a vector of same length as input time series                                                                                                                             |
 +---------------+-----------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -118,57 +118,58 @@ The key question that can be answered by Detrended Fluctuation Analysis (DFA) [@
 To demonstrate the use of `dfa()` we simulate three time series using the `fgn_sim()` function. This is a simple function based on the former `fARMA` R package. It only requires the number of observations `n`, and the Hurst exponent `H`. In particular, we simulate white noise, pink noise, and anti-correlated fractional Gaussian noise using the code below.
 
 ```{r, echo = TRUE}
+
 white.noise <- rnorm(5000)
+
 pink.noise <- fgn_sim(n = 5000, H = 0.9)
+
 anti.corr.noise <- fgn_sim(5000, H = 0.25)
 
+scales <- ifultools::logScale(scale.min = 16, scale.max = 1000, scale.ratio = 2)
 ```
 
-Then, we can run DFA on these using the example code below. Note that this example uses a linear detrending with minimum scale (`sc_min`) of 16, a maximum scale (`sc_max`) of 1/4 the time series length, and logarithmically spaced scale factor (`scale_ratio`) of 2.
+Then, we can run DFA on these using the example code below. Note that this example uses a linear detrending with minimum scale of 16, a maximum scale that is at most 1/4 the time series length, and logarithmically spaced scale factor (`scale_ratio`) of 2.
 
 ```{r, echo = TRUE}
-dfa.white <- dfa(x = white.noise, order = 1, verbose = 1,
-                sc_min = 16, sc_max = length(pink.noise)/4, scale_ratio = 2)
+dfa.white <- dfa(x = white.noise, order = 1, verbose = 1, scales=scales, scale_ratio = 2)
+
 dfa.pink <- dfa(x = pink.noise, order = 1, verbose = 1,
-                sc_min = 16, sc_max = length(pink.noise)/4, scale_ratio = 2)
-dfa.anti.corr <- dfa(x = anti.corr.noise, order = 1, verbose = 1,
-                sc_min = 16, sc_max = length(pink.noise)/4, scale_ratio = 2)
+scales=scales, scale_ratio = 2)
+
+dfa.anti.corr <- dfa(x = anti.corr.noise, order = 1, verbose = 1, scales=scales, scale_ratio = 2)
 ```
 
-In terms of output from the above examples, for white noise, we observed that $\alpha$ = `r dfa.white$alpha`, for pink noise we observed that $\alpha$ = `r dfa.pink$alpha`, and since we simulated anti-correlated noise with H = 0.25, we observed a close estimate of the $\alpha$ = `r dfa.anti.corr$alpha`. In terms of the objects saved from the `dfa()` function, one commonly inspects the `logScales`-`logRms` plots. Given the estimates above, we see in Figure 1 that the slopes for white noise, pink noise, and anti-correlated noise conform to our expectations.
+In terms of output from the above examples, for white noise, we observed that $\alpha$ = `r dfa.white$alpha`, for pink noise we observed that $\alpha$ = `r dfa.pink$alpha`, and since we simulated anti-correlated noise with H = 0.25, we observed a close estimate of the $\alpha$ = `r dfa.anti.corr$alpha`. In terms of the objects saved from the `dfa()` function, one commonly inspects the `log_scales`-`log_rms` plots. Given the estimates above, we see in Figure 1 that the slopes for white noise, pink noise, and anti-correlated noise conform to our expectations.
 
 **Figure 1**
 
-*LogScale-LogFluctuation plots for white noise (left), pink noise (middle), and anti-correlated noise (right)*
+*Log scale-Log fluctuation plots for white noise (left), pink noise (middle), and anti-correlated noise (right)*
 
 ```{r echo=FALSE, warning=FALSE}
-dfa.white.df <- as.data.frame(cbind(dfa.white$logScales,dfa.white$logRms))
+dfa.white.df <- as.data.frame(cbind(dfa.white$log_scales,dfa.white$log_rms))
 
-names(dfa.white.df) <- c("logScales", "logRms")
+names(dfa.white.df) <- c("log_scales", "log_rms")
 
-dfa.pink.df <- as.data.frame(cbind(dfa.pink$logScales,dfa.pink$logRms))
+dfa.pink.df <- as.data.frame(cbind(dfa.pink$log_scales,dfa.pink$log_rms))
 
-names(dfa.pink.df) <- c("logScales", "logRms")
+names(dfa.pink.df) <- c("log_scales", "log_rms")
 
-dfa.anti.corr.df <- as.data.frame(cbind(dfa.anti.corr$logScales,dfa.anti.corr$logRms))
+dfa.anti.corr.df <- as.data.frame(cbind(dfa.anti.corr$log_scales,dfa.anti.corr$log_rms))
 
-names(dfa.anti.corr.df) <- c("logScales", "logRms")
+names(dfa.anti.corr.df) <- c("log_scales", "log_rms")
 
 # Create the plot
 
-p1 <- ggplot(data=dfa.white.df, aes(x = logScales, y = logRms)) + geom_point() + geom_smooth(method='lm', formula = y~x, color="black") + ggtitle("White noise") + theme(plot.title = element_text(hjust = 0.5)) +
-
-annotate("text", x=5, y = 2, parse = TRUE, label = "alpha == 0.52") +
+p1 <- ggplot(data=dfa.white.df, aes(x = log_scales, y = log_rms) + geom_point() + geom_smooth(method='lm', formula = y~x, color="black") + ggtitle("White noise") + theme(plot.title = element_text(hjust = 0.5)) + annotate("text", x=5, y = 2, parse = TRUE, label = "alpha == 0.54") +
 
 ylim(-1,6)
 
-p2 <- ggplot(data=dfa.pink.df, aes(x = logScales, y = logRms)) + geom_point() + geom_smooth(method='lm', formula = y~x, color="black") + ggtitle("Pink noise") + theme(plot.title = element_text(hjust = 0.5)) +
-
-annotate("text", x=5, y = 2, parse = TRUE, label = "alpha == 0.91") +
+p2 <- ggplot(data=dfa.pink.df, aes(x = log_scales, y = log_rms)) + geom_point() + geom_smooth(method='lm', formula = y~x, color="black") + ggtitle("Pink noise") + theme(plot.title = element_text(hjust = 0.5)) + 
+annotate("text", x=5, y = 2, parse = TRUE, label = "alpha == 0.92") +
 
 ylim(-1,6)
 
-p3 <- ggplot(data=dfa.anti.corr.df, aes(x = logScales, y = logRms)) + geom_point() + geom_smooth(method='lm', formula = y~x, color="black") + ggtitle("Anti-correlated noise") + theme(plot.title = element_text(hjust = 0.5)) +
+p3 <- ggplot(data=dfa.anti.corr.df, aes(x = log_scales, y = log_rms)) + geom_point() + geom_smooth(method='lm', formula = y~x, color="black") + ggtitle("Anti-correlated noise") + theme(plot.title = element_text(hjust = 0.5)) +
 
 annotate("text", x=5, y = 2, parse = TRUE, label = "alpha == 0.26")+
 
@@ -181,7 +182,7 @@ For an empirical example, we apply the `dfa()` function to DESCRIBE DATA HERE. M
 
 **Figure 2**
 
-*LogScale-LogFluctuation plots for empirical time series (ADD ME)*
+*Log scale-Log fluctuation plots for empirical time series (ADD ME)*
 
 ### Multifractal Detrended Fluctuation Analysis
 
@@ -189,7 +190,11 @@ Multifractal Detrended Fluctuation Analysis (MFDFA; @kantelhardtMultifractalDetr
 
 ### MFDFA Examples
 
-To demonstrate the use of `mfdfa()`, we work with data included in our package (`fractaldata`), that was originally provided by @ihlenIntroductionMultifractalDetrended2012 . It includes a white noise time series, monofractal time series, and a multifractal time series. Investigation of the properties could also examine simulated multifractal Brownian motion and multifractal Gaussian noise.
+To demonstrate the use of `mfdfa()`, we work with data included in our package (`fractaldata`), that was originally provided by @ihlenIntroductionMultifractalDetrended2012 . It includes a white noise time series, monofractal time series, and a multifractal time series.
+
+**Figure 3**
+
+*Time series from Ihlen (2012) corresponding to white noise, monofractal, and multifractal series.*
 
 ```{r, echo=FALSE}
 # Load the data
@@ -204,15 +209,57 @@ multi.plot <- ggplot(fractaldata, aes(y=multifractal, x=time))+geom_line()+ggtit
 gridExtra::grid.arrange(white.plot,mono.plot,multi.plot,nrow=3)
 ```
 
-Simulated data: mfbrownian motion from Ihlen matlab (Aaron might have R port) see mbm_mgn for R from aaron - Empirical data: EPICLE Movement Data?
+Performing MF-DFA is relatively straight forward with the `mfdfa()` function. As shown in the example below, one needs to enter the time series `x` to perform the analysis on, the range of `q` order exponents to use, the `order` of polynomial detrending, and the `scales` for the analysis. In this case, we define our `scales` by choosing logarithmically spaced scales and we select values of q from -5 to 5.
+
+```{r, echo=TRUE}
+
+scales <- ifultools::logScale(scale.min = 16,scale.max = 1024,scale.ratio = 1.1)
+
+white.mf.dfa.out <- mfdfa(x = fractaldata$whitenoise, q = c(-5:5), order = 1, scales=scales)
+
+mono.mf.dfa.out <- mfdfa(x = fractaldata$monofractal, q = c(-5:5), order = 1,  scales=scales)
+
+multi.mf.dfa.out <- mfdfa(x = fractaldata$multifractal, q = c(-5:5), order = 1,  scales=scales)
+
+```
+
+A common way to understand if there is evidence of multifractality is to examine a plot showing the slopes of the `log2Fq` at the `log2Scale` values. If all the plots have the same slope, that provides evidence of monofractality. If there are distinct slopes, then there is evidence of multifractality. It's also important to check here that the slopes of `log2Scale` and `log2Fq` are largely linear, thus implying that they are scale invariant. If not, then it could be the case that a higher order polynomial detrending is appropriate (see Kantelhardt et al., 2001). Figure 4 shows what we would expect for a monofractal and multifractal signal. In other words, the monofractal signal shows a consistent slope, whereas the multifractal signal shows variability in the slopes.
+
+**Figure 4**
+
+*Estimates of log Fq for across log scales for mono- and multifractal series.*
+
+```{r, echo=FALSE}
+# Let's first make a plot of the monofractal case
+monofractal.fluctuations <- as.data.frame(mono.mf.dfa.out$log2Fq)
+graphics::matplot(monofractal.fluctuations, pch=19, add=FALSE, xlab="log Scale", ylab="log Fq", main = "Monofractal")
+
+multifractal.fluctuations <- as.data.frame(multi.mf.dfa.out$log2Fq)
+graphics::matplot(multifractal.fluctuations, pch=19, add=FALSE, xlab="log Scale", ylab="log Fq", main = "Multifractal")
+
+```
+
+A common metric for comparing the multifractal spectrum is to calculate the width ($W$) as $h_{max} - h_{min}$. Let's do this to compare the monofractal and multifractal time series. We observe in this case that for the monofractal signal $W_{mono} =$ `r max(mono.mf.dfa.out$h) - min(mono.mf.dfa.out$h)` and $W_{multi} =$ `r max(multi.mf.dfa.out$h) - min(multi.mf.dfa.out$h).` If plot the multifractal spectra D(h) against h, we clearly observe the difference in the widths of the multifractal spectra for the mono- and multifractal signals, as shown in Figure 5 below.
+
+**Figure 5**
+
+*Multifractal spectra D(h) and h for monofractal and multifractal signals.*
+
+```{r, echo=FALSE}
+plot(mono.mf.dfa.out$h,mono.mf.dfa.out$Dh, type='b', lwd=1, lty=2, pch=19,ylim=c(-0.4,1.2),xlim=c(-.8,2), ylab="D(h)", xlab="h", main= "Multifractal Spectra")
+lines(multi.mf.dfa.out$h,multi.mf.dfa.out$Dh, type='b', pch=19,lwd=3, col="blue")
+legend(-.85,1.2, legend = c("Monofractal", "Multifractal"), col=c("black", "blue"), lwd=3)
+```
+
+Simulated data: mfbrownian motion from Ihlen matlab (Aaron might have R port) see mbm_mgn for R from aaron - Empirical data: EPICLE Movement Data?Investigation of the properties could also examine simulated multifractal Brownian motion and multifractal Gaussian noise.
 
 #### DFA and MFDFA Considerations
 
-We recommend a few points of consideration here in using this function. One is to be sure to verify there are cross-over points in the logScale-logFluctuation plots [@pengMosaicOrganizationDNA1994; @perakakis2009]. Cross-over points (or a visible change in the slope as a function of scale) indicate that a mono-fractal characterization does not sufficiently characterize the data. If cross-over points are evident, we recommend proceeding to using the 'mfdfa()' to estimate the multi-fractal fluctuation dynamics across scales.
+We recommend a few points of consideration here in using this function. One is to be sure to evaluate whether there are cross-over points in the logScale-logFluctuation plots [@pengMosaicOrganizationDNA1994; @perakakis2009]. Cross-over points (or a visible change in the slope as a function of scale) indicate that a mono-fractal characterization does not sufficiently characterize the data. If cross-over points are evident, we recommend proceeding to using the `mfdfa()` to estimate the multifractal fluctuation dynamics across scales.
 
 While it is common to use only linear detrending with DFA, it is important to inspect the trends in the data to determine if it would be more appropriate to use a higher order polynomial for detrending, and/or compare the DFA output for different polynomial orders [@kantelhardtDetectingLongrangeCorrelations2001].
 
-General recommendations for choosing the min and max scale are an sc_min = 10 and sc_max = (N/4), where N is the number of observations. See Eke et al. (2002) [@ekeFractalCharacterizationComplexity2002] and Gulich and Zunino (2014) [@gulichCriterionDeterminationOptimal2014] for additional considerations.
+General recommendations for choosing the min and max scale are minimum scale of 10 and a maximum scale of N/4, where N is the total number of observations in the signal. See Eke et al. (2002) [@ekeFractalCharacterizationComplexity2002] and Gulich and Zunino (2014) [@gulichCriterionDeterminationOptimal2014] for additional considerations.
 
 ## Bivariate Methods
 
@@ -224,7 +271,7 @@ Detrended Cross-Correlation Analysis (DCCA; @podobnikDetrendedCrossCorrelationAn
 
 To demonstrate the use of `dcca()`, we used the `mc_arfima()` function from our package to simulate two time series with known properties. Specifically, we use the multicorrelated ARFIMA examples from Kristoufec's work [@kristoufekMixedcorrelatedARFIMAProcesses2013]. In this case, we use the parameters from Kristoufec (2013) for Model 1 (p. 6,487), that generates two time series of length 10,000 that exhibit long range correlations (LRC) as well as long range cross-correlations (LRCC). The code for simulating these two time series is shown below. Additionally, Figure \#, shown below, visualizes a subset of these time series.
 
-```{r}
+```{r message=FALSE}
 set.seed(987345757)
 
 sim1 <- mc_ARFIMA(process="Mixed_ARFIMA_ARFIMA", alpha = 0.2, beta = 1, gamma = 1, delta = 0.2, n = 10000, d1 = 0.4, d2 = 0.3, d3 = 0.3, d4=0.4, rho=0.9)
@@ -374,7 +421,7 @@ The IAAFT algorithm was originally developed as a way to be able to evaluate, wh
 
 # Appendix 1: Fundamental Equations
 
-Here we will insert the fundamental equations for showcasing the algorithms.
+Here we will insert the fundamental equations for showcasing the algorithms. WE NEED Lagged functions and MFDFA.
 
 DFA
 
