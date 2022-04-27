@@ -125,7 +125,7 @@ pink.noise <- fgn_sim(n = 5000, H = 0.9)
 
 anti.corr.noise <- fgn_sim(5000, H = 0.25)
 
-scales <- ifultools::logScale(scale.min = 16, scale.max = 1000, scale.ratio = 2)
+scales <- ifultools::logScale(scale.min = 16, scale.max = 1025, scale.ratio = 2)
 ```
 
 Then, we can run DFA on these using the example code below. Note that this example uses a linear detrending with minimum scale of 16, a maximum scale that is at most 1/4 the time series length, and logarithmically spaced scale factor (`scale_ratio`) of 2.
@@ -388,15 +388,38 @@ Randomized surrogates generally involve randomly shuffling the order of values o
 ```{r}
 rand.surr <- permute::shuffle(pink.noise)
 
-dfa.rand.surr <- dfa(x = rand.surr, order = 1, verbose = 1,
-                sc_min = 16, sc_max = length(rand.surr)/4, scale_ratio = 2)
+dfa.rand.surr <- dfa(x = rand.surr, order = 1, verbose = 1, scales = scales, scale_ratio = 2)
 ```
 
 Randomizing the pink noise time series, which originally exhibited long range correlation ($\alpha$ = `r dfa.pink$alpha`), and performing DFA on it, now provides an estimate of $\alpha$ = `r dfa.rand.surr$alpha`, which is consistent with a random or white noise process. These values are clearly different, however, performing inferential statistics on a sample of observed estimates compared to surrogate estimates would provide compelling evidence that the temporal dynamics suggested by the observed estimates are different than those derived from a random process.
 
 ### Iterative Amplitude-Adjusted Fourier Transform Surrogates (IAAFT)
 
-The IAAFT algorithm was originally developed as a way to be able to evaluate, whether there is nonlinearity @schreiber1996. More recently, it was proposed as a technique that could be use to see whether multifractal indices suggest interaction across scales @ihlen2010. Like with randomized shuffling, estimates derived from IAAFT surrogates should be also be different from the estimates derived from the empirical time series. Although in this case, the comparison is typically made between the multifractal spectra of the observed time series, and the spectra from a set of IAAFT surrogate series.
+The IAAFT algorithm was originally developed as a way to be able to evaluate, whether there is nonlinearity [@schreiber1996]. More recently, it was proposed as a technique that could be use to see whether multifractal indices suggest interaction across scales [@ihlen2010]. Like with randomized shuffling, estimates derived from IAAFT surrogates should be also be different from the estimates derived from the empirical time series. Although in this case, the comparison is typically made between the multifractal spectra of the observed time series, and the spectra from a set of IAAFT surrogate series.
+
+In the code below, we provide an example for generating IAAFT surrogates using the `iaafft()` function in the package. One enters the `signal`, which is the observed time series, and `N`, the number of surrogates to generate. There are a number of options here but a common number of surrogates is 19 [@kantz2003]. Common practice is that surrogates are generated from many observed time series, but here we illustrate using only a single time series: the multifractal signal used previously in the MFDFA example. Then we use the same parameters for the `mfdfa()` function, but apply it to all of the IAAFFT surrogates.
+
+```{r}
+
+iaafft.surr <- iaafft(fractaldata$multifractal, N = 19)
+
+iaafft.surr.out <- apply(iaafft.surr, MARGIN = 2, FUN = mfdfa, q = c(-5:5), order = 1, scales=scales)
+
+```
+
+```{r, echo=FALSE}
+# maybe there is a more efficient way to do this with apply?
+for (i in 1:length(iaafft.surr.out)){
+  mf.width.temp <- max(iaafft.surr.out[[i]]$h) - min(iaafft.surr.out[[i]]$h)
+  if (i == 1){
+    mf.width <- mf.width.temp
+  } else {
+    mf.width <- rbind(mf.width,mf.width.temp)
+  }
+}
+```
+
+Assuming we were using IAAFFT to compare the multifractal width ($W$) between the observed signal and the surrogate signals, recall that the observed was $W_{multi} =$ `r max(multi.mf.dfa.out$h) - min(multi.mf.dfa.out$h)`. Now, we can calculated the average multifractal width across all of the generated surrogates and we observe that $W_{surr} =$ `r mean(mf.width`), which is narrower than the spectrum from the multifractal signal.
 
 ### Model-based Surrogates
 
