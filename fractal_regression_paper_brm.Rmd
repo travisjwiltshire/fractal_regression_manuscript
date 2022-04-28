@@ -419,7 +419,7 @@ for (i in 1:length(iaafft.surr.out)){
 }
 ```
 
-Assuming we were using IAAFFT to compare the multifractal width ($W$) between the observed signal and the surrogate signals, recall that the observed was $W_{multi} =$ `r max(multi.mf.dfa.out$h) - min(multi.mf.dfa.out$h)`. Now, we can calculated the average multifractal width across all of the generated surrogates and we observe that $W_{surr} =$ `r mean(mf.width`), which is narrower than the spectrum from the multifractal signal.
+Assuming we were using IAAFFT to compare the multifractal width ($W$) between the observed signal and the surrogate signals, recall that the observed widith was $W_{multi} =$ `r max(multi.mf.dfa.out$h) - min(multi.mf.dfa.out$h)`. Now, we can calculate the average multifractal width across all of the generated surrogates and we observe that $W_{surr} =$ `r mean(mf.width`), which is narrower than the spectrum from the multifractal signal. In practice, there are many surrogate options [@moulder2018], but, again, inferential statistics are commonly performed to compare observed estimates to the surrogate estimates to bolster evidence of the inferred dynamics.
 
 ### Model-based Surrogates
 
