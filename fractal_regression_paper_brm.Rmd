@@ -85,27 +85,17 @@ In order to demonstrate the methods within the 'fractalRegression' package, we g
 
 *Overview of package functions, objectives, and output*
 
-+---------------+-----------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | Function      | Objective                                                                                                                         | Output                                                                                                                                                                           |
-+===============+===================================================================================================================================+==================================================================================================================================================================================+
+|--------------|------------------------|----------------------------------|
 | `dfa()`       | Estimate long-range correlation in a time series                                                                                  | Object containing the overall $\alpha$ estimate and, if desired the `logScales` and `logRMS`                                                                                     |
-+---------------+-----------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `mfdfa()`     | Estimate the magnitude and range of long-range correlations in a time series                                                      | Object containing the $\log_2$ scales used for the analysis, the $\log_2$ fluctuation function for each scale and $q$, the various q-order exponents, $Hq$, $Tau$, $h$, and $Dh$ |
-+---------------+-----------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `dcca()`      | Estimates of scale-specific correlation between two time-series                                                                   | Object containing the scales used for the analysis and the $\rho$ '`rho'` values for each scale                                                                                  |
-+---------------+-----------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `mra()`       | Estimates the scale specific regression coefficients for a predictor time series on and outcome time series                       | Object containing the scales and scale specific $\beta$ estimates, $R^2$, and $t$ statistics                                                                                     |
-+---------------+-----------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `mlra()`      | Estimates the scale specific regression coefficients for a predictor time series on and outcome time series at pre-specified lags | Object with lag-specific $\beta$ coefficients                                                                                                                                    |
-+---------------+-----------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `fgn_sim()`   | Simulate univariate fractional Gaussian noise                                                                                     | Returns a vector of length `n` according to the specified `H` Hurst exponent                                                                                                     |
-+---------------+-----------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `mBm_mGn()`   | Simulate univariate multi-fractional Brownian motion and Gaussian noise                                                           | Returns two vectors of length `N` according to the specified $H_t$ series                                                                                                        |
-+---------------+-----------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `mc_ARFIMA()` | Simulate various types of bivariate correlated noise processes.                                                                   | Returns two vectors of length `N` according to the specified noise `process` and parameters                                                                                      |
-+---------------+-----------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `iaaft()`     | Generate surrogate series using the iterative amplitude adjusted Fourier transform                                                | Returns a vector of same length as input time series                                                                                                                             |
-+---------------+-----------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 ## Univariate Methods
 
@@ -178,7 +168,7 @@ ylim(-1,6)
 gridExtra::grid.arrange(p1,p2,p3,nrow=1)
 ```
 
-For an empirical example, we apply the `dfa()` function to DESCRIBE DATA HERE. Movement Data. Importantly, regarding the question one can ask using DFA, we observe that ANSWER TO QUESTION HERE.
+For an empirical example, we apply the `dfa()` function to the Human Balance Dataset (CITE). DESCRIBE DATA HERE. We chose this dataset because postural sway data are known to exhibit interesting fractal dynamics (CITES) and we can systematically evaluated the data for all of the univariate and bivariate analyses detailed in this work. Importantly, regarding the question one can ask using DFA, we observe that ANSWER TO QUESTION HERE.
 
 **Figure 2**
 
@@ -269,7 +259,7 @@ Detrended Cross-Correlation Analysis (DCCA; @podobnikDetrendedCrossCorrelationAn
 
 #### DCCA Examples
 
-To demonstrate the use of `dcca()`, we used the `mc_arfima()` function from our package to simulate two time series with known properties. Specifically, we use the multicorrelated ARFIMA examples from Kristoufec's work [@kristoufekMixedcorrelatedARFIMAProcesses2013]. In this case, we use the parameters from Kristoufec (2013) for Model 1 (p. 6,487), that generates two time series of length 10,000 that exhibit long range correlations (LRC) as well as long range cross-correlations (LRCC). The code for simulating these two time series is shown below. Additionally, Figure \#, shown below, visualizes a subset of these time series.
+To demonstrate the use of `dcca()`, we used the `mc_arfima()` function from our package to simulate two time series with known properties. Specifically, we use the multicorrelated ARFIMA examples from Kristoufec's work [@kristoufekMixedcorrelatedARFIMAProcesses2013]. In this case, we use the parameters from Kristoufec (2013) for Model 1 (p. 6,487), that generates two time series of length 10,000 that exhibit long range correlations (LRC) as well as long range cross-correlations (LRCC). The code for simulating these two time series is shown below. Additionally, Figure #, shown below, visualizes a subset of these time series.
 
 ```{r message=FALSE}
 set.seed(987345757)
@@ -297,7 +287,7 @@ scales <- ifultools::logScale(scale.min = 10, scale.max = 1000, scale.ratio = 1.
 dcca.out.arfima <- dcca(sim1[,1], sim1[,2], order = 1, scales = scales)
 ```
 
-From here, we can visualize the output of the analysis as shown below in Figure \#. We observe that, as expected, the correlation between the MC-ARFIMA processes are consistently high (all $\rho$'s $> .8$) and continue to be high at increasing time scales. We also add standard errors plotted around each point, but note these are based on one simulation only and more robust estimates of standard error could be calculated using many time series.
+From here, we can visualize the output of the analysis as shown below in Figure #. We observe that, as expected, the correlation between the MC-ARFIMA processes are consistently high (all $\rho$'s $> .8$) and continue to be high at increasing time scales. We also add standard errors plotted around each point, but note these are based on one simulation only and more robust estimates of standard error could be calculated using many time series.
 
 **Figure \#**
 
@@ -350,7 +340,7 @@ scales <- logScale(scale.min = 10, scale.max = 1000, scale.ratio = 1.1)
 mra.out <- as.data.frame(mra(x = sim1[,1], y = sim1[,2],order = 1, scales = scales))
 ```
 
-We can then visualize these results as shown below in Figure \#. Generally, we observe that the $\beta$ coefficients are relatively stable at increasing time scales with a general, perhaps quadratically increasing trend. Here it is also important to investigate the change in $R^2$ as well as the $t$-values. Below we see that the $R^2$ is quite high at most of the time scales with $R^2_{min} =$ `r round(min(mra.out$r2),2)` and $R^2_{max} =$ `r round(max(mra.out$r2),2)` and all of the $t$-values greater than the conventional cut-off at 1.96. So between these two component ARFIMA processes, the output of MRA shows that much of the scale specific variance in $y_t$ is explained and predicted by $x_t$.
+We can then visualize these results as shown below in Figure #. Generally, we observe that the $\beta$ coefficients are relatively stable at increasing time scales with a general, perhaps quadratically increasing trend. Here it is also important to investigate the change in $R^2$ as well as the $t$-values. Below we see that the $R^2$ is quite high at most of the time scales with $R^2_{min} =$ `r round(min(mra.out$r2),2)` and $R^2_{max} =$ `r round(max(mra.out$r2),2)` and all of the $t$-values greater than the conventional cut-off at 1.96. So between these two component ARFIMA processes, the output of MRA shows that much of the scale specific variance in $y_t$ is explained and predicted by $x_t$.
 
 **Figure \#**
 
@@ -498,4 +488,6 @@ Author AL receives support from a National Institutes of Health Center grant (P2
 ::: {#refs custom-style="Bibliography"}
 :::
 
+```{=tex}
 \endgroup
+```
