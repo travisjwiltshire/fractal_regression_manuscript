@@ -212,7 +212,7 @@ For our empirical analysis, we again turn to the postural data. We set out param
 
 #### DFA and MFDFA Considerations
 
-We recommend a few points of consideration here in using this function. One is to be sure to evaluate whether there are cross-over points in the logScale-logFluctuation plots [@pengMosaicOrganizationDNA1994; @perakakis2009]. Cross-over points (or a visible change in the slope as a function of scale) indicate that a mono-fractal characterization does not sufficiently characterize the data. If cross-over points are evident, we recommend proceeding to using the `mfdfa()` to estimate the multifractal fluctuation dynamics across scales.
+We recommend a few points of consideration here in using this function. One is to be sure to evaluate whether there are cross-over points in the log scale-log fluctuation plots [@pengMosaicOrganizationDNA1994; @perakakis2009]. Cross-over points (or a visible change in the slope as a function of scale) indicate that a mono-fractal characterization does not sufficiently characterize the data. If cross-over points are evident, we recommend proceeding to estimate the two scaling regions with a piece-wise regression.
 
 While it is common to use only linear detrending with DFA, it is important to inspect the trends in the data to determine if it would be more appropriate to use a higher order polynomial for detrending, and/or compare the DFA output for different polynomial orders [@kantelhardtDetectingLongrangeCorrelations2001].
 
