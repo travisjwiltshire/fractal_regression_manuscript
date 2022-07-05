@@ -86,7 +86,7 @@ In order to demonstrate the methods within the 'fractalRegression' package, we g
 *Overview of package functions, objectives, and output*
 
 | Function      | Objective                                                                                                                         | Output                                                                                                                                                                           |
-|-----------------|-----------------------|--------------------------------|
+|------------------|-----------------------|-------------------------------|
 | `dfa()`       | Estimate long-range correlation in a time series                                                                                  | Object containing the overall $\alpha$ estimate and, if desired the `logScales` and `logRMS`                                                                                     |
 | `mfdfa()`     | Estimate the magnitude and range of long-range correlations in a time series                                                      | Object containing the $\log_2$ scales used for the analysis, the $\log_2$ fluctuation function for each scale and $q$, the various q-order exponents, $Hq$, $Tau$, $h$, and $Dh$ |
 | `dcca()`      | Estimates of scale-specific correlation between two time-series                                                                   | Object containing the scales used for the analysis and the $\rho$ '`rho'` values for each scale                                                                                  |
@@ -142,15 +142,49 @@ dfa.plot(dfa.pink)
 dfa.plot(dfa.anti.corr)
 ```
 
-For an empirical example, we apply the `dfa()` function to the Human Balance Dataset @santos2016. DESCRIBE DATA HERE. We chose this dataset because postural sway data are known to exhibit interesting fractal dynamics (CITES) and we can systematically evaluate the data for all of the univariate and bivariate analyses detailed in this work. Importantly, regarding the question one can ask using DFA, we observe that ANSWER TO QUESTION HERE.
+For an empirical example, we apply the `dfa()` function to the Human Balance Dataset [@santos2016]. For our purpose, this publicly available dataset includes signals from a force platform measured as the center of pressure in the x and y dimension for 87 young adults (we exclude the older adults for our analyses). Trials lasted 60s. See original paper for additional details on data processing [@santos2016]. For the empirical examples, we use two different time series featuring a participant standing on a firm (rigid) surface with eyes open and a foam (unstable) surface with eyes open. Note, however, that we analyze the dataset more fully in INSERT SECTION NAME HERE. We chose this dataset because postural sway data are known to exhibit interesting fractal dynamics (CITES) and we can systematically evaluate the data for all of the univariate and bivariate analyses detailed in this work.
 
-```{r}
+For the center of pressure (COP) data, we take the first order differences of each series. For the univariate analyses, we focus on analyses of the COP data in the x dimension. Then, we define the appropriate scales for the analyses.
 
+```{r include=FALSE}
+open_firm <- read.delim("~/Human Balance Data/BDS00001.txt")
+open_foam <- read.delim("~/Human Balance Data/BDS00007.txt")
+open_firm_copx_diff <- diff(open_firm$COPx.cm.)
+open_firm_copy_diff <- diff(open_firm$COPy.cm.)
+open_foam_copx_diff <- diff(open_foam$COPx.cm.)
+open_foam_copy_diff <- diff(open_foam$COPy.cm.)
 ```
 
 **Figure 2**
 
-*Log scale-Log fluctuation plots for empirical time series (ADD ME)*
+*Log scale-Log fluctuation plots for empirical difference COPx time series for rigid (left) and unstable (right) surfaces.*
+
+```{r echo=FALSE}
+scales <- logscale(scale_min=16, scale_max=length(open_firm_copx_diff)/4,scale_ratio=1.1)
+
+open_firm_copx_diff_dfa <- dfa(open_firm_copx_diff, order = 1, scales=scales, verbose =1)
+
+
+open_foam_copx_diff_dfa <- dfa(open_foam_copx_diff, order = 1, scales=scales, verbose =1)
+
+par(mfrow=c(1,2))
+dfa.plot(open_firm_copx_diff_dfa)
+dfa.plot(open_foam_copx_diff_dfa)
+```
+
+Importantly, regarding the question one can ask using DFA, we observe from Figure ##, that long range correlations are positive and approximately `r open_firm_copx_dfa$alpha` - `r open_foam_copx_dfa$alpha`. However, from visual inspection of these plots we observe that two slopes might fit better than one for these time series; a phenomenon known as crossovers points [@ge2013]. One common approach when such crossover points exist is to recognize that the signal might be best characterized by two scaling regions up to a particular time scale. We provide an example of how to check for where the break point is below using piecewise regression.
+
+```{r}
+require(segmented)
+dfa.mod <- lm(log_rms~log_scales, data=open_firm_copx_diff_dfa)
+
+seg <- segmented(dfa.mod, seg.Z = ~log_scales)
+
+plot(open_firm_copx_diff_dfa$log_scale,open_firm_copx_diff_dfa$log_rms, pch=16, ylab="logF(s)", xlab = "log(s)")
+
+plot(seg,add=T, lwd=2,col="red")
+slope(seg)
+```
 
 ### Multifractal Detrended Fluctuation Analysis
 
@@ -205,6 +239,11 @@ mfdfa.plot(multi.mf.dfa.out)
 A common metric for comparing the multifractal spectrum is to calculate the width ($W$) as $h_{max} - h_{min}$. Let's do this to compare the monofractal and multifractal time series. We observe in this case that for the monofractal signal $W_{mono} =$ `r max(mono.mf.dfa.out$h) - min(mono.mf.dfa.out$h)` and $W_{multi} =$ `r max(multi.mf.dfa.out$h) - min(multi.mf.dfa.out$h).` If plot the multifractal spectra D(h) against h, we clearly observe the difference in the widths of the multifractal spectra for the mono- and multifractal signals, as shown in Figure 4 above.
 
 For our empirical analysis, we again turn to the postural data. We set out parameters appropriate for the data and run `mfdfa()`.
+
+```{r include=FALSE}
+open_firm <- read.delim("~/Human Balance Data/BDS00001.txt")
+open_foam <- read.delim("~/Human Balance Data/BDS00007.txt")
+```
 
 ```{r}
 
