@@ -172,7 +172,7 @@ dfa.plot(open_firm_copx_diff_dfa)
 dfa.plot(open_foam_copx_diff_dfa)
 ```
 
-Importantly, regarding the question one can ask using DFA, we observe from Figure ##, that long range correlations are positive and approximately `r open_firm_copx_dfa$alpha` - `r open_foam_copx_dfa$alpha`. However, from visual inspection of these plots we observe that two slopes might fit better than one for these time series; a phenomenon known as crossovers points [@ge2013]. One common approach when such crossover points exist is to recognize that the signal might be best characterized by two scaling regions up to a particular time scale. We provide an example of how to check for where the break point is below using piecewise regression.
+Importantly, regarding the question one can ask using DFA, we observe from Figure ##, that long range correlations are positive and approximately `r open_firm_copx_diff_dfa$alpha` - `r open_foam_copx_diff_dfa$alpha`. However, from visual inspection of these plots we observe that two slopes might fit better than one for these time series; a phenomenon known as crossovers points [@ge2013]. One common approach when such crossover points exist is to recognize that the signal might be best characterized by two scaling regions up to a particular time scale. We provide an example of how to check for where the break point is below using piece-wise regression.
 
 ```{r}
 require(segmented)
@@ -185,6 +185,8 @@ plot(open_firm_copx_diff_dfa$log_scale,open_firm_copx_diff_dfa$log_rms, pch=16, 
 plot(seg,add=T, lwd=2,col="red")
 slope(seg)
 ```
+
+In the example above, we observe that the is a crossover point at INSERT VALUE. And, that there are two distinct scaling relationships: INSERT ALPHAS. The postural control literature has shown evidence of this type of dynamic before with short time scales displaying more DESCRIBE and longer time scale exhibiting DESCRIBE (CITE).
 
 ### Multifractal Detrended Fluctuation Analysis
 
@@ -236,7 +238,7 @@ mfdfa.plot(mono.mf.dfa.out)
 mfdfa.plot(multi.mf.dfa.out)
 ```
 
-A common metric for comparing the multifractal spectrum is to calculate the width ($W$) as $h_{max} - h_{min}$. Let's do this to compare the monofractal and multifractal time series. We observe in this case that for the monofractal signal $W_{mono} =$ `r max(mono.mf.dfa.out$h) - min(mono.mf.dfa.out$h)` and $W_{multi} =$ `r max(multi.mf.dfa.out$h) - min(multi.mf.dfa.out$h).` If plot the multifractal spectra D(h) against h, we clearly observe the difference in the widths of the multifractal spectra for the mono- and multifractal signals, as shown in Figure 4 above.
+A common metric for comparing the multifractal spectrum is to calculate the width ($W$) as $h_{max} - h_{min}$. Let's do this to compare the monofractal and multifractal time series. We observe in this case that for the monofractal signal $W_{mono} =$ `r max(mono.mf.dfa.out$h) - min(mono.mf.dfa.out$h)` and $W_{multi} =$ `r max(multi.mf.dfa.out$h) - min(multi.mf.dfa.out$h)`. If plot the multifractal spectra D(h) against h, we clearly observe the difference in the widths of the multifractal spectra for the mono- and multifractal signals, as shown in Figure 4 above.
 
 For our empirical analysis, we again turn to the postural data. We set out parameters appropriate for the data and run `mfdfa()`.
 
@@ -285,10 +287,10 @@ plot(sim1[2000:3000,1],type='l', ylab= "Signal Amplitude", xlab='Time', main = "
 lines(sim1[2000:3000,2], col='blue')
 ```
 
-To perform the `dcca()` on these time series, we could use the code below, where we first define the `scales` using using the `logScale()` function from the `ifultools` package [@constantine2021] to define a set of logarithmically spaced scales to use for the analysis.
+To perform the `dcca()` on these time series, we could use the code below, where we first define the `scales` using using the `logscale()` to define a set of logarithmically spaced scales to use for the analysis.
 
 ```{r}
-scales <- ifultools::logScale(scale.min = 10, scale.max = 1000, scale.ratio = 1.1)
+scales <- logscale(scale_min = 10, scale_max = 1000, scale_ratio = 1.1)
 
 dcca.out.arfima <- dcca(sim1[,1], sim1[,2], order = 1, scales = scales)
 ```
@@ -300,15 +302,17 @@ From here, we can visualize the output of the analysis as shown below in Figure 
 *DCCA output for long range correlation and long range cross-correlation*
 
 ```{r, echo=FALSE}
-dcca.out.arfima <- as.data.frame(dcca.out.arfima)
 
-error <- sd(dcca.out.arfima$rho)/sqrt(length(dcca.out.arfima$rho))
+dcca.plot(dcca.out.arfima, order = 1, ci = FALSE, iterations = NULL, return.ci = FALSE)
+#dcca.out.arfima <- as.data.frame(dcca.out.arfima)
 
-dcca.plot <- ggplot(data=dcca.out.arfima, aes(x=scales,y=rho)) + geom_point() +geom_line() + ggtitle("DCCA on MC-ARFIMA processes with LRC and LRCC")+ geom_pointrange(aes(ymin=rho-error,ymax=rho+error))
+#error <- sd(dcca.out.arfima$rho)/sqrt(length(dcca.out.arfima$rho))
+
+#dcca.plot <- ggplot(data=dcca.out.arfima, aes(x=scales,y=rho)) + geom_point() +geom_line() + ggtitle("DCCA on MC-ARFIMA processes with LRC and LRCC")+ geom_pointrange(aes(ymin=rho-error,ymax=rho+error))
 
 #geom_smooth(method=lm, formula = y ~ poly(x, 2), se = TRUE)
 
-dcca.plot
+#dcca.plot
 ```
 
 As a point of comparison, we can generate a time series in contrast with this that exhibits processes with LRC and short-range cross-correlation (SRCC) using the code below. In contrast to the previous DCCA analysis, Figure \# shows a signal that begins with a high cross-correlation ($\rho$'s $> .6$) , but that begins to deviate and trend substantially lower at increasing scale sizes approaching $\rho = 0$.
@@ -322,15 +326,18 @@ sim2 <- mc_ARFIMA(process="Mixed_ARFIMA_AR", alpha = 1,beta = 1,gamma = 1,delta 
 *DCCA output for long range correlation and short range cross-correlation*
 
 ```{r, echo=FALSE}
-scales <- ifultools::logScale(scale.min = 10, scale.max = 1000, scale.ratio = 1.1)
+scales <- logscale(scale_min = 10, scale_max = 1000, scale_ratio = 1.1)
 dcca.out.arfima2 <- dcca(sim2[,1], sim2[,2], order = 1, scales = scales)
-dcca.out.arfima2 <- as.data.frame(dcca.out.arfima2)
-error <- sd(dcca.out.arfima2$rho)/sqrt(length(dcca.out.arfima2$rho))
-dcca.plot2 <- ggplot(data=dcca.out.arfima2, aes(x=scales,y=rho)) + geom_point() +geom_line() + ggtitle("DCCA on MC-ARFIMA processes with LRC and SRCC") + geom_pointrange(aes(ymin=rho-error,ymax=rho+error))
-dcca.plot2
+dcca.plot(dcca.out.arfima2, order = 1, ci = FALSE, iterations = NULL, return.ci = FALSE)
+#dcca.out.arfima2 <- as.data.frame(dcca.out.arfima2)
+#error <- sd(dcca.out.arfima2$rho)/sqrt(length(dcca.out.arfima2$rho))
+#dcca.plot2 <- ggplot(data=dcca.out.arfima2, aes(x=scales,y=rho)) + geom_point() +geom_line() + ggtitle("DCCA on MC-ARFIMA processes with LRC and SRCC") + geom_pointrange(aes(ymin=rho-error,ymax=rho+error))
+#dcca.plot2
 ```
 
--   Empirical data: EPICLE Movement Data?
+Turning next to the empirical balance data, we apply DCCA to the COPx and COPy data.
+
+INSERT HERE
 
 ### Multi-scale Regression Analysis
 
@@ -341,9 +348,9 @@ Multi-scale regression analysis (MRA) is an adaptation of DCCA that brings the a
 Considering the LRC and LRCC simulations used for DCCA, we can examine whether the scale-wise fluctuations of one variable can predict the scale-wise fluctuations of the other using `mra()`. As with a traditional regression approach, we will use one of our variables as our predictor ($x_t$) and the other as our outcome ($y_t$). In the example below, we again first define our logarithmically spaced scales. We then apply the `mra()` function to the two simulated time series. In this case, it's important to specify which is variable is `x` (the predictor) and which is `y` (the outcome). For ease of plotting, we convert this to a dataframe in the process.
 
 ```{r}
-scales <- logScale(scale.min = 10, scale.max = 1000, scale.ratio = 1.1)
+scales <- logscale(scale_min = 10, scale_max = 1000, scale_ratio = 1.1)
 
-mra.out <- as.data.frame(mra(x = sim1[,1], y = sim1[,2],order = 1, scales = scales))
+mra.out <- mra(x = sim1[,1], y = sim1[,2],order = 1, scales = scales)
 ```
 
 We can then visualize these results as shown below in Figure #. Generally, we observe that the $\beta$ coefficients are relatively stable at increasing time scales with a general, perhaps quadratically increasing trend. Here it is also important to investigate the change in $R^2$ as well as the $t$-values. Below we see that the $R^2$ is quite high at most of the time scales with $R^2_{min} =$ `r round(min(mra.out$r2),2)` and $R^2_{max} =$ `r round(max(mra.out$r2),2)` and all of the $t$-values greater than the conventional cut-off at 1.96. So between these two component ARFIMA processes, the output of MRA shows that much of the scale specific variance in $y_t$ is explained and predicted by $x_t$.
@@ -353,13 +360,14 @@ We can then visualize these results as shown below in Figure #. Generally, we ob
 *MRA output for long range correlation and long range cross-correlation*
 
 ```{r echo=FALSE}
-error <- sd(mra.out$betas)/sqrt(length(mra.out$betas))
-mra.plot <- ggplot(data=mra.out, aes(x=scales,y=betas)) + geom_point() +geom_line() +ggtitle("Multiscale Regression Analysis for MC-ARFIMA with LRC and LRCC") + geom_pointrange(aes(ymin=betas-error,ymax=betas+error))
+mra.plot(mra.out)
+#error <- sd(mra.out$betas)/sqrt(length(mra.out$betas))
+#mra.plot <- ggplot(data=mra.out, aes(x=scales,y=betas)) + geom_point() +geom_line() +ggtitle("Multiscale Regression Analysis for MC-ARFIMA with LRC and LRCC") + geom_pointrange(aes(ymin=betas-error,ymax=betas+error))
 #geom_smooth(method=lm, formula = y ~ poly(x, 2), se = TRUE)
-mra.plot
+#mra.plot
 ```
 
--   Empirical data: FNIRS from Aaron?
+Balance DATA ANALYSIS HERE
 
 ### Multi-scale Lagged Regression Analysis
 
@@ -371,7 +379,7 @@ Multi-scale lagged regression analysis is an extension of MRA that allows for ex
 
     -   Key Question
     -   Simulated data: Equation from Aaron from grant on MLRA
-    -   Empirical data: FNIRS from Aaron?
+    -   Empirical data: Balance Data
 
 ## Surrogate Methods
 
@@ -415,7 +423,7 @@ for (i in 1:length(iaafft.surr.out)){
 }
 ```
 
-Assuming we were using IAAFFT to compare the multifractal width ($W$) between the observed signal and the surrogate signals, recall that the observed widith was $W_{multi} =$ `r max(multi.mf.dfa.out$h) - min(multi.mf.dfa.out$h)`. Now, we can calculate the average multifractal width across all of the generated surrogates and we observe that $W_{surr} =$ `r mean(mf.width`), which is narrower than the spectrum from the multifractal signal. In practice, there are many surrogate options [@moulder2018], but, again, inferential statistics are commonly performed to compare observed estimates to the surrogate estimates to bolster evidence of the inferred dynamics.
+Assuming we were using IAAFFT to compare the multifractal width ($W$) between the observed signal and the surrogate signals, recall that the observed widith was $W_{multi} =$ `r max(multi.mf.dfa.out$h) - min(multi.mf.dfa.out$h)`. Now, we can calculate the average multifractal width across all of the generated surrogates and we observe that $W_{surr} =$ `r mean(mf.width)`, which is narrower than the spectrum from the multifractal signal. In practice, there are many surrogate options [@moulder2018], but, again, inferential statistics are commonly performed to compare observed estimates to the surrogate estimates to bolster evidence of the inferred dynamics.
 
 ### Model-based Surrogates
 

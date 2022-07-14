@@ -3,12 +3,11 @@
 \PassOptionsToPackage{hyphens}{url}
 %
 \documentclass[
-  english,
   man]{apa6}
 \usepackage{amsmath,amssymb}
 \usepackage{lmodern}
-\usepackage{ifxetex,ifluatex}
-\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+\usepackage{iftex}
+\ifPDFTeX
   \usepackage[T1]{fontenc}
   \usepackage[utf8]{inputenc}
   \usepackage{textcomp} % provide euro and other symbols
@@ -120,6 +119,38 @@
   \let\oldsubparagraph\subparagraph
   \renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
 \fi
+\newlength{\cslhangindent}
+\setlength{\cslhangindent}{1.5em}
+\newlength{\csllabelwidth}
+\setlength{\csllabelwidth}{3em}
+\newlength{\cslentryspacingunit} % times entry-spacing
+\setlength{\cslentryspacingunit}{\parskip}
+\newenvironment{CSLReferences}[2] % #1 hanging-ident, #2 entry spacing
+ {% don't indent paragraphs
+  \setlength{\parindent}{0pt}
+  % turn on hanging indent if param 1 is 1
+  \ifodd #1
+  \let\oldpar\par
+  \def\par{\hangindent=\cslhangindent\oldpar}
+  \fi
+  % set entry spacing
+  \setlength{\parskip}{#2\cslentryspacingunit}
+ }%
+ {}
+\usepackage{calc}
+\newcommand{\CSLBlock}[1]{#1\hfill\break}
+\newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{#1}}
+\newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{#1}\break}
+\newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
+\ifLuaTeX
+\usepackage[bidi=basic]{babel}
+\else
+\usepackage[bidi=default]{babel}
+\fi
+\babelprovide[main,import]{english}
+% get rid of language-specific shorthands (see #6817):
+\let\LanguageShortHands\languageshorthands
+\def\languageshorthands#1{}
 % Manuscript styling
 \usepackage{upgreek}
 \captionsetup{font=singlespacing,justification=justified}
@@ -150,6 +181,20 @@
 % \setlength{\parindent}{0.5in}
 % \setlength{\parskip}{0pt plus 0pt minus 0pt}
 
+% Overwrite redefinition of paragraph and subparagraph by the default LaTeX template
+% See https://github.com/crsh/papaja/issues/292
+\makeatletter
+\renewcommand{\paragraph}{\@startsection{paragraph}{4}{\parindent}%
+  {0\baselineskip \@plus 0.2ex \@minus 0.2ex}%
+  {-1em}%
+  {\normalfont\normalsize\bfseries\itshape\typesectitle}}
+
+\renewcommand{\subparagraph}[1]{\@startsection{subparagraph}{5}{1em}%
+  {0\baselineskip \@plus 0.2ex \@minus 0.2ex}%
+  {-\z@\relax}%
+  {\normalfont\normalsize\itshape\hspace{\parindent}{#1}\textit{\addperi}}{\relax}}
+\makeatother
+
 % \usepackage{etoolbox}
 \makeatletter
 \patchcmd{\HyOrg@maketitle}
@@ -161,7 +206,15 @@
   {\section*{\protect\normalfont{\@title}}}
   {}{\typeout{Failed to patch title.}}
 \makeatother
-\shorttitle{FRACTAL REGRESSION}
+
+\usepackage{xpatch}
+\makeatletter
+\xapptocmd\appendix
+  {\xapptocmd\section
+    {\addcontentsline{toc}{section}{\appendixname\ifoneappendix\else~\theappendix\fi\\: #1}}
+    {}{\InnerPatchFailed}%
+  }
+{}{\PatchFailed}
 \keywords{long range correlation, fractal, multiscale, dynamics\newline\indent Word count: X}
 \DeclareDelayedFloatFlavor{ThreePartTable}{table}
 \DeclareDelayedFloatFlavor{lltable}{table}
@@ -173,44 +226,16 @@
 
 \linenumbers
 \usepackage{csquotes}
-\ifxetex
-  % Load polyglossia as late as possible: uses bidi with RTL langages (e.g. Hebrew, Arabic)
-  \usepackage{polyglossia}
-  \setmainlanguage[]{english}
-\else
-  \usepackage[main=english]{babel}
-% get rid of language-specific shorthands (see #6817):
-\let\LanguageShortHands\languageshorthands
-\def\languageshorthands#1{}
-\fi
-\ifluatex
+\ifLuaTeX
   \usepackage{selnolig}  % disable illegal ligatures
 \fi
-\newlength{\cslhangindent}
-\setlength{\cslhangindent}{1.5em}
-\newlength{\csllabelwidth}
-\setlength{\csllabelwidth}{3em}
-\newenvironment{CSLReferences}[2] % #1 hanging-ident, #2 entry spacing
- {% don't indent paragraphs
-  \setlength{\parindent}{0pt}
-  % turn on hanging indent if param 1 is 1
-  \ifodd #1 \everypar{\setlength{\hangindent}{\cslhangindent}}\ignorespaces\fi
-  % set entry spacing
-  \ifnum #2 > 0
-  \setlength{\parskip}{#2\baselineskip}
-  \fi
- }%
- {}
-\usepackage{calc}
-\newcommand{\CSLBlock}[1]{#1\hfill\break}
-\newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{#1}}
-\newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{#1}\break}
-\newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
 
 \title{fractalRegression: An R package for multiscale regression and fractal analyses}
 \author{Aaron D. Likens\textsuperscript{1} \& Travis J. Wiltshire\textsuperscript{2}}
 \date{}
 
+
+\shorttitle{FRACTAL REGRESSION}
 
 \authornote{
 
@@ -225,8 +250,8 @@ Correspondence concerning this article should be addressed to Aaron D. Likens, P
 
 \affiliation{\vspace{0.5cm}\textsuperscript{1} Department of Biomechanics, University of Nebraska at Omaha\\\textsuperscript{2} Department of Cognitive Science \& Artificial Intelligence, Tilburg University}
 
-\abstract{
-Time series data from scientific fields as diverse as astrophysics, economics, human movement science, and neuroscience all exhibit fractal properties. That is, these time series often exhibit self-similarity and long-range correlations. This \texttt{fractalRegression} package implements a number of univariate and bivariate time series tools appropriate for analyzing noisy data exhibiting these properties. These methods, especially the bivariate tools (Kristoufek, 2015a; Likens, Amazeen, West, \& Gibbons, 2019) have yet to be implemented in an open source and complete package for the R Statistical Software environment. As both practitioners and developers of these methods, we expect these tools will be of interest to a wide audience of scientists who use R, especially those from fields such as the human movement, cognitive, and other behavioral sciences. The algorithms have been developed in C++ using the popular Rcpp (Eddelbuettel \& Francois, 2011) and RcppArmadillo (Eddelbuettel \& Sanderson, 2014) packages. The result is a collection of efficient functions that perform well even on long time series (e.g., \(\geq\) 10,000 data points). In this work, we motivate introduce the package, each of the functions, and give examples of their use as well as issues to consider to correctly use these methods.
+\abstract{%
+Time series data from scientific fields as diverse as astrophysics, economics, human movement science, and neuroscience all exhibit fractal properties. That is, these time series often exhibit self-similarity and long-range correlations. This \texttt{fractalRegression} package implements a number of univariate and bivariate time series tools appropriate for analyzing noisy data exhibiting these properties. These methods, especially the bivariate tools (Kristoufek, 2015a; Likens, Amazeen, West, \& Gibbons, 2019a) have yet to be implemented in an open source and complete package for the R Statistical Software environment. As both practitioners and developers of these methods, we expect these tools will be of interest to a wide audience of scientists who use R, especially those from fields such as the human movement, cognitive, and other behavioral sciences. The algorithms have been developed in C++ using the popular Rcpp (Eddelbuettel \& Francois, 2011) and RcppArmadillo (Eddelbuettel \& Sanderson, 2014) packages. The result is a collection of efficient functions that perform well even on long time series (e.g., \(\geq\) 10,000 data points). In this work, we motivate introduce the package, each of the functions, and give examples of their use as well as issues to consider to correctly use these methods.
 }
 
 
@@ -260,9 +285,9 @@ have been used to study, for example, reaction times
 (\textbf{delignières2009?}), limb movements
 (Delignières, Torre, \& Lemoine, 2008), heart rate
 (Goldberger et al., 2002), and neurophysiological
-oscillations Euler, Wiltshire, Niermeyer, \& Butner (2016). And, beyond an individual level,
+oscillations Euler et al. (2016). And, beyond an individual level,
 the methods have been used to study human-machine system interaction
-(Likens, Fine, Amazeen, \& Amazeen, 2015), tool use
+(Likens et al., 2015), tool use
 (\textbf{favela2021?}), and
 interpersonal coordination in a variety of modalities
 Delignières, Almurad, Roume, \& Marmelat (2016).
@@ -274,7 +299,7 @@ Multifractal Detrended Fluctuation Analysis (MFDFA)
 (Kantelhardt et al., 2002), Detrended Cross
 Correlation (DCCA) (Podobnik \& Stanley, 2008; Zebende, 2011), and, in particular,
 fractal regression techniques such as Multiscale Regression Analysis
-(MRA) (Kristoufek, 2015a; Likens, Amazeen, West, \& Gibbons, 2019) have not yet been
+(MRA) (Kristoufek, 2015a; Likens et al., 2019a) have not yet been
 implemented in a comprehensive software package. Thus, there is a clear
 need for a package that incorporates this functionality in order to
 advance theoretical research focused on understanding the time varying
@@ -298,7 +323,7 @@ with the functionality of this package, have been implemented elsewhere.
 For example, a number of univariate fractal and multifractal analyses
 have been implemented in the `fracLab' library for MATLAB (Legrand \& Véhel, 2003)
 and other toolboxes that are mainly targeted at multifractal analysis
-(Ihlen, 2012; Ihlen \& Vereijken, 2010). In terms of
+(E. A. F. Ihlen, 2012; Espen A. F. Ihlen \& Vereijken, 2010). In terms of
 open access packages, there are other packages that implement some, but
 not all of the same functions such as the \texttt{fathon} package
 (Bianchi, 2020) that has been implemented in Python as well as the R
@@ -336,85 +361,28 @@ original sources for the methods.
 \emph{Overview of package functions, objectives, and output}
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.05}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.40}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.55}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3194}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.4306}}@{}}
 \toprule
-F
-u
-n
-c
-t
-i
-o
-n & Objective & Output \\
+\begin{minipage}[b]{\linewidth}\raggedright
+Function
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Objective
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Output
+\end{minipage} \\
 \midrule
 \endhead
-d
-f
-a & Estimate long-range
-correlation in a time
-series & Object containing the overall
-\(\alpha\) estimate and, if desired the
-\texttt{logScales} and \texttt{logRMS} \\
-m
-f
-d
-f
-a & Estimate the magnitude and
-range of long-range
-correlations in a time
-series & Object containing the \(\log_2\) scales
-used for the analysis, the \(\log_2\)
-fluctuation function for each scale
-and \(q\), the various q-order
-exponents, \(Hq\), \(Tau\), \(h\), and \(Dh\) \\
-d
-c
-c
-a & Estimates of
-scale-specific correlation
-between two time-series & Object containing the scales used for
-the analysis and the \(\rho\) '\texttt{rho\textquotesingle{}}
-values for each scale \\
-m
-r
-a & Estimates the scale
-specific regression
-coefficients for a
-predictor time series on
-and outcome time series & Object containing the scales and
-scale specific \(\beta\) estimates,
-\(R^2\), and \(t\) statistics \\
-m
-l
-r
-a & Estimates the scale
-specific regression
-coefficients for a
-predictor time series on
-and outcome time series at
-pre-specified lags & Object with lag-specific \(\beta\)
-coefficients \\
-f
-g
-n
-\_
-s
-i
-m & Simulate fractional
-Gaussian noise & Returns a vector of length \texttt{n}
-according to the specified \texttt{H} Hurst
-exponent \\
-i
-a
-a
-f
-t & Generate surrogate series
-using the iterative
-amplitude adjusted Fourier
-transform & Returns a vector of same length as
-input time series \\
+\texttt{dfa()} & Estimate long-range correlation in a time series & Object containing the overall \(\alpha\) estimate and, if desired the \texttt{logScales} and \texttt{logRMS} \\
+\texttt{mfdfa()} & Estimate the magnitude and range of long-range correlations in a time series & Object containing the \(\log_2\) scales used for the analysis, the \(\log_2\) fluctuation function for each scale and \(q\), the various q-order exponents, \(Hq\), \(Tau\), \(h\), and \(Dh\) \\
+\texttt{dcca()} & Estimates of scale-specific correlation between two time-series & Object containing the scales used for the analysis and the \(\rho\) '\texttt{rho\textquotesingle{}} values for each scale \\
+\texttt{mra()} & Estimates the scale specific regression coefficients for a predictor time series on and outcome time series & Object containing the scales and scale specific \(\beta\) estimates, \(R^2\), and \(t\) statistics \\
+\texttt{mlra()} & Estimates the scale specific regression coefficients for a predictor time series on and outcome time series at pre-specified lags & Object with lag-specific \(\beta\) coefficients \\
+\texttt{fgn\_sim()} & Simulate univariate fractional Gaussian noise & Returns a vector of length \texttt{n} according to the specified \texttt{H} Hurst exponent \\
+\texttt{mBm\_mGn()} & Simulate univariate multi-fractional Brownian motion and Gaussian noise & Returns two vectors of length \texttt{N} according to the specified \(H_t\) series \\
+\texttt{mc\_ARFIMA()} & Simulate various types of bivariate correlated noise processes. & Returns two vectors of length \texttt{N} according to the specified noise \texttt{process} and parameters \\
+\texttt{iaaft()} & Generate surrogate series using the iterative amplitude adjusted Fourier transform & Returns a vector of same length as input time series \\
 \bottomrule
 \end{longtable}
 
@@ -429,7 +397,7 @@ The key question that can be answered by Detrended Fluctuation Analysis
 direction of long range correlation in a single time series?} While DFA
 has been described extensively elsewhere
 (Kantelhardt, Koscielny-Bunde, Rego, Havlin, \& Bunde, 2001) and visualized nicely
-(Kelty-Stephen, Stirling, \& Lipsitz, 2016), we provide a brief
+(Kelty-Stephen et al., 2016), we provide a brief
 summary here. DFA entails splitting a time series into several small
 bins (e.g., 16). In each bin, the least squares regression is fit and
 subtracted within each window. Residuals are squared and averaged within
@@ -461,24 +429,28 @@ below.
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{white.noise }\OtherTok{\textless{}{-}} \FunctionTok{rnorm}\NormalTok{(}\DecValTok{5000}\NormalTok{)}
+
 \NormalTok{pink.noise }\OtherTok{\textless{}{-}} \FunctionTok{fgn\_sim}\NormalTok{(}\AttributeTok{n =} \DecValTok{5000}\NormalTok{, }\AttributeTok{H =} \FloatTok{0.9}\NormalTok{)}
+
 \NormalTok{anti.corr.noise }\OtherTok{\textless{}{-}} \FunctionTok{fgn\_sim}\NormalTok{(}\DecValTok{5000}\NormalTok{, }\AttributeTok{H =} \FloatTok{0.25}\NormalTok{)}
+
+\NormalTok{scales }\OtherTok{\textless{}{-}} \FunctionTok{logscale}\NormalTok{(}\AttributeTok{scale\_min =} \DecValTok{16}\NormalTok{, }\AttributeTok{scale\_max =} \DecValTok{1024}\NormalTok{, }\AttributeTok{scale\_ratio =} \DecValTok{2}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
-Then we can run DFA on these using the example code below. Note that
-this example uses a linear detrending with minimum scale (\texttt{sc\_min}) of
-16, a maximum scale (\texttt{sc\_max}) of 1/4 the time series length, and
+Then, we can run DFA on these using the example code below. Note that
+this example uses a linear detrending with minimum scale of 16, a
+maximum scale that is at most 1/4 the time series length, and
 logarithmically spaced scale factor (\texttt{scale\_ratio}) of 2.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{dfa.white }\OtherTok{\textless{}{-}} \FunctionTok{dfa}\NormalTok{(}\AttributeTok{x =}\NormalTok{ white.noise, }\AttributeTok{order =} \DecValTok{1}\NormalTok{, }\AttributeTok{verbose =} \DecValTok{1}\NormalTok{,}
-                \AttributeTok{sc\_min =} \DecValTok{16}\NormalTok{, }\AttributeTok{sc\_max =} \FunctionTok{length}\NormalTok{(pink.noise)}\SpecialCharTok{/}\DecValTok{4}\NormalTok{, }\AttributeTok{scale\_ratio =} \DecValTok{2}\NormalTok{)}
+\NormalTok{dfa.white }\OtherTok{\textless{}{-}} \FunctionTok{dfa}\NormalTok{(}\AttributeTok{x =}\NormalTok{ white.noise, }\AttributeTok{order =} \DecValTok{1}\NormalTok{, }\AttributeTok{verbose =} \DecValTok{1}\NormalTok{, }\AttributeTok{scales=}\NormalTok{scales, }\AttributeTok{scale\_ratio =} \DecValTok{2}\NormalTok{)}
+
 \NormalTok{dfa.pink }\OtherTok{\textless{}{-}} \FunctionTok{dfa}\NormalTok{(}\AttributeTok{x =}\NormalTok{ pink.noise, }\AttributeTok{order =} \DecValTok{1}\NormalTok{, }\AttributeTok{verbose =} \DecValTok{1}\NormalTok{,}
-                \AttributeTok{sc\_min =} \DecValTok{16}\NormalTok{, }\AttributeTok{sc\_max =} \FunctionTok{length}\NormalTok{(pink.noise)}\SpecialCharTok{/}\DecValTok{4}\NormalTok{, }\AttributeTok{scale\_ratio =} \DecValTok{2}\NormalTok{)}
-\NormalTok{dfa.anti.corr }\OtherTok{\textless{}{-}} \FunctionTok{dfa}\NormalTok{(}\AttributeTok{x =}\NormalTok{ anti.corr.noise, }\AttributeTok{order =} \DecValTok{1}\NormalTok{, }\AttributeTok{verbose =} \DecValTok{1}\NormalTok{,}
-                \AttributeTok{sc\_min =} \DecValTok{16}\NormalTok{, }\AttributeTok{sc\_max =} \FunctionTok{length}\NormalTok{(pink.noise)}\SpecialCharTok{/}\DecValTok{4}\NormalTok{, }\AttributeTok{scale\_ratio =} \DecValTok{2}\NormalTok{)}
+\AttributeTok{scales=}\NormalTok{scales, }\AttributeTok{scale\_ratio =} \DecValTok{2}\NormalTok{)}
+
+\NormalTok{dfa.anti.corr }\OtherTok{\textless{}{-}} \FunctionTok{dfa}\NormalTok{(}\AttributeTok{x =}\NormalTok{ anti.corr.noise, }\AttributeTok{order =} \DecValTok{1}\NormalTok{, }\AttributeTok{verbose =} \DecValTok{1}\NormalTok{, }\AttributeTok{scales=}\NormalTok{scales, }\AttributeTok{scale\_ratio =} \DecValTok{2}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -487,23 +459,79 @@ that \(\alpha\) = 0.52, for pink noise we observed that
 \(\alpha\) = 0.91, and since we simulated anti-correlated
 noise with H = 0.25, we observed a close estimate of the \(\alpha\) =
 0.26. In terms of the objects saved from the \texttt{dfa()}
-function, one commonly inspects the \texttt{logScales}-\texttt{logRms} plots. Given
+function, one commonly inspects the \texttt{log\_scales}-\texttt{log\_rms} plots. Given
 the estimates above, we see in Figure 1 that the slopes for white noise,
-pink noise, and anti-correlated noise conform to our expectations.
+pink noise, and anti-correlated noise conform to our expectations. These
+slop estimates are provided n the equation listed above each respective
+line, and are generated using the \texttt{dfa.plot()} function.
 
 \textbf{Figure 1}
 
-\emph{LogScale-LogFluctuation plots for white noise (left), pink noise
-(middle), and anti-correlated noise (right)}
+\emph{Log scale-Log fluctuation plots for white noise (top), pink noise
+(middle), and anti-correlated noise (bottom)}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow=}\FunctionTok{c}\NormalTok{(}\DecValTok{3}\NormalTok{,}\DecValTok{1}\NormalTok{))}
+\FunctionTok{dfa.plot}\NormalTok{(dfa.white)}
+\FunctionTok{dfa.plot}\NormalTok{(dfa.pink)}
+\FunctionTok{dfa.plot}\NormalTok{(dfa.anti.corr)}
+\end{Highlighting}
+\end{Shaded}
 
 \includegraphics{fractal_regression_paper_brm_files/figure-latex/unnamed-chunk-3-1.pdf}
 
-For an empirical example, we apply the \texttt{dfa()} function to DESCRIBE DATA
-HERE. Movement Data?
+For an empirical example, we apply the \texttt{dfa()} function to the Human
+Balance Dataset (Santos \& Duarte, 2016). For our purpose, this publicly available
+dataset includes signals from a force platform measured as the center of
+pressure in the x and y dimension for 87 young adults (we exclude the
+older adults for our analyses). Trials lasted 60s. See original paper
+for additional details on data processing (Santos \& Duarte, 2016). For the
+empirical examples, we use two different time series featuring a
+participant standing on a firm (rigid) surface with eyes open and a foam
+(unstable) surface with eyes open. Note, however, that we analyze the
+dataset more fully in INSERT SECTION NAME HERE. We chose this dataset
+because postural sway data are known to exhibit interesting fractal
+dynamics (CITES) and we can systematically evaluate the data for all of
+the univariate and bivariate analyses detailed in this work.
+
+For the center of pressure (COP) data, we take the first order
+differences of each series. For the univariate analyses, we focus on
+analyses of the COP data in the x dimension. Then, we define the
+appropriate scales for the analyses.
 
 \textbf{Figure 2}
 
-\emph{LogScale-LogFluctuation plots for empirical time series (ADD ME)}
+\emph{Log scale-Log fluctuation plots for empirical difference COPx time
+series for rigid (left) and unstable (right) surfaces.}
+
+\includegraphics{fractal_regression_paper_brm_files/figure-latex/unnamed-chunk-5-1.pdf}
+
+Importantly, regarding the question one can ask using DFA, we observe
+from Figure \#\#, that long range correlations are positive and
+approximately 0.69 -
+0.66. However, from visual inspection of
+these plots we observe that two slopes might fit better than one for
+these time series; a phenomenon known as crossovers points (Ge \& Leung, 2013).
+One common approach when such crossover points exist is to recognize
+that the signal might be best characterized by two scaling regions up to
+a particular time scale. We provide an example of how to check for where
+the break point is below using piece-wise regression.
+
+\includegraphics{fractal_regression_paper_brm_files/figure-latex/unnamed-chunk-6-1.pdf}
+
+\begin{verbatim}
+## $log_scales
+##           Est.  St.Err. t value CI(95%).l CI(95%).u
+## slope1 1.36470 0.033545  40.683   1.29710   1.43230
+## slope2 0.42691 0.013668  31.234   0.39936   0.45445
+\end{verbatim}
+
+In the example above, we observe that the is a crossover point at INSERT
+VALUE. And, that there are two distinct scaling relationships: INSERT
+ALPHAS. The postural control literature has shown evidence of this type
+of dynamic before with short time scales displaying more DESCRIBE and
+longer time scale exhibiting DESCRIBE (CITE).
 
 \hypertarget{multifractal-detrended-fluctuation-analysis}{%
 \subsubsection{Multifractal Detrended Fluctuation Analysis}\label{multifractal-detrended-fluctuation-analysis}}
@@ -511,10 +539,10 @@ HERE. Movement Data?
 Multifractal Detrended Fluctuation Analysis (MFDFA;
 Kantelhardt et al. (2002)) is an extension of DFA
 by generalizing the fluctuation function to a range of exponents of the
-qth order. The key question that can be answered by MFDFA is: \emph{how does
-the magnitude and direction of long range correlation change over time
-within a single time series?} Like DFA, MFDFA entails splitting a time
-series into several small bins (e.g., 16). In each bin, the least
+\(q\)th order. The key question that can be answered by MFDFA is: \emph{how
+does the magnitude and direction of long range correlation change over
+time within a single time series?} Like DFA, MFDFA entails splitting a
+time series into several small bins (e.g., 16). In each bin, the least
 squares regression is fit and subtracted within each window. However,
 the residuals are raised to a range of exponents \(q\) and averaged within
 each window. So when \(q = 2\), DFA is equal to MFDFA. When \(q >2\), larger
@@ -522,7 +550,7 @@ residual are emphasized and when \(q < 2\), smaller residuals are
 emphasized. The rest of the DFA algorithm is performed for each window
 and windows size for all values of \(q\). We refer the reader to the work
 of Kelty-Stephens and colleagues
-Kelty-Stephen, Stirling, and Lipsitz (2016) Figure 3 for a
+Kelty-Stephen et al. (2016) Figure 3 for a
 visualization of the algorithm and to Kantelhardt and colleagues
 Kantelhardt et al. (2002) for additional
 mathematical description.
@@ -532,38 +560,89 @@ mathematical description.
 
 To demonstrate the use of \texttt{mfdfa()}, we work with data included in our
 package (\texttt{fractaldata}), that was originally provided by
-Ihlen (2012) . It includes a white noise
+E. A. F. Ihlen (2012) . It includes a white noise
 time series, monofractal time series, and a multifractal time series.
-Investigation of the properties could also examine simulated
-multifractal Brownian motion and multifractal Gaussian noise.
 
-\includegraphics{fractal_regression_paper_brm_files/figure-latex/unnamed-chunk-4-1.pdf}
+\textbf{Figure 3}
 
-Simulated data: mfbrownian motion from Ihlen matlab (Aaron might have R
-port) see mbm\_mgn for R from aaron - Empirical data: EPICLE Movement
-Data?
+\emph{Time series from Ihlen (2012) corresponding to white noise,
+monofractal, and multifractal series.}
+
+\includegraphics{fractal_regression_paper_brm_files/figure-latex/unnamed-chunk-7-1.pdf}
+
+Performing MF-DFA is relatively straight forward with the \texttt{mfdfa()}
+function. As shown in the example below, one needs to enter the time
+series \texttt{x} to perform the analysis on, the range of \texttt{q} order exponents
+to use, the \texttt{order} of polynomial detrending, and the \texttt{scales} for the
+analysis. In this case, we define our \texttt{scales} by choosing
+logarithmically spaced scales and we select values of q from -5 to 5.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{scales }\OtherTok{\textless{}{-}} \FunctionTok{logscale}\NormalTok{(}\AttributeTok{scale\_min =} \DecValTok{16}\NormalTok{,}\AttributeTok{scale\_max =} \DecValTok{1024}\NormalTok{,}\AttributeTok{scale\_ratio =} \FloatTok{1.1}\NormalTok{)}
+
+\NormalTok{white.mf.dfa.out }\OtherTok{\textless{}{-}} \FunctionTok{mfdfa}\NormalTok{(}\AttributeTok{x =}\NormalTok{ fractaldata}\SpecialCharTok{$}\NormalTok{whitenoise, }\AttributeTok{q =} \FunctionTok{c}\NormalTok{(}\SpecialCharTok{{-}}\DecValTok{5}\SpecialCharTok{:}\DecValTok{5}\NormalTok{), }\AttributeTok{order =} \DecValTok{1}\NormalTok{, }\AttributeTok{scales=}\NormalTok{scales)}
+
+\NormalTok{mono.mf.dfa.out }\OtherTok{\textless{}{-}} \FunctionTok{mfdfa}\NormalTok{(}\AttributeTok{x =}\NormalTok{ fractaldata}\SpecialCharTok{$}\NormalTok{monofractal, }\AttributeTok{q =} \FunctionTok{c}\NormalTok{(}\SpecialCharTok{{-}}\DecValTok{5}\SpecialCharTok{:}\DecValTok{5}\NormalTok{), }\AttributeTok{order =} \DecValTok{1}\NormalTok{,  }\AttributeTok{scales=}\NormalTok{scales)}
+
+\NormalTok{multi.mf.dfa.out }\OtherTok{\textless{}{-}} \FunctionTok{mfdfa}\NormalTok{(}\AttributeTok{x =}\NormalTok{ fractaldata}\SpecialCharTok{$}\NormalTok{multifractal, }\AttributeTok{q =} \FunctionTok{c}\NormalTok{(}\SpecialCharTok{{-}}\DecValTok{5}\SpecialCharTok{:}\DecValTok{5}\NormalTok{), }\AttributeTok{order =} \DecValTok{1}\NormalTok{,  }\AttributeTok{scales=}\NormalTok{scales)}
+\end{Highlighting}
+\end{Shaded}
+
+A common way to understand if there is evidence of multifractality is to
+examine a plot showing the slopes of the \texttt{log\_fq} at the \texttt{log\_scale}
+values. If all the plots have the same slope, that provides evidence of
+monofractality. If there are distinct slopes, then there is evidence of
+multifractality. It's also important to check here that the slopes of
+\texttt{log\_scale} and \texttt{log\_fq} are largely linear, thus implying that they are
+scale invariant. If not, then it could be the case that a higher order
+polynomial detrending is appropriate (see Kantelhardt et al., 2001).
+Figure 4 shows what we would expect for a monofractal and multifractal
+signal. In other words, the monofractal signal shows a consistent slope,
+whereas the multifractal signal shows variability in the slopes.
+
+\textbf{Figure 4}
+
+\emph{mfdfa.plots for mono-(top) and multifractal series (bottom). The four
+panels correspond to DETAILS HERE.}
+
+\includegraphics{fractal_regression_paper_brm_files/figure-latex/unnamed-chunk-9-1.pdf} \includegraphics{fractal_regression_paper_brm_files/figure-latex/unnamed-chunk-9-2.pdf}
+
+A common metric for comparing the multifractal spectrum is to calculate
+the width (\(W\)) as \(h_{max} - h_{min}\). Let's do this to compare the
+monofractal and multifractal time series. We observe in this case that
+for the monofractal signal \(W_{mono} =\)
+0.08 and \(W_{multi} =\)
+1.36. If plot the
+multifractal spectra D(h) against h, we clearly observe the difference
+in the widths of the multifractal spectra for the mono- and multifractal
+signals, as shown in Figure 4 above.
+
+For our empirical analysis, we again turn to the postural data. We set
+out parameters appropriate for the data and run \texttt{mfdfa()}.
 
 \hypertarget{dfa-and-mfdfa-considerations}{%
 \paragraph{DFA and MFDFA Considerations}\label{dfa-and-mfdfa-considerations}}
 
 We recommend a few points of consideration here in using this function.
-One is to be sure to verify there are not cross-over points in the
-logScale-logFluctuation plots (Peng et al., 1994; Perakakis, Taylor, Martinez-Nieto, Revithi, \& Vila, 2009). Cross-over points (or a visible change in the slope as
-a function of of scale) indicate that a mono-fractal characterization
-does not sufficiently characterize the data. If cross-over points are
-evident, we recommend proceeding to using the `mfdfa()' to estimate the
-multi-fractal fluctuation dynamics across scales.
+One is to be sure to evaluate whether there are cross-over points in the
+log scale-log fluctuation plots (Peng et al., 1994; Perakakis, Taylor, Martinez-Nieto, Revithi, \& Vila, 2009). Cross-over points (or a visible change in the slope as
+a function of scale) indicate that a mono-fractal characterization does
+not sufficiently characterize the data. If cross-over points are
+evident, we recommend proceeding to estimate the two scaling regions
+with a piece-wise regression.
 
 While it is common to use only linear detrending with DFA, it is
 important to inspect the trends in the data to determine if it would be
 more appropriate to use a higher order polynomial for detrending, and/or
 compare the DFA output for different polynomial orders
-(Kantelhardt, Koscielny-Bunde, Rego, Havlin, \& Bunde, 2001).
+(Kantelhardt et al., 2001).
 
-General recommendations for choosing the min and max scale are an sc\_min
-= 10 and sc\_max = (N/4), where N is the number of observations. See Eke
-et al.~(2002) (Eke, Herman, Kocsis, \& Kozak, 2002) and Gulich and
-Zunino (2014) (Gulich \& Zunino, 2014) for additional
+General recommendations for choosing the min and max scale are minimum
+scale of 10 and a maximum scale of N/4, where N is the total number of
+observations in the signal. See Eke et al.~(2002)
+(Eke, Herman, Kocsis, \& Kozak, 2002) and Gulich and Zunino (2014)
+(Gulich \& Zunino, 2014) for additional
 considerations.
 
 \hypertarget{bivariate-methods}{%
@@ -573,29 +652,78 @@ considerations.
 \subsubsection{Detrended Cross-Correlation Analysis}\label{detrended-cross-correlation-analysis}}
 
 Detrended Cross-Correlation Analysis (DCCA;
-Podobnik and Stanley (2008)) is a bivariate extension
+Podobnik and Stanley (2008),
+Zebende (2011) ) is a bivariate extension
 of the DFA algorithm generalizing it to a correlational case between two
-time series. The key questions that can be asked it are: a) \emph{How does
-correlation between two time series change as a function of scale?} and
-b) \emph{What is/are the dominant (time) scale(s) of coordination? (those
-that are beyond a threshold, or statistically significant given a
-criteria, or of a certain magnitude?} For DCCA, the DFA algorithm gets
-applied to both time series providing the scale-wise estimates for both.
-DESCRIBE DCCA ALGORITHM HERE.
+time series that may be non-stationary. The key questions that can be
+asked with it are: a) \emph{How does correlation between two time series
+change as a function of scale?} and b) \emph{What is/are the dominant (time)
+scale(s) of coordination? (those that are beyond a threshold, or
+statistically significant given a criteria, or of a certain magnitude?}
+For DCCA, the DFA algorithm gets applied to both time series providing
+the scale-wise estimates for both. DESCRIBE DCCA ALGORITHM HERE. Whereas
+in DFA, the key metric is \(\alpha\), in DCCA, one estimates the
+scale-specific, detrended cross-correlation coefficient \(\rho\) for the
+pair of time series.
 
 \hypertarget{dcca-examples}{%
 \paragraph{DCCA Examples}\label{dcca-examples}}
 
-\begin{itemize}
-\item
-  \begin{itemize}
-  \tightlist
-  \item
-    Simulated data: MC-ARFIMA
-  \item
-    Empirical data: EPICLE Movement Data?
-  \end{itemize}
-\end{itemize}
+To demonstrate the use of \texttt{dcca()}, we used the \texttt{mc\_arfima()} function
+from our package to simulate two time series with known properties.
+Specifically, we use the multicorrelated ARFIMA examples from
+Kristoufec's work (Kristoufek, 2013). In
+this case, we use the parameters from Kristoufec (2013) for Model 1 (p.
+6,487), that generates two time series of length 10,000 that exhibit
+long range correlations (LRC) as well as long range cross-correlations
+(LRCC). The code for simulating these two time series is shown below.
+Additionally, Figure \#, shown below, visualizes a subset of these time
+series.
+
+\begin{verbatim}
+## Warning: package 'fracdiff' was built under R version 4.0.5
+\end{verbatim}
+
+\textbf{Figure \#}
+
+\emph{Subset of two time series exhibiting long range correlation and long
+range cross-correlation}
+
+\includegraphics{fractal_regression_paper_brm_files/figure-latex/unnamed-chunk-13-1.pdf}
+
+To perform the \texttt{dcca()} on these time series, we could use the code
+below, where we first define the \texttt{scales} using using the \texttt{logscale()} to define a set
+of logarithmically spaced scales to use for the analysis.
+
+From here, we can visualize the output of the analysis as shown below in
+Figure \#. We observe that, as expected, the correlation between the
+MC-ARFIMA processes are consistently high (all \(\rho\)'s \(> .8\)) and
+continue to be high at increasing time scales. We also add standard
+errors plotted around each point, but note these are based on one
+simulation only and more robust estimates of standard error could be
+calculated using many time series.
+
+\textbf{Figure \#}
+
+\emph{DCCA output for long range correlation and long range
+cross-correlation}
+
+As a point of comparison, we can generate a time series in contrast with
+this that exhibits processes with LRC and short-range cross-correlation
+(SRCC) using the code below. In contrast to the previous DCCA analysis,
+Figure \# shows a signal that begins with a high cross-correlation
+(\(\rho\)'s \(> .6\)) , but that begins to deviate and trend substantially
+lower at increasing scale sizes approaching \(\rho = 0\).
+
+\textbf{Figure \#}
+
+\emph{DCCA output for long range correlation and short range
+cross-correlation}
+
+Turning next to the empirical balance data, we apply DCCA to the COPx
+and COPy data.
+
+INSERT HERE
 
 \hypertarget{multi-scale-regression-analysis}{%
 \subsubsection{Multi-scale Regression Analysis}\label{multi-scale-regression-analysis}}
@@ -605,31 +733,51 @@ brings the analyses into a predictive, regression framework
 Kristoufek (2015b) . The key questions that can be answered by it are: a)
 \emph{How does the influence of one time series on another time series change
 as a function of scale?} and b) \emph{What is/are the dominant (time)
-scale(s) of influence of one time series on another time series?}
-DESCRIBE MRA ALGORITHM HERE.
+scale(s) of influence of one time series on another time series?} The
+algorithm is largely the same as DCCA, with a key difference being that
+instead of estimating scale-wise symmetric correlation coefficients,
+leveraging methods of Ordinary Least Squares (OLS) regression,
+asymmetric \(\beta\) coefficients are estimated (see Likens, Amazeen, West, and Gibbons (2019b);
+Kristoufek (2015b) ).
 
 \hypertarget{mra-examples}{%
 \paragraph{MRA Examples}\label{mra-examples}}
 
-\begin{itemize}
-\item
-  MRA
+Considering the LRC and LRCC simulations used for DCCA, we can examine
+whether the scale-wise fluctuations of one variable can predict the
+scale-wise fluctuations of the other using \texttt{mra()}. As with a
+traditional regression approach, we will use one of our variables as our
+predictor (\(x_t\)) and the other as our outcome (\(y_t\)). In the example
+below, we again first define our logarithmically spaced scales. We then
+apply the \texttt{mra()} function to the two simulated time series. In this
+case, it's important to specify which is variable is \texttt{x} (the predictor)
+and which is \texttt{y} (the outcome). For ease of plotting, we convert this to
+a dataframe in the process.
 
-  \begin{itemize}
-  \tightlist
-  \item
-    Simulated data:
-  \item
-    Empirical data: FNIRS from Aaron?
-  \end{itemize}
-\end{itemize}
+We can then visualize these results as shown below in Figure \#.
+Generally, we observe that the \(\beta\) coefficients are relatively
+stable at increasing time scales with a general, perhaps quadratically
+increasing trend. Here it is also important to investigate the change in
+\(R^2\) as well as the \(t\)-values. Below we see that the \(R^2\) is quite
+high at most of the time scales with \(R^2_{min} =\)
+0.67 and \(R^2_{max} =\)
+1.85 and all of the \(t\)-values greater than the
+conventional cut-off at 1.96. So between these two component ARFIMA
+processes, the output of MRA shows that much of the scale specific
+variance in \(y_t\) is explained and predicted by \(x_t\).
+
+\textbf{Figure \#}
+
+\emph{MRA output for long range correlation and long range cross-correlation}
+
+Balance DATA ANALYSIS HERE
 
 \hypertarget{multi-scale-lagged-regression-analysis}{%
 \subsubsection{Multi-scale Lagged Regression Analysis}\label{multi-scale-lagged-regression-analysis}}
 
 Multi-scale lagged regression analysis is an extension of MRA that
 allows for examining the influence as a function of scale, but also of
-time lag. In parituclar, the key questions that can be asked with MLRA
+time lag. In particular, the key questions that can be asked with MLRA
 are: a) \emph{How does the influence of one time series on another time
 series change as a function of scale at different time lags?} and b)
 \emph{Does the dominant time scale of influence change over successive time
@@ -649,21 +797,86 @@ lags?} DESCRIBE MLRA ALGORITHM HERE.
   \item
     Simulated data: Equation from Aaron from grant on MLRA
   \item
-    Empirical data: FNIRS from Aaron?
+    Empirical data: Balance Data
   \end{itemize}
 \end{itemize}
 
-\hypertarget{surrogate-methods-and-full-data-analysis}{%
-\subsection{Surrogate Methods (and `full' data analysis)}\label{surrogate-methods-and-full-data-analysis}}
+\hypertarget{surrogate-methods}{%
+\subsection{Surrogate Methods}\label{surrogate-methods}}
 
-Methods are ranked in terms of increasing levels of rigor.
+In all of the above methods, one gets either a single estimate of a
+parameter (e.g., \(\alpha\)) or a range of estimates (e.g., \(\rho\),
+\(\beta\)). While those estimates are meaningful in and of themselves, it
+is common practice to perform some form of null hypothesis test
+regarding the estimate. These are generally referred to as surrogate
+methods Kantz and Schreiber (2003) . We present several options here that could be
+ranked in terms of increasing levels of rigor: randomized surrogates,
+iterative amplitude adjusted Fourier transformed (IAAFT) surrogates, and
+model based surrogates.
+
+\hypertarget{randomized-surrogates}{%
+\subsubsection{Randomized Surrogates}\label{randomized-surrogates}}
+
+Randomized surrogates generally involve randomly shuffling the order of
+values of a time series. The idea is generally that the temporal
+structure is destroyed, yet the other features of the time series still
+exist (Kantelhardt et al., 2002). Note that
+additional options exist along these lines (see for example
+(Dumas, Nadel, Soussignan, Martinerie, \& Garnero, 2010)). The key comparison here
+would be to compare the estimates extracted from a given analysis (e.g.,
+DFA) on the observed sample of data with the estimates derived from and
+equally sized sample of the surrogate series (see Kantz and Schreiber (2003)
+Moulder, Boker, Ramseyer, and Tschacher (2018) (\textbf{wiltshire2019?}) for examples).
+
+Randomizing the pink noise time series, which originally exhibited long
+range correlation (\(\alpha\) = 0.91), and performing DFA on
+it, now provides an estimate of \(\alpha\) = 0.48,
+which is consistent with a random or white noise process. These values
+are clearly different, however, performing inferential statistics on a
+sample of observed estimates compared to surrogate estimates would
+provide compelling evidence that the temporal dynamics suggested by the
+observed estimates are different than those derived from a random
+process.
+
+\hypertarget{iterative-amplitude-adjusted-fourier-transform-surrogates-iaaft}{%
+\subsubsection{Iterative Amplitude-Adjusted Fourier Transform Surrogates (IAAFT)}\label{iterative-amplitude-adjusted-fourier-transform-surrogates-iaaft}}
+
+The IAAFT algorithm was originally developed as a way to be able to
+evaluate, whether there is nonlinearity (Schreiber \& Schmitz, 1996). More recently,
+it was proposed as a technique that could be use to see whether
+multifractal indices suggest interaction across scales (Espen A. F. Ihlen \& Vereijken, 2010).
+Like with randomized shuffling, estimates derived from IAAFT surrogates
+should be also be different from the estimates derived from the
+empirical time series. Although in this case, the comparison is
+typically made between the multifractal spectra of the observed time
+series, and the spectra from a set of IAAFT surrogate series.
+
+In the code below, we provide an example for generating IAAFT surrogates
+using the \texttt{iaafft()} function in the package. One enters the \texttt{signal},
+which is the observed time series, and \texttt{N}, the number of surrogates to
+generate. There are a number of options here but a common number of
+surrogates is 19 (Kantz \& Schreiber, 2003). Common practice is that surrogates are
+generated from many observed time series, but here we illustrate using
+only a single time series: the multifractal signal used previously in
+the MFDFA example. Then we use the same parameters for the \texttt{mfdfa()}
+function, but apply it to all of the IAAFFT surrogates.
+
+Assuming we were using IAAFFT to compare the multifractal width (\(W\))
+between the observed signal and the surrogate signals, recall that the
+observed widith was \(W_{multi} =\)
+1.36. Now, we can
+calculate the average multifractal width across all of the generated
+surrogates and we observe that \(W_{surr} =\) 0.64, which is
+narrower than the spectrum from the multifractal signal. In practice,
+there are many surrogate options (Moulder et al., 2018), but, again, inferential
+statistics are commonly performed to compare observed estimates to the
+surrogate estimates to bolster evidence of the inferred dynamics.
+
+\hypertarget{model-based-surrogates}{%
+\subsubsection{Model-based Surrogates}\label{model-based-surrogates}}
 
 \begin{itemize}
 \tightlist
-\item
-  Randomization - Estimates should be different.
-\item
-  IAAFT - Estimates should be different.
 \item
   Model based surrogate (Simulated exponents) - See Likens 2019 paper
   with model of postural sway/control, taking an educated guess about
@@ -677,19 +890,83 @@ Methods are ranked in terms of increasing levels of rigor.
 \section{General Discussion}\label{general-discussion}}
 
 \begin{itemize}
-\tightlist
 \item
-  General value of methods and the types of questions
+  General value of methods and the types of questions (mention the
+  types of data used in empirical examples.
 \item
   Practical consideration of univariate methods
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Length of time series
+  \end{itemize}
 \item
   Practical consideration of bivariate methods
+
+  \begin{itemize}
+  \item
+    Length of time series
+  \item
+    Likens et al.~2019 found positive bias of linear and quadratic
+    trends on MRA beta estimates at larger scales that could be
+    mitigated with larger detrending order. This involves checking
+    the time series with time as a predictor and polynomials.
+  \end{itemize}
 \item
   Unique contribution of the methods
 \end{itemize}
 
-\hypertarget{acknowledgements}{%
-\section{Acknowledgements}\label{acknowledgements}}
+\hypertarget{appendix-1-fundamental-equations}{%
+\section{Appendix 1: Fundamental Equations}\label{appendix-1-fundamental-equations}}
+
+Here we will insert the fundamental equations for showcasing the
+algorithms. WE NEED Lagged functions and MFDFA.
+
+DFA
+
+\(F_X = \sqrt{\frac{\sum^{T-s+1}_{j-1}f^2_X(s,j)}{T-s}}\)
+
+where
+
+\(f^2_X(s,j) = \frac{\sum^{j+s-1}_{k=j}(X_k -\widehat{X}_{k,j})}{s-1}\)
+
+DCCA
+
+\(F_Y = \sqrt{\frac{\sum^{T-s+1}_{j-1}f^2_Y(s,j)}{T-s}}\)
+
+where
+
+\(f^2_Y(s,j) = \frac{\sum^{j+s-1}_{k=j}(Y_k -\widehat{Y}_{k,j})}{s-1}\)
+
+and the scale-wise covariance is estimated as:
+
+\(f^2_{XY}(s,j) = \frac{\sum^{j+s-1}_{k=j}(X_k -\widehat{X}_{k,j})(Y_k -\widehat{Y}_{k,j})}{s-1}\)
+
+which forms the basis for the scale-wise correlation coefficient
+estimated as:
+
+\(\rho(s) = \frac{F^2_{XY}(s)}{F_X(s)F_Y(s)}\)
+
+and for the multi-scale regression coefficients, we replace the
+denominator in the \(\rho(s)\) equation with scale-wise variance of the
+predictor to estimate the scale-wise regression coefficient from
+regression \(Y_t\) on \(X_t\) as:
+
+\(\widehat{\beta}(s) = \frac{F^2_{XY}(s)}{F^2_X(s)}\)
+
+and where the variance of \(\widehat{\beta}(s)\) is:
+
+\(\sigma_{\widehat{\beta}(s)}^2 = \frac{1}{T-2} \times \frac{F^2_u(s)}{F^2_Y(s)}\)
+
+and the scale-wise residual variance, \(\widehat{F}^2_u(s)\) is estimated
+by applying the DFA algorithm to all scale-wise residuals,
+\(\widehat{u}_t(s)\) as:
+
+\(\widehat{u}_t(s) = y_t - x_t\widehat{\beta}(s) - \overline{y_t - x_t\widehat{\beta}(s)}\)
+
+\hypertarget{acknowledgments}{%
+\section{Acknowledgments}\label{acknowledgments}}
 
 Author AL receives support from a National Institutes of Health Center
 grant (P20GM109090).
@@ -705,112 +982,136 @@ grant (P20GM109090).
 
 \hypertarget{refs}{}
 \begin{CSLReferences}{1}{0}
-\leavevmode\hypertarget{ref-bakSelforganizedCriticalityExplanation1987}{}%
+\leavevmode\vadjust pre{\hypertarget{ref-bakSelforganizedCriticalityExplanation1987}{}}%
 Bak, P., Tang, C., \& Wiesenfeld, K. (1987). Self-organized criticality: {An} explanation of the 1/f noise. \emph{Physical Review Letters}, \emph{59}(4), 381--384. \url{https://doi.org/10.1103/PhysRevLett.59.381}
 
-\leavevmode\hypertarget{ref-bianchi2020}{}%
+\leavevmode\vadjust pre{\hypertarget{ref-bianchi2020}{}}%
 Bianchi, S. (2020). Fathon: A python package for a fast computation of detrendend fluctuation analysis and related algorithms. \emph{Journal of Open Source Software}, \emph{5}(45), 1828.
 
-\leavevmode\hypertarget{ref-cavanaugh2017}{}%
-Cavanaugh, J. T., Kelty-Stephen, D. G., \& Stergiou, N. (2017). Multifractality, Interactivity, and the Adaptive Capacity of the Human Movement System: A Perspective for Advancing the Conceptual Basis of Neurologic Physical Therapy. Retrieved from \url{https://www.ingentaconnect.com/content/wk/npt/2017/00000041/00000004/art00007}
+\leavevmode\vadjust pre{\hypertarget{ref-cavanaugh2017}{}}%
+Cavanaugh, J. T., Kelty-Stephen, D. G., \& Stergiou, N. (2017). \emph{Multifractality, Interactivity, and the Adaptive Capacity of the Human Movement System: A Perspective for Advancing the Conceptual Basis of Neurologic Physical Therapy}. Retrieved from \url{https://www.ingentaconnect.com/content/wk/npt/2017/00000041/00000004/art00007}
 
-\leavevmode\hypertarget{ref-davisMultiscaleInteractionsInterpersonal2016}{}%
+\leavevmode\vadjust pre{\hypertarget{ref-davisMultiscaleInteractionsInterpersonal2016}{}}%
 Davis, T. J., Brooks, T. R., \& Dixon, J. A. (2016). Multi-scale interactions in interpersonal coordination. \emph{Journal of Sport and Health Science}, \emph{5}(1), 25--34. \url{https://doi.org/10.1016/j.jshs.2016.01.015}
 
-\leavevmode\hypertarget{ref-delignieresMultifractalSignaturesComplexity2016}{}%
+\leavevmode\vadjust pre{\hypertarget{ref-delignieresMultifractalSignaturesComplexity2016}{}}%
 Delignières, D., Almurad, Z. M. H., Roume, C., \& Marmelat, V. (2016). Multifractal signatures of complexity matching. \emph{Experimental Brain Research}, \emph{234}(10), 2773--2785. \url{https://doi.org/10.1007/s00221-016-4679-4}
 
-\leavevmode\hypertarget{ref-delignieresFractalModelsEventbased2008}{}%
+\leavevmode\vadjust pre{\hypertarget{ref-delignieresFractalModelsEventbased2008}{}}%
 Delignières, D., Torre, K., \& Lemoine, L. (2008). Fractal models for event-based and dynamical timers. \emph{Acta Psychologica}, \emph{127}(2), 382--397. \url{https://doi.org/10.1016/j.actpsy.2007.07.007}
 
-\leavevmode\hypertarget{ref-eddelbuettelRcppSeamlessIntegration2011}{}%
+\leavevmode\vadjust pre{\hypertarget{ref-dumasInterBrainSynchronizationSocial2010}{}}%
+Dumas, G., Nadel, J., Soussignan, R., Martinerie, J., \& Garnero, L. (2010). Inter-{Brain} {Synchronization} during {Social} {Interaction}. \emph{PLOS ONE}, \emph{5}(8), e12166. \url{https://doi.org/10.1371/journal.pone.0012166}
+
+\leavevmode\vadjust pre{\hypertarget{ref-eddelbuettelRcppSeamlessIntegration2011}{}}%
 Eddelbuettel, D., \& Francois, R. (2011). Rcpp: {Seamless} {R} and {C}++ {Integration}. \emph{Journal of Statistical Software}, \emph{40}(1), 1--18. \url{https://doi.org/10.18637/jss.v040.i08}
 
-\leavevmode\hypertarget{ref-eddelbuettelRcppArmadilloAcceleratingHighperformance2014}{}%
+\leavevmode\vadjust pre{\hypertarget{ref-eddelbuettelRcppArmadilloAcceleratingHighperformance2014}{}}%
 Eddelbuettel, D., \& Sanderson, C. (2014). {RcppArmadillo}: {Accelerating} {R} with high-performance {C}++~linear algebra. \emph{Computational Statistics \& Data Analysis}, \emph{71}, 1054--1063. \url{https://doi.org/10.1016/j.csda.2013.02.005}
 
-\leavevmode\hypertarget{ref-ekeFractalCharacterizationComplexity2002}{}%
+\leavevmode\vadjust pre{\hypertarget{ref-ekeFractalCharacterizationComplexity2002}{}}%
 Eke, A., Herman, P., Kocsis, L., \& Kozak, L. R. (2002). Fractal characterization of complexity in temporal physiological signals. \emph{Physiological Measurement}, \emph{23}(1), R1--R38. \url{https://doi.org/10.1088/0967-3334/23/1/201}
 
-\leavevmode\hypertarget{ref-eulerWorkingMemoryPerformance2016}{}%
+\leavevmode\vadjust pre{\hypertarget{ref-eulerWorkingMemoryPerformance2016}{}}%
 Euler, M. J., Wiltshire, T. J., Niermeyer, M. A., \& Butner, J. E. (2016). Working memory performance inversely predicts spontaneous delta and theta-band scaling relations. \emph{Brain Research}, \emph{1637}, 22--33. \url{https://doi.org/10.1016/j.brainres.2016.02.008}
 
-\leavevmode\hypertarget{ref-garciaNonlinearTseriesNonlinearTime2020}{}%
-Garcia, C. A. (2020). {nonlinearTseries}: {Nonlinear} {Time} {Series} {Analysis}. Retrieved from \url{https://CRAN.R-project.org/package=nonlinearTseries}
+\leavevmode\vadjust pre{\hypertarget{ref-garciaNonlinearTseriesNonlinearTime2020}{}}%
+Garcia, C. A. (2020). \emph{{nonlinearTseries}: {Nonlinear} {Time} {Series} {Analysis}}. Retrieved from \url{https://CRAN.R-project.org/package=nonlinearTseries}
 
-\leavevmode\hypertarget{ref-goldbergerFractalDynamicsPhysiology2002}{}%
+\leavevmode\vadjust pre{\hypertarget{ref-ge2013}{}}%
+Ge, E., \& Leung, Y. (2013). Detection of crossover time scales in multifractal detrended fluctuation analysis. \emph{Journal of Geographical Systems}, \emph{15}(2), 115--147. \url{https://doi.org/10.1007/s10109-012-0169-9}
+
+\leavevmode\vadjust pre{\hypertarget{ref-goldbergerFractalDynamicsPhysiology2002}{}}%
 Goldberger, A. L., Amaral, L. A. N., Hausdorff, J. M., Ivanov, P. C., Peng, C.-K., \& Stanley, H. E. (2002). Fractal dynamics in physiology: {Alterations} with disease and aging. \emph{Proceedings of the National Academy of Sciences}, \emph{99}(suppl 1), 2466--2472. \url{https://doi.org/10.1073/pnas.012579499}
 
-\leavevmode\hypertarget{ref-gulichCriterionDeterminationOptimal2014}{}%
+\leavevmode\vadjust pre{\hypertarget{ref-gulichCriterionDeterminationOptimal2014}{}}%
 Gulich, D., \& Zunino, L. (2014). A criterion for the determination of optimal scaling ranges in {DFA} and {MF}-{DFA}. \emph{Physica A: Statistical Mechanics and Its Applications}, \emph{397}, 17--30. \url{https://doi.org/10.1016/j.physa.2013.11.029}
 
-\leavevmode\hypertarget{ref-hardstoneDetrendedFluctuationAnalysis2012}{}%
+\leavevmode\vadjust pre{\hypertarget{ref-hardstoneDetrendedFluctuationAnalysis2012}{}}%
 Hardstone, R., Poil, S.-S., Schiavone, G., Jansen, R., Nikulin, V. V., Mansvelder, H. D., \& Linkenkaer-Hansen, K. (2012). Detrended {Fluctuation} {Analysis}: {A} {Scale}-{Free} {View} on {Neuronal} {Oscillations}. \emph{Frontiers in Physiology}, \emph{3}. \url{https://doi.org/10.3389/fphys.2012.00450}
 
-\leavevmode\hypertarget{ref-hausdorffFractalDynamicsHuman1996}{}%
+\leavevmode\vadjust pre{\hypertarget{ref-hausdorffFractalDynamicsHuman1996}{}}%
 Hausdorff, J. M., Purdon, P. L., Peng, C. K., Ladin, Z., Wei, J. Y., \& Goldberger, A. L. (1996). Fractal dynamics of human gait: Stability of long-range correlations in stride interval fluctuations. \emph{Journal of Applied Physiology}, \emph{80}(5), 1448--1457. \url{https://doi.org/10.1152/jappl.1996.80.5.1448}
 
-\leavevmode\hypertarget{ref-ihlenIntroductionMultifractalDetrended2012}{}%
+\leavevmode\vadjust pre{\hypertarget{ref-ihlenIntroductionMultifractalDetrended2012}{}}%
 Ihlen, E. A. F. (2012). Introduction to {Multifractal} {Detrended} {Fluctuation} {Analysis} in {Matlab}. \emph{Frontiers in Physiology}, \emph{3}. \url{https://doi.org/10.3389/fphys.2012.00141}
 
-\leavevmode\hypertarget{ref-ihlen2010}{}%
-Ihlen, E. A. F., \& Vereijken, B. (2010). Interaction-dominant dynamics in human cognition: Beyond 1/{{}}? fluctuation. \emph{Journal of Experimental Psychology: General}, \emph{139}(3), 436--463. \url{https://doi.org/10.1037/a0019098}
+\leavevmode\vadjust pre{\hypertarget{ref-ihlen2010}{}}%
+Ihlen, Espen A. F., \& Vereijken, B. (2010). Interaction-dominant dynamics in human cognition: Beyond 1/{\textflorin}? fluctuation. \emph{Journal of Experimental Psychology: General}, \emph{139}(3), 436--463. \url{https://doi.org/10.1037/a0019098}
 
-\leavevmode\hypertarget{ref-kantelhardtDetectingLongrangeCorrelations2001}{}%
+\leavevmode\vadjust pre{\hypertarget{ref-kantelhardtDetectingLongrangeCorrelations2001}{}}%
 Kantelhardt, J. W., Koscielny-Bunde, E., Rego, H. H. A., Havlin, S., \& Bunde, A. (2001). Detecting long-range correlations with detrended fluctuation analysis. \emph{Physica A: Statistical Mechanics and Its Applications}, \emph{295}(3), 441--454. \url{https://doi.org/10.1016/S0378-4371(01)00144-3}
 
-\leavevmode\hypertarget{ref-kantelhardtMultifractalDetrendedFluctuation2002}{}%
+\leavevmode\vadjust pre{\hypertarget{ref-kantelhardtMultifractalDetrendedFluctuation2002}{}}%
 Kantelhardt, J. W., Zschiegner, S. A., Koscielny-Bunde, E., Havlin, S., Bunde, A., \& Stanley, H. E. (2002). Multifractal detrended fluctuation analysis of nonstationary time series. \emph{Physica A: Statistical Mechanics and Its Applications}, \emph{316}(1), 87--114. \url{https://doi.org/10.1016/S0378-4371(02)01383-3}
 
-\leavevmode\hypertarget{ref-kelty-stephenThreadingMultifractalSocial2017}{}%
+\leavevmode\vadjust pre{\hypertarget{ref-kantz2003}{}}%
+Kantz, H., \& Schreiber, T. (2003). \emph{Nonlinear Time Series Analysis}. Retrieved from \href{https:///core/books/nonlinear-time-series-analysis/519783E4E8A2C3DCD4641E42765309C7}{/core/books/nonlinear-time-series-analysis/519783E4E8A2C3DCD4641E42765309C7}
+
+\leavevmode\vadjust pre{\hypertarget{ref-kelty-stephenThreadingMultifractalSocial2017}{}}%
 Kelty-Stephen, D. G. (2017). Threading a multifractal social psychology through within-organism coordination to within-group interactions: {A} tale of coordination in three acts. \emph{Chaos, Solitons \& Fractals}, \emph{104}, 363--370. \url{https://doi.org/10.1016/j.chaos.2017.08.037}
 
-\leavevmode\hypertarget{ref-kelty-stephenMultifractalTemporalCorrelations2016}{}%
+\leavevmode\vadjust pre{\hypertarget{ref-kelty-stephenMultifractalTemporalCorrelations2016}{}}%
 Kelty-Stephen, D. G., Stirling, L. A., \& Lipsitz, L. A. (2016). Multifractal temporal correlations in circle-tracing behaviors are associated with the executive function of rule-switching assessed by the {Trail} {Making} {Test}. \emph{Psychological Assessment}, \emph{28}(2), 171--180. \url{https://doi.org/10.1037/pas0000177}
 
-\leavevmode\hypertarget{ref-kristoufekDetrendedFluctuationAnalysis2015}{}%
+\leavevmode\vadjust pre{\hypertarget{ref-kristoufekMixedcorrelatedARFIMAProcesses2013}{}}%
+Kristoufek, L. (2013). Mixed-correlated {ARFIMA} processes for power-law cross-correlations. \emph{Physica A: Statistical Mechanics and Its Applications}, \emph{392}(24), 6484--6493. \url{https://doi.org/10.1016/j.physa.2013.08.041}
+
+\leavevmode\vadjust pre{\hypertarget{ref-kristoufekDetrendedFluctuationAnalysis2015}{}}%
 Kristoufek, L. (2015a). Detrended fluctuation analysis as a regression framework: {Estimating} dependence at different scales. \emph{Physical Review E}, \emph{91}(2), 022802. \url{https://doi.org/10.1103/PhysRevE.91.022802}
 
-\leavevmode\hypertarget{ref-kristoufek2015}{}%
+\leavevmode\vadjust pre{\hypertarget{ref-kristoufek2015}{}}%
 Kristoufek, L. (2015b). Detrended fluctuation analysis as a regression framework: Estimating dependence at different scales. \emph{Physical Review E}, \emph{91}(2), 022802. \url{https://doi.org/10.1103/PhysRevE.91.022802}
 
-\leavevmode\hypertarget{ref-laibMultifractalAnalysisTime2018}{}%
+\leavevmode\vadjust pre{\hypertarget{ref-laibMultifractalAnalysisTime2018}{}}%
 Laib, M., Golay, J., Telesca, L., \& Kanevski, M. (2018). Multifractal analysis of the time series of daily means of wind speed in complex regions. \emph{Chaos, Solitons \& Fractals}, \emph{109}, 118--127. \url{https://doi.org/10.1016/j.chaos.2018.02.024}
 
-\leavevmode\hypertarget{ref-legrand2003}{}%
+\leavevmode\vadjust pre{\hypertarget{ref-legrand2003}{}}%
 Legrand, P., \& Véhel, J. L. (2003). Signal and image processing with FracLab. \emph{Thinking in Patterns: Fractals and Related Phenomena in Nature}, 321322.
 
-\leavevmode\hypertarget{ref-likensStatisticalPropertiesMultiscale2019}{}%
-Likens, A. D., Amazeen, P. G., West, S. G., \& Gibbons, C. T. (2019). Statistical properties of {Multiscale} {Regression} {Analysis}: {Simulation} and application to human postural control. \emph{Physica A: Statistical Mechanics and Its Applications}, \emph{532}, 121580. \url{https://doi.org/10.1016/j.physa.2019.121580}
+\leavevmode\vadjust pre{\hypertarget{ref-likensStatisticalPropertiesMultiscale2019}{}}%
+Likens, A. D., Amazeen, P. G., West, S. G., \& Gibbons, C. T. (2019a). Statistical properties of {Multiscale} {Regression} {Analysis}: {Simulation} and application to human postural control. \emph{Physica A: Statistical Mechanics and Its Applications}, \emph{532}, 121580. \url{https://doi.org/10.1016/j.physa.2019.121580}
 
-\leavevmode\hypertarget{ref-likensExperimentalControlScaling2015}{}%
+\leavevmode\vadjust pre{\hypertarget{ref-likens2019}{}}%
+Likens, A. D., Amazeen, P. G., West, S. G., \& Gibbons, C. T. (2019b). Statistical properties of Multiscale Regression Analysis: Simulation and application to human postural control. \emph{Physica A: Statistical Mechanics and Its Applications}, \emph{532}, 121580. \url{https://doi.org/10.1016/j.physa.2019.121580}
+
+\leavevmode\vadjust pre{\hypertarget{ref-likensExperimentalControlScaling2015}{}}%
 Likens, A. D., Fine, J. M., Amazeen, E. L., \& Amazeen, P. G. (2015). Experimental control of scaling behavior: What is not fractal? \emph{Experimental Brain Research}, \emph{233}(10), 2813--2821. \url{https://doi.org/10.1007/s00221-015-4351-4}
 
-\leavevmode\hypertarget{ref-pengMosaicOrganizationDNA1994}{}%
+\leavevmode\vadjust pre{\hypertarget{ref-moulder2018}{}}%
+Moulder, R. G., Boker, S. M., Ramseyer, F., \& Tschacher, W. (2018). Determining synchrony between behavioral time series: An application of surrogate data generation for establishing falsifiable null-hypotheses. \emph{Psychological Methods}, \emph{23}(4), 757--773. \url{https://doi.org/10.1037/met0000172}
+
+\leavevmode\vadjust pre{\hypertarget{ref-pengMosaicOrganizationDNA1994}{}}%
 Peng, C.-K., Buldyrev, S. V., Havlin, S., Simons, M., Stanley, H. E., \& Goldberger, A. L. (1994). Mosaic organization of {DNA} nucleotides. \emph{Physical Review E}, \emph{49}(2), 1685--1689. \url{https://doi.org/10.1103/PhysRevE.49.1685}
 
-\leavevmode\hypertarget{ref-perakakis2009}{}%
+\leavevmode\vadjust pre{\hypertarget{ref-perakakis2009}{}}%
 Perakakis, P., Taylor, M., Martinez-Nieto, E., Revithi, I., \& Vila, J. (2009). Breathing frequency bias in fractal analysis of heart rate variability. \emph{Biological Psychology}, \emph{82}(1), 82--88. \url{https://doi.org/10.1016/j.biopsycho.2009.06.004}
 
-\leavevmode\hypertarget{ref-podobnikDetrendedCrossCorrelationAnalysis2008}{}%
+\leavevmode\vadjust pre{\hypertarget{ref-podobnikDetrendedCrossCorrelationAnalysis2008}{}}%
 Podobnik, B., \& Stanley, H. E. (2008). Detrended {Cross}-{Correlation} {Analysis}: {A} {New} {Method} for {Analyzing} {Two} {Nonstationary} {Time} {Series}. \emph{Physical Review Letters}, \emph{100}(8), 084102. \url{https://doi.org/10.1103/PhysRevLett.100.084102}
 
-\leavevmode\hypertarget{ref-schaworonkowLongitudinalChangesAperiodic2021}{}%
+\leavevmode\vadjust pre{\hypertarget{ref-santos2016}{}}%
+Santos, D. A., \& Duarte, M. (2016). A public data set of human balance evaluations. \emph{PeerJ}, \emph{4}, e2648. \url{https://doi.org/10.7717/peerj.2648}
+
+\leavevmode\vadjust pre{\hypertarget{ref-schaworonkowLongitudinalChangesAperiodic2021}{}}%
 Schaworonkow, N., \& Voytek, B. (2021). Longitudinal changes in aperiodic and periodic activity in electrophysiological recordings in the first seven months of life. \emph{Developmental Cognitive Neuroscience}, \emph{47}, 100895. \url{https://doi.org/10.1016/j.dcn.2020.100895}
 
-\leavevmode\hypertarget{ref-snow2016}{}%
+\leavevmode\vadjust pre{\hypertarget{ref-schreiber1996}{}}%
+Schreiber, T., \& Schmitz, A. (1996). Improved surrogate data for nonlinearity tests. \emph{Physical Review Letters}, \emph{77}(4), 635--638. \url{https://doi.org/10.1103/PhysRevLett.77.635}
+
+\leavevmode\vadjust pre{\hypertarget{ref-snow2016}{}}%
 Snow, E. L., Likens, A. D., Allen, L. K., \& McNamara, D. S. (2016). Taking Control: Stealth Assessment of Deterministic Behaviors Within a Game-Based System. \emph{International Journal of Artificial Intelligence in Education}, \emph{26}(4), 1011--1032. \url{https://doi.org/10.1007/s40593-015-0085-5}
 
-\leavevmode\hypertarget{ref-stephenDynamicsInsightMathematical2009}{}%
+\leavevmode\vadjust pre{\hypertarget{ref-stephenDynamicsInsightMathematical2009}{}}%
 Stephen, D. G., Boncoddo, R. A., Magnuson, J. S., \& Dixon, J. A. (2009). The dynamics of insight: {Mathematical} discovery as a phase transition. \emph{Memory \& Cognition}, \emph{37}(8), 1132--1149. \url{https://doi.org/10.3758/MC.37.8.1132}
 
-\leavevmode\hypertarget{ref-rcoreteamLanguageEnvironmentStatistical2018}{}%
-Team, R. C. (2018). R: {A} language and {Environment} for {Statistical} {Computing}. Vienna, Austria.
+\leavevmode\vadjust pre{\hypertarget{ref-rcoreteamLanguageEnvironmentStatistical2018}{}}%
+Team, R. C. (2018). \emph{R: {A} language and {Environment} for {Statistical} {Computing}}. Vienna, Austria.
 
-\leavevmode\hypertarget{ref-vanordenSelforganizationCognitivePerformance2003}{}%
+\leavevmode\vadjust pre{\hypertarget{ref-vanordenSelforganizationCognitivePerformance2003}{}}%
 Van Orden, G. C., Holden, J. G., \& Turvey, M. T. (2003). Self-organization of cognitive performance. \emph{Journal of Experimental Psychology: General}, \emph{132}(3), 331--350. \url{https://doi.org/10.1037/0096-3445.132.3.331}
 
-\leavevmode\hypertarget{ref-zebendeDCCACrosscorrelationCoefficient2011}{}%
+\leavevmode\vadjust pre{\hypertarget{ref-zebendeDCCACrosscorrelationCoefficient2011}{}}%
 Zebende, G. F. (2011). {DCCA} cross-correlation coefficient: {Quantifying} level of cross-correlation. \emph{Physica A: Statistical Mechanics and Its Applications}, \emph{390}(4), 614--618. \url{https://doi.org/10.1016/j.physa.2010.10.022}
 
 \end{CSLReferences}

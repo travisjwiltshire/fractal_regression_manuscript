@@ -1,82 +1,25 @@
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.05}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.40}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.55}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3194}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.4306}}@{}}
 \toprule
-F
-u
-n
-c
-t
-i
-o
-n & Objective & Output \\
+\begin{minipage}[b]{\linewidth}\raggedright
+Function
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Objective
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Output
+\end{minipage} \\
 \midrule
 \endhead
-d
-f
-a & Estimate long-range
-correlation in a time
-series & Object containing the overall
-\(\alpha\) estimate and, if desired the
-\texttt{logScales} and \texttt{logRMS} \\
-m
-f
-d
-f
-a & Estimate the magnitude and
-range of long-range
-correlations in a time
-series & Object containing the \(\log_2\) scales
-used for the analysis, the \(\log_2\)
-fluctuation function for each scale
-and \(q\), the various q-order
-exponents, \(Hq\), \(Tau\), \(h\), and \(Dh\) \\
-d
-c
-c
-a & Estimates of
-scale-specific correlation
-between two time-series & Object containing the scales used for
-the analysis and the \(\rho\) '\texttt{rho\textquotesingle{}}
-values for each scale \\
-m
-r
-a & Estimates the scale
-specific regression
-coefficients for a
-predictor time series on
-and outcome time series & Object containing the scales and
-scale specific \(\beta\) estimates,
-\(R^2\), and \(t\) statistics \\
-m
-l
-r
-a & Estimates the scale
-specific regression
-coefficients for a
-predictor time series on
-and outcome time series at
-pre-specified lags & Object with lag-specific \(\beta\)
-coefficients \\
-f
-g
-n
-\_
-s
-i
-m & Simulate fractional
-Gaussian noise & Returns a vector of length \texttt{n}
-according to the specified \texttt{H} Hurst
-exponent \\
-i
-a
-a
-f
-t & Generate surrogate series
-using the iterative
-amplitude adjusted Fourier
-transform & Returns a vector of same length as
-input time series \\
+\texttt{dfa()} & Estimate long-range correlation in a time series & Object containing the overall \(\alpha\) estimate and, if desired the \texttt{logScales} and \texttt{logRMS} \\
+\texttt{mfdfa()} & Estimate the magnitude and range of long-range correlations in a time series & Object containing the \(\log_2\) scales used for the analysis, the \(\log_2\) fluctuation function for each scale and \(q\), the various q-order exponents, \(Hq\), \(Tau\), \(h\), and \(Dh\) \\
+\texttt{dcca()} & Estimates of scale-specific correlation between two time-series & Object containing the scales used for the analysis and the \(\rho\) '\texttt{rho\textquotesingle{}} values for each scale \\
+\texttt{mra()} & Estimates the scale specific regression coefficients for a predictor time series on and outcome time series & Object containing the scales and scale specific \(\beta\) estimates, \(R^2\), and \(t\) statistics \\
+\texttt{mlra()} & Estimates the scale specific regression coefficients for a predictor time series on and outcome time series at pre-specified lags & Object with lag-specific \(\beta\) coefficients \\
+\texttt{fgn\_sim()} & Simulate univariate fractional Gaussian noise & Returns a vector of length \texttt{n} according to the specified \texttt{H} Hurst exponent \\
+\texttt{mBm\_mGn()} & Simulate univariate multi-fractional Brownian motion and Gaussian noise & Returns two vectors of length \texttt{N} according to the specified \(H_t\) series \\
+\texttt{mc\_ARFIMA()} & Simulate various types of bivariate correlated noise processes. & Returns two vectors of length \texttt{N} according to the specified noise \texttt{process} and parameters \\
+\texttt{iaaft()} & Generate surrogate series using the iterative amplitude adjusted Fourier transform & Returns a vector of same length as input time series \\
 \bottomrule
 \end{longtable}
