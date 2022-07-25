@@ -446,6 +446,12 @@ Assuming we were using IAAFFT to compare the multifractal width ($W$) between th
 
 -   Unique contribution of the methods
 
+-   Unanswered questions about the methods
+
+    -   When multifractal methods indicate similarity to surrogate for some values of q (for example) but not others?
+
+    -   Systematic evaluation of simulated data for the bivariate mfdfa methods to better understand the methods
+
 # Appendix 1: Fundamental Equations
 
 Here we will insert the fundamental equations for showcasing the algorithms. WE NEED Lagged functions and MFDFA.
