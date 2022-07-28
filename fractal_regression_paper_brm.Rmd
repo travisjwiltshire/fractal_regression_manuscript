@@ -54,6 +54,7 @@ bibliography: library.bib #DELETE THIS BEFORE KNIT NEEDED FOR ZOTERO COMPATIBILI
 library("papaja")
 library("fractalRegression")
 library("ggplot2")
+library("kableExtra")
 r_refs("library.bib")
 ```
 
@@ -86,7 +87,7 @@ In order to demonstrate the methods within the 'fractalRegression' package, we g
 *Overview of package functions, objectives, and output*
 
 | Function      | Objective                                                                                                                         | Output                                                                                                                                                                           |
-|------------------|-----------------------|-------------------------------|
+|--------------|------------------------|----------------------------------|
 | `dfa()`       | Estimate long-range correlation in a time series                                                                                  | Object containing the overall $\alpha$ estimate and, if desired the `logScales` and `logRMS`                                                                                     |
 | `mfdfa()`     | Estimate the magnitude and range of long-range correlations in a time series                                                      | Object containing the $\log_2$ scales used for the analysis, the $\log_2$ fluctuation function for each scale and $q$, the various q-order exponents, $Hq$, $Tau$, $h$, and $Dh$ |
 | `dcca()`      | Estimates of scale-specific correlation between two time-series                                                                   | Object containing the scales used for the analysis and the $\rho$ '`rho'` values for each scale                                                                                  |
@@ -183,10 +184,17 @@ seg <- segmented(dfa.mod, seg.Z = ~log_scales)
 plot(open_firm_copx_diff_dfa$log_scale,open_firm_copx_diff_dfa$log_rms, pch=16, ylab="logF(s)", xlab = "log(s)")
 
 plot(seg,add=T, lwd=2,col="red")
-slope(seg)
 ```
 
-In the example above, we observe that the is a crossover point at INSERT VALUE. And, that there are two distinct scaling relationships: INSERT ALPHAS. The postural control literature has shown evidence of this type of dynamic before with short time scales displaying more DESCRIBE and longer time scale exhibiting DESCRIBE (CITE).
+In the example above, we observe that the is a crossover point at around the scale size of log 6. And, from the results in Table 2 below, we osberve that there are two distinct scaling relationships of $\alpha =$ 1.3 and $\alpha =$ 0.42, respectively. The postural control literature has shown evidence of this type of dynamic before with short time scales displaying more DESCRIBE and longer time scale exhibiting DESCRIBE (CITE).
+
+Table 2
+
+Results from piece-wise-regression analysis.
+
+```{r echo=FALSE}
+kable(slope(seg))
+```
 
 ### Multifractal Detrended Fluctuation Analysis
 
