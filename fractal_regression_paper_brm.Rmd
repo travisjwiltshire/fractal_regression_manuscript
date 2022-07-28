@@ -188,9 +188,9 @@ plot(seg,add=T, lwd=2,col="red")
 
 In the example above, we observe that the is a crossover point at around the scale size of log 6. And, from the results in Table 2 below, we osberve that there are two distinct scaling relationships of $\alpha =$ 1.3 and $\alpha =$ 0.42, respectively. The postural control literature has shown evidence of this type of dynamic before with short time scales displaying more DESCRIBE and longer time scale exhibiting DESCRIBE (CITE).
 
-Table 2
+**Table 2**
 
-Results from piece-wise-regression analysis.
+*Results from piece-wise-regression analysis.*
 
 ```{r echo=FALSE}
 kable(slope(seg))
@@ -227,11 +227,11 @@ Performing MF-DFA is relatively straight forward with the `mfdfa()` function. As
 
 scales <- logscale(scale_min = 16,scale_max = 1024,scale_ratio = 1.1)
 
-white.mf.dfa.out <- mfdfa(x = fractaldata$whitenoise, q = c(-5:5), order = 1, scales=scales)
+white.mf.dfa.out <- mfdfa(x = fractaldata$whitenoise, q = c(-5:5), order = 1, scales=scales, scale_ratio=1.1)
 
-mono.mf.dfa.out <- mfdfa(x = fractaldata$monofractal, q = c(-5:5), order = 1,  scales=scales)
+mono.mf.dfa.out <- mfdfa(x = fractaldata$monofractal, q = c(-5:5), order = 1,  scales=scales, scale_ratio=1.1)
 
-multi.mf.dfa.out <- mfdfa(x = fractaldata$multifractal, q = c(-5:5), order = 1,  scales=scales)
+multi.mf.dfa.out <- mfdfa(x = fractaldata$multifractal, q = c(-5:5), order = 1,  scales=scales, scale_ratio=1.1)
 
 ```
 
@@ -250,9 +250,12 @@ A common metric for comparing the multifractal spectrum is to calculate the widt
 
 For our empirical analysis, we again turn to the postural data. We set out parameters appropriate for the data and run `mfdfa()`.
 
-```{r include=FALSE}
-open_firm <- read.delim("~/Human Balance Data/BDS00001.txt")
-open_foam <- read.delim("~/Human Balance Data/BDS00007.txt")
+```{r}
+scales <- logscale(scale_min=16, scale_max=length(open_firm_copx_diff)/4,scale_ratio=1.1)
+
+open_firm_copx_diff_mfdfa <- mfdfa(open_firm_copx_diff, q = -5:5, order = 1, scales=scales, scale_ratio=1.1)
+
+open_foam_copx_diff_mfdfa <- mfdfa(x=open_foam_copx_diff, q = -5:5, order = 1, scales=scales, scale_ratio=1.1)
 ```
 
 ```{r}
@@ -345,7 +348,28 @@ dcca.plot(dcca.out.arfima2, order = 1, ci = FALSE, iterations = NULL, return.ci 
 
 Turning next to the empirical balance data, we apply DCCA to the COPx and COPy data.
 
-INSERT HERE
+```{r}
+scales <- logscale(scale_min=16, scale_max=length(open_firm_copx_diff)/4,scale_ratio=1.1)
+
+dcca.out.open.firm <- dcca(open_firm_copx_diff, open_firm_copy_diff, order = 1, scales = scales)
+
+dcca.out.open.foam <- dcca(open_foam_copx_diff, open_foam_copy_diff, order = 1, scales = scales)
+
+```
+
+**Figure \#**
+
+*DCCA output for emprical COPx and COPy data*
+
+```{r}
+dcca.plot(dcca.out.open.firm, order = 1, ci = FALSE, iterations = NULL, return.ci = FALSE)
+
+dcca.plot(dcca.out.open.foam, order = 1, ci = FALSE, iterations = NULL, return.ci = FALSE)
+
+
+
+
+```
 
 ### Multi-scale Regression Analysis
 
