@@ -87,7 +87,7 @@ In order to demonstrate the methods within the 'fractalRegression' package, we g
 *Overview of package functions, objectives, and output*
 
 | Function      | Objective                                                                                                                         | Output                                                                                                                                                                           |
-|--------------|------------------------|----------------------------------|
+|-----------------|-----------------------|--------------------------------|
 | `dfa()`       | Estimate long-range correlation in a time series                                                                                  | Object containing the overall $\alpha$ estimate and, if desired the `logScales` and `logRMS`                                                                                     |
 | `mfdfa()`     | Estimate the magnitude and range of long-range correlations in a time series                                                      | Object containing the $\log_2$ scales used for the analysis, the $\log_2$ fluctuation function for each scale and $q$, the various q-order exponents, $Hq$, $Tau$, $h$, and $Dh$ |
 | `dcca()`      | Estimates of scale-specific correlation between two time-series                                                                   | Object containing the scales used for the analysis and the $\rho$ '`rho'` values for each scale                                                                                  |
@@ -346,9 +346,9 @@ dcca.plot(dcca.out.arfima2, order = 1, ci = FALSE, iterations = NULL, return.ci 
 #dcca.plot2
 ```
 
-Turning next to the empirical balance data, we apply DCCA to the COPx and COPy data.
+Turning next to the empirical balance data, we apply DCCA to the differenced COPx and COPy data for the firm and foam platforms. We again set appropriate values for `scales` and apply the `dcca()` function to the pairs of time series.
 
-```{r}
+```{r echo=FALSE}
 scales <- logscale(scale_min=16, scale_max=length(open_firm_copx_diff)/4,scale_ratio=1.1)
 
 dcca.out.open.firm <- dcca(open_firm_copx_diff, open_firm_copy_diff, order = 1, scales = scales)
@@ -359,17 +359,16 @@ dcca.out.open.foam <- dcca(open_foam_copx_diff, open_foam_copy_diff, order = 1, 
 
 **Figure \#**
 
-*DCCA output for emprical COPx and COPy data*
+*DCCA output for empirical COPx and COPy balance data for the eyes open while standing on the firm surface (top) and foam surface (bottom).*
 
-```{r}
+```{r echo=FALSE}
 dcca.plot(dcca.out.open.firm, order = 1, ci = FALSE, iterations = NULL, return.ci = FALSE)
 
 dcca.plot(dcca.out.open.foam, order = 1, ci = FALSE, iterations = NULL, return.ci = FALSE)
 
-
-
-
 ```
+
+In examining the output from these analyses, Figure \# shows a clear difference between the two conditions. First, in the firm platform example, the $\rho$ values reach an order of magnitude greater than in the foam condition with the max $\rho$ = `r max(dcca.out.open.firm$rho)`' compared to `r max(dcca.out.open.foam$rho)` for the foam condition. In addition, we observe for the foam example, that the time scale of maximum correlation is `r dcca.out.open.firm$scales[which.max(dcca.out.open.firm$rho)]`, which is a larger time scale when compared to the foam example, which had a maximum correlation at scale r `dcca.out.open.foam$scales[which.max(dcca.out.open.foam$rho)]`. In addition, the pattern of change in correlation across scales is slightly different. Th firm example is higher overall, it starts relatively low at very small time scales before a rapid increase and then steady decrease before exhibiting some pseudo-periodic behavior at increasingly larger scales. By contrast, the foam example has relatively lower overall correlation values, the smallest scale is the highest followed by a steady decrease and then also some pseudo-periodic behavior at increasingly larger scales.
 
 ### Multi-scale Regression Analysis
 
@@ -377,7 +376,7 @@ Multi-scale regression analysis (MRA) is an adaptation of DCCA that brings the a
 
 #### MRA Examples
 
-Considering the LRC and LRCC simulations used for DCCA, we can examine whether the scale-wise fluctuations of one variable can predict the scale-wise fluctuations of the other using `mra()`. As with a traditional regression approach, we will use one of our variables as our predictor ($x_t$) and the other as our outcome ($y_t$). In the example below, we again first define our logarithmically spaced scales. We then apply the `mra()` function to the two simulated time series. In this case, it's important to specify which is variable is `x` (the predictor) and which is `y` (the outcome). For ease of plotting, we convert this to a dataframe in the process.
+Considering the LRC and LRCC simulations used for DCCA, we can examine whether the scale-wise fluctuations of one variable can predict the scale-wise fluctuations of the other using `mra()`. As with a traditional regression approach, we will use one of our variables as our predictor ($x_t$) and the other as our outcome ($y_t$). In the example below, we again first define our logarithmically spaced scales. We then apply the `mra()` function to the two simulated time series. In this case, it's important to specify which is variable is `x` (the predictor) and which is `y` (the outcome).
 
 ```{r}
 scales <- logscale(scale_min = 10, scale_max = 1000, scale_ratio = 1.1)
@@ -389,7 +388,7 @@ We can then visualize these results as shown below in Figure #. Generally, we ob
 
 **Figure \#**
 
-*MRA output for long range correlation and long range cross-correlation*
+*MRA output for long range correlation and long range cross-correlation.*
 
 ```{r echo=FALSE}
 mra.plot(mra.out)
@@ -399,7 +398,26 @@ mra.plot(mra.out)
 #mra.plot
 ```
 
-Balance DATA ANALYSIS HERE
+```{r warning=FALSE, include=FALSE}
+scales <- logscale(scale_min = 16, scale_max = length(open_firm_copx_diff)/4, scale_ratio = 1.1)
+
+mra.firm.out.xy <- mra(open_firm_copx_diff, open_firm_copy_diff, order = 1, scales = scales)
+
+mra.firm.out.yx <- mra(open_firm_copy_diff, open_firm_copx_diff, order = 1, scales = scales)
+#open_foam_copx_diff, open_foam_copy_diff
+
+```
+
+Turning next to the empirical balance data, we can determine whether postural adjustments in the COPx are predictive of adjustments in COPy, and vice versa. This means that we use the `mra()` function two times and reverse the order of entry for the x and y arguments to allow for determining the degree to which each signal can predict the other across scales. In Figure \# below, we see the resulting $\beta$'s we observed for the the balance data on the firm surface. Notably, the COPx predicting COPy (max $\beta$ = `r max(mra.firm.out.xy$betas)`) has noticeably smaller $\beta$ values compared to COPy predicting COPx (max $\beta$ = `r max(mra.firm.out.yx$betas)`). Notice as well how Figure \# (bottom), where adjustments in the y dimension are predicting adjustments in the x dimension, resembles the DCCA plot for this analysis (see Figure \#). Given the assemtry in the magnitude of the $\beta$s, this example suggests that postural adjustments in the y dimension appear to be driving changes in the x dimension. And, there is a clear time scale where this relationship is strongest at scales = `r mra.firm.out.yx$scales[which.max(mra.firm.out.yx$betas)]`.
+
+**Figure \#**
+
+*MRA output for balance data on foam surface with COPx predicting COPy (top) and COPy predicting COPx (bottom).*
+
+```{r echo=FALSE}
+mra.plot(mra.firm.out.xy)
+mra.plot(mra.firm.out.yx)
+```
 
 ### Multi-scale Lagged Regression Analysis
 
