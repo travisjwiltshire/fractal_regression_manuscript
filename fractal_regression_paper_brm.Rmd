@@ -119,7 +119,7 @@ anti.corr.noise <- fgn_sim(5000, H = 0.25)
 scales <- logscale(scale_min = 16, scale_max = 1024, scale_ratio = 2)
 ```
 
-Next, we run DFA on these using the example code below. Note that this example uses a linear detrending with minimum scale of 16, a maximum scale that is at most 1/4 the time series length, and logarithmically spaced scale factor (`scale_ratio`) of 2.
+Next, we run DFA on those simulated series using the example code below. Note that this example uses a linear detrending with minimum scale of 16, a maximum scale that is at most 1/4 the time series length, and logarithmically spaced scale factor (`scale_ratio`) of 2.
 
 ```{r, echo = TRUE}
 dfa.white <- dfa(x = white.noise, order = 1, verbose = 1, scales=scales, scale_ratio = 2)
@@ -130,7 +130,7 @@ scales=scales, scale_ratio = 2)
 dfa.anti.corr <- dfa(x = anti.corr.noise, order = 1, verbose = 1, scales=scales, scale_ratio = 2)
 ```
 
-In terms of output from the above examples, for white noise, we observed that $\alpha$ = `r dfa.white$alpha`, for pink noise we observed that $\alpha$ = `r dfa.pink$alpha`, and since we simulated anti-correlated noise with H = 0.25, we observed a close estimate of the $\alpha$ = `r dfa.anti.corr$alpha`. In terms of the objects saved from the `dfa()` function, one commonly inspects the `log_scales`-`log_rms` plots. Given the estimates above, we see in Figure 1 that the slopes for white noise, pink noise, and anti-correlated noise conform to our expectations. These slop estimates are provided n the equation listed above each respective line, and are generated using the `dfa.plot()` function.
+In terms of output from the above examples, for white noise, we observed that $\alpha$ = `r dfa.white$alpha`, for pink noise we observed that $\alpha$ = `r dfa.pink$alpha`, and since we simulated anti-correlated noise with H = 0.25, we observed a close estimate of the $\alpha$ = `r dfa.anti.corr$alpha`. In terms of the objects saved from the `dfa()` function, one commonly inspects the `log_scales`-`log_rms` plots. Given the estimates above, we see in Figure 1 that the slopes for white noise, pink noise, and anti-correlated noise conform to our expectations (i.e., linear in the log-log domain). These slope estimates are provided n the equation listed above each respective line, and are generated using the `dfa.plot()` function.
 
 **Figure 1**
 
@@ -143,13 +143,13 @@ dfa.plot(dfa.pink)
 dfa.plot(dfa.anti.corr)
 ```
 
-For an empirical example, we apply the `dfa()` function to the Human Balance Dataset [@santos2016]. For our purpose, this publicly available dataset includes signals from a force platform measured as the center of pressure in the x and y dimension for 87 young adults (we exclude the older adults for our analyses). Trials lasted 60s. See original paper for additional details on data processing [@santos2016]. For the empirical examples, we use two different time series featuring a participant standing on a firm (rigid) surface with eyes open and a foam (unstable) surface with eyes open. Note, however, that we analyze the dataset more fully in INSERT SECTION NAME HERE. We chose this dataset because postural sway data are known to exhibit interesting fractal dynamics (CITES) and we can systematically evaluate the data for all of the univariate and bivariate analyses detailed in this work.
+For an empirical example, we apply the `dfa()` function to the Human Balance Dataset [@santos2016]. For our purpose, this publicly available dataset includes signals from a force platform that measure the center of pressure in the x and y dimension for 87 young adults (we exclude the older adults for our analyses). Trials lasted 60s. See original paper for additional details on data processing [@santos2016]. For the empirical examples, we use two different time series featuring a participant standing on a firm (rigid) surface with eyes open and a foam (unstable) surface with eyes open. Here, we only analyze single time series but demonstrate a complete worked out example with all 87 subject in INSERT SECTION NAME HERE. We chose this dataset because postural sway data are known to exhibit interesting fractal dynamics [@collins1993; @delignieresTransitionPersistentAntiPersistent2011], and we can systematically evaluate the data for all of the univariate and bivariate analyses detailed in this work.
 
 For the center of pressure (COP) data, we take the first order differences of each series. For the univariate analyses, we focus on analyses of the COP data in the x dimension. Then, we define the appropriate scales for the analyses.
 
 ```{r include=FALSE}
-open_firm <- read.delim("~/Human Balance Data/BDS00001.txt")
-open_foam <- read.delim("~/Human Balance Data/BDS00007.txt")
+open_firm <- read.csv("BDS00001.csv")
+open_foam <- read.csv("BDS00007.csv")
 open_firm_copx_diff <- diff(open_firm$COPx.cm.)
 open_firm_copy_diff <- diff(open_firm$COPy.cm.)
 open_foam_copx_diff <- diff(open_foam$COPx.cm.)
