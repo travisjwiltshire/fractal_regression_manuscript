@@ -108,3 +108,21 @@ legend("topright", legend = c("COPy>COPx", "COPx>COPy"), col=c('black','blue'),l
 
 plot(balance.foam.mra.xy$scales,balance.foam.mra.xy$betas,type='l')
 
+
+# MLRA Example for paper --------------------------------------------------
+## Don't forget order matters here
+
+scales <- logscale(scale_min = 16, scale_max = length(open_firm_copx_diff)/4, scale_ratio = 1.1)
+mlra.firm.out <- mlra(scale(open_firm_copy_diff), scale(open_firm_copx_diff),order = 1, scales = scales, lags = 100, direction = 'p')
+x <- 0:100
+y <- scales
+fields::image.plot(x, y, mlra.firm.out$betas, axes=TRUE, legend.lab = "Beta Coefficient", ylab="Scale", xlab="Lag", main="MLRA on COPxy firm")
+
+scales <- logscale(scale_min = 16, scale_max = length(open_foam_copx_diff)/4, scale_ratio = 1.1)
+mlra.foam.out <- mlra(scale(open_foam_copy_diff), scale(open_foam_copx_diff),order = 1, scales = scales, lags = 100, direction = 'p')
+x <- 0:100
+y <- scales
+fields::image.plot(x, y, mlra.foam.out$betas, axes=TRUE, legend.lab = "Beta Coefficient", ylab="Scale", xlab="Lag", main="MLRA on COPxy foam")
+
+
+
