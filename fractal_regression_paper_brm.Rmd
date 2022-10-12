@@ -243,8 +243,8 @@ A common way to understand if there is evidence of multifractality is to examine
 *mfdfa.plots for mono-(top) and multifractal series (bottom). The four panels correspond to DETAILS HERE.*
 
 ```{r, echo=FALSE}
-mfdfa.plot(mono.mf.dfa.out)
-mfdfa.plot(multi.mf.dfa.out)
+mfdfa.plot(mono.mf.dfa.out, do.surrogate = TRUE)
+mfdfa.plot(multi.mf.dfa.out, do.surrogate = TRUE)
 ```
 
 A common metric for comparing the multifractal spectrum is to calculate the width ($W$) as $h_{max} - h_{min}$. Let's do this to compare the monofractal and multifractal time series. We observe in this case that for the monofractal signal $W_{mono} =$ `r max(mono.mf.dfa.out$h) - min(mono.mf.dfa.out$h)` and $W_{multi} =$ `r max(multi.mf.dfa.out$h) - min(multi.mf.dfa.out$h)`. If plot the multifractal spectra D(h) against h, we clearly observe the difference in the widths of the multifractal spectra for the mono- and multifractal signals, as shown in Figure 4 above.
@@ -430,7 +430,30 @@ Multi-scale lagged regression analysis is an extension of MRA that allows for ex
 
     -   Key Question
     -   Simulated data: Equation from Aaron from grant on MLRA
-    -   Empirical data: Balance Data
+
+In terms of the empirical data, below we apply the MLRA to the COPxy data for the firm and the foam examples. We investigate up to a lag of 100. 
+
+**Figure \#**
+
+*MLRA output for balance data on foam surface with COPx predicting COPy for the firm (top) and foam (bottom) examples.*
+
+```{r, echo=FALSE}
+
+scales <- logscale(scale_min = 16, scale_max = length(open_firm_copx_diff)/4, scale_ratio = 1.1)
+mlra.firm.out <- mlra(scale(open_firm_copy_diff), scale(open_firm_copx_diff),order = 1, scales = scales, lags = 100, direction = 'p')
+x <- 0:100
+y <- scales
+fields::image.plot(x, y, mlra.firm.out$betas, axes=TRUE, legend.lab = "Beta Coefficient", ylab="Scale", xlab="Lag", main="MLRA on COPxy firm")
+
+scales <- logscale(scale_min = 16, scale_max = length(open_foam_copx_diff)/4, scale_ratio = 1.1)
+mlra.foam.out <- mlra(scale(open_foam_copy_diff), scale(open_foam_copx_diff),order = 1, scales = scales, lags = 100, direction = 'p')
+x <- 0:100
+y <- scales
+fields::image.plot(x, y, mlra.foam.out$betas, axes=TRUE, legend.lab = "Beta Coefficient", ylab="Scale", xlab="Lag", main="MLRA on COPxy foam")
+
+
+```
+
 
 ## Surrogate Methods
 
