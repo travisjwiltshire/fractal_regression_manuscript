@@ -422,13 +422,11 @@ mra.plot(mra.firm.out.yx)
 
 ### Multi-scale Lagged Regression Analysis
 
-Multi-scale lagged regression analysis is an extension of MRA that allows for examining the influence as a function of scale, but also of time lag. In particular, the key questions that can be asked with MLRA are: a) *How does the influence of one time series on another time series change as a function of scale at different time lags?* and b) *Does the dominant time scale of influence change over successive time lags?* DESCRIBE MLRA ALGORITHM HERE.
+Multi-scale lagged regression analysis is an extension of MRA that allows for examining the influence as a function of scale, but also of time lag. In particular, the key questions that can be asked with MLRA are: a) *How does the influence of one time series on another time series change as a function of scale at different time lags?* and b) *Does the dominant time scale of influence change over successive time lags?* The MLRA algorithm performs the same as MRA with a key distinction. It runs the MRA algorithm for each of a desired number of lags. 
 
 #### MLRA Examples
 
--   MLRA
 
-    -   Key Question
     -   Simulated data: Equation from Aaron from grant on MLRA
 
 In terms of the empirical data, below we apply the MLRA to the COPxy data for the firm and the foam examples. We investigate up to a lag of 100. 
