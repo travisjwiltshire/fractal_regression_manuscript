@@ -87,7 +87,7 @@ In order to demonstrate the methods within the 'fractalRegression' package, we g
 *Overview of package functions, objectives, and output*
 
 | Function      | Objective                                                                                                                         | Output                                                                                                                                                                                                                                         |
-|--------------|------------------------|----------------------------------|
+|------------------|-----------------------|-------------------------------|
 | `dfa()`       | Estimate long-range correlation in a time series                                                                                  | Object containing the overall $\alpha$ estimate and, if desired the `logScales` and `logRMS`                                                                                                                                                   |
 | `mfdfa()`     | Estimate the magnitude and range of long-range correlations in a time series                                                      | Object containing the $\log$ scales used for the analysis, the $\log$ fluctuation function for each scale and $q$, the various q-order exponents, $Hq$, $Tau$, $h$, and \$Dh\$. The base of $log$ depends on scale construction and user input |
 | `dcca()`      | Estimates of scale-specific correlation between two time-series                                                                   | Object containing the scales used for the analysis and the $\rho$ '`rho'` values for each scale                                                                                                                                                |
@@ -145,15 +145,15 @@ dfa.plot(dfa.anti.corr)
 
 For an empirical example, we apply the `dfa()` function to the Human Balance Dataset [@santos2016]. This publicly available dataset includes signals from a force platform measured that measures the center of pressure in the x and y dimension for 87 young adults (we exclude the older adults from our analyses for simplicity sake). Trials lasted 60s. See original paper for additional details on data processing [@santos2016]. For the empirical examples, we use two different time series featuring a participant standing on a firm (rigid) surface with eyes open and a foam (unstable) surface with eyes open. Note, however, that we analyze the dataset more fully in INSERT SECTION NAME HERE. We chose this dataset because postural sway data are known to exhibit interesting fractal dynamics [@collins1993 @delignières2011 @delignieresTransitionPersistentAntiPersistent2011] and we can systematically evaluate the data for all of the univariate and bivariate analyses detailed in this work.
 
-For the center of pressure (COP) data, we take the first order differences of each series. For the univariate analyses, we focus on analyses of the COP data in the x dimension. Then, we define the appropriate scales for the analyses.
+For center of pressure (COP) data, we take the first order differences of each series as a rough approximation of COP velocity. For the univariate analyses, we focus on analyses of the COP data in the x dimension. Then, we define the appropriate scales for the analyses.
 
 ```{r include=FALSE}
-open_firm <- read.delim("~/Human Balance Data/BDS00001.txt")
-open_foam <- read.delim("~/Human Balance Data/BDS00007.txt")
-open_firm_copx_diff <- diff(open_firm$COPx.cm.)
-open_firm_copy_diff <- diff(open_firm$COPy.cm.)
-open_foam_copx_diff <- diff(open_foam$COPx.cm.)
-open_foam_copy_diff <- diff(open_foam$COPy.cm.)
+open_firm <- read.csv("./BDS00001.csv")
+open_foam <- read.csv("./BDS00007.csv")
+open_firm_copx_diff <- diff(open_firm$X.COPx.)
+open_firm_copy_diff <- diff(open_firm$X.COPy.)
+open_foam_copx_diff <- diff(open_foam$X.COPx.)
+open_foam_copy_diff <- diff(open_foam$X.COPy.)
 ```
 
 **Figure 2**
@@ -173,7 +173,7 @@ dfa.plot(open_firm_copx_diff_dfa)
 dfa.plot(open_foam_copx_diff_dfa)
 ```
 
-Importantly, regarding the question one can ask using DFA, we observe from Figure ##, that long range correlations are positive and approximately `r open_firm_copx_diff_dfa$alpha` - `r open_foam_copx_diff_dfa$alpha`. However, from visual inspection of these plots we observe that two slopes might fit better than one for these time series; a phenomenon known as crossovers points [@ge2013]. One common approach when such crossover points exist is to recognize that the signal might be best characterized by two scaling regions up to a particular time scale. We provide an example of how to check for where the break point is below using piece-wise regression.
+Importantly, regarding the question one can ask using DFA, we observe from Figure ##, that long range correlations are positive and approximately `r open_firm_copx_diff_dfa$alpha` - `r open_foam_copx_diff_dfa$alpha`. However, from visual inspection of these plots we observe that two slopes might fit better than one for these time series; a phenomenon known as crossovers points [@collins1993 @ge2013]. One common approach when such crossover points exist is to recognize that the signal might be best characterized by two scaling regions, before and after an inflection point. We provide an example of how to check for where the break point is below using piece-wise regression.
 
 ```{r}
 require(segmented)
@@ -186,7 +186,7 @@ plot(open_firm_copx_diff_dfa$log_scale,open_firm_copx_diff_dfa$log_rms, pch=16, 
 plot(seg,add=T, lwd=2,col="red")
 ```
 
-In the example above, we observe that the is a crossover point at around the scale size of log 6. And, from the results in Table 2 below, we osberve that there are two distinct scaling relationships of $\alpha =$ 1.3 and $\alpha =$ 0.42, respectively. The postural control literature has shown evidence of this type of dynamic before with short time scales displaying more DESCRIBE and longer time scale exhibiting DESCRIBE (CITE).
+In the example above, we observe a crossover point at around the scale size of log 6. And, from the results in Table 2 below, we observe that there are two distinct scaling relationships corresponding to $\alpha =$ 1.3 and $\alpha =$ 0.42, respectively. This is a well known result in the postural control literature such that short time scales correspond to persistent temporal correlation and the longer time scales correspond to anti-persistent correlation. More substantively, short time scale dynamics correspond to periods of exploratory sway, whereas longer time scales correspond to corrective movements that prevent exceeding the base of support and falling[@collins1993 @delignières2011 @delignieresTransitionPersistentAntiPersistent2011].
 
 **Table 2**
 
@@ -198,11 +198,11 @@ kable(slope(seg))
 
 ### Multifractal Detrended Fluctuation Analysis
 
-Multifractal Detrended Fluctuation Analysis (MFDFA; @kantelhardtMultifractalDetrendedFluctuation2002) is an extension of DFA by generalizing the fluctuation function to a range of exponents of the $q$th order. The key question that can be answered by MFDFA is: *how does the magnitude and direction of long range correlation change over time within a single time series?* Like DFA, MFDFA entails splitting a time series into several small bins (e.g., 16). In each bin, the least squares regression is fit and subtracted within each window. However, the residuals are raised to a range of exponents $q$ and averaged within each window. So when $q = 2$, DFA is equal to MFDFA. When $q >2$, larger residual are emphasized and when $q < 2$, smaller residuals are emphasized. The rest of the DFA algorithm is performed for each window and windows size for all values of $q$. We refer the reader to the work of Kelty-Stephens and colleagues @kelty-stephenMultifractalTemporalCorrelations2016 Figure 3 for a visualization of the algorithm and to Kantelhardt and colleagues @kantelhardtMultifractalDetrendedFluctuation2002 for additional mathematical description.
+Multifractal Detrended Fluctuation Analysis (MFDFA; @kantelhardtMultifractalDetrendedFluctuation2002) is an extension of DFA by generalizing the fluctuation function to a range of exponents of the $q$th order. The key question that can be answered by MFDFA is: *how does the magnitude and direction of long range correlation change over time within a single time series?* Like DFA, MFDFA entails splitting a time series into several small bins (e.g., 16). In each bin, least squares regression is fit and subtracted within each window. However, the residuals are raised to a range of exponents $q$ and averaged within each window. So when $q = 2$, MFDFA reduces to ordinary DFA. When $q >2$, relatively larger residuals are emphasized and when $q < 2$, relatively smaller residuals are emphasized. The rest of the DFA algorithm is performed for each window and windows size for all values of $q$. We refer the reader to the work of Kelty-Stephens and colleagues @kelty-stephenMultifractalTemporalCorrelations2016 Figure 3 for a visualization of the algorithm and to Kantelhardt and colleagues @kantelhardtMultifractalDetrendedFluctuation2002 for additional mathematical description.
 
 ### MFDFA Examples
 
-To demonstrate the use of `mfdfa()`, we work with data included in our package (`fractaldata`), that was originally provided by @ihlenIntroductionMultifractalDetrended2012 . It includes a white noise time series, monofractal time series, and a multifractal time series.
+To demonstrate the use of `mfdfa()`, we work with data included in our package (`fractaldata`), that was originally provided by @ihlenIntroductionMultifractalDetrended2012. It includes a white noise time series, a monofractal time series, and a multifractal time series.
 
 **Figure 3**
 
@@ -212,16 +212,16 @@ To demonstrate the use of `mfdfa()`, we work with data included in our package (
 # Load the data
 data("fractaldata")
 
-white.plot <- ggplot(fractaldata, aes(y=whitenoise, x=time))+geom_line()+ggtitle("white noise")+ylab("signal amplitude")
+white.plot <- ggplot(fractaldata, aes(y=whitenoise, x=time))+geom_line()+ggtitle("White Noise")+ylab("")
 
-mono.plot <- ggplot(fractaldata, aes(y=monofractal, x=time))+geom_line()+ggtitle("monofractal")+ylab("signal amplitude")
+mono.plot <- ggplot(fractaldata, aes(y=monofractal, x=time))+geom_line()+ggtitle("Monofractal")+ylab("Amplitude (a.u.)")
 
-multi.plot <- ggplot(fractaldata, aes(y=multifractal, x=time))+geom_line()+ggtitle("multifractal")+ylab("signal amplitude")
+multi.plot <- ggplot(fractaldata, aes(y=multifractal, x=time))+geom_line()+ggtitle("Multifractal")+ylab("")
 
 gridExtra::grid.arrange(white.plot,mono.plot,multi.plot,nrow=3)
 ```
 
-Performing MF-DFA is relatively straight forward with the `mfdfa()` function. As shown in the example below, one needs to enter the time series `x` to perform the analysis on, the range of `q` order exponents to use, the `order` of polynomial detrending, and the `scales` for the analysis. In this case, we define our `scales` by choosing logarithmically spaced scales and we select values of q from -5 to 5.
+Performing MFDFA is straight forward with the `mfdfa()` function. As shown in the example below, one needs to enter the time series `x` to perform the analysis on, the range of `q` order exponents to use, the `order` of polynomial detrending, and the `scales` for the analysis. In this case, we define our `scales` by choosing logarithmically spaced scales and we select values of q from -5 to 5. Note here that we also who that the scale factor need not be a power of two but should be evenly spaced in the logarithmic domain by, for example, using different logarithm bases. We provide the `logscale` function to facilitate scale construction.
 
 ```{r, echo=TRUE}
 
@@ -235,18 +235,18 @@ multi.mf.dfa.out <- mfdfa(x = fractaldata$multifractal, q = c(-5:5), order = 1, 
 
 ```
 
-A common way to understand if there is evidence of multifractality is to examine a plot showing the slopes of the `log_fq` at the `log_scale` values. If all the plots have the same slope, that provides evidence of monofractality. If there are distinct slopes, then there is evidence of multifractality. It's also important to check here that the slopes of `log_scale` and `log_fq` are largely linear, thus implying that they are scale invariant. If not, then it could be the case that a higher order polynomial detrending is appropriate (see Kantelhardt et al., 2001). Figure 4 shows what we would expect for a monofractal and multifractal signal. In other words, the monofractal signal shows a consistent slope, whereas the multifractal signal shows variability in the slopes.
+A common way to understand if there is evidence of multifractality is to examine a plot showing the slopes of the `log_fq` at the `log_scale` values. If all the plots have the same slope, that provides evidence of monofractality. If there are distinct slopes, then there is evidence of multifractality. It's also important to check here that the slopes of `log_scale` and `log_fq` are approximately linear, thus implying that they are scale invariant. If not, then it could be the case that a higher order polynomial detrending is appropriate (see Kantelhardt et al., 2001). Figure 4 shows what we would expect for a monofractal and multifractal signal. In other words, the monofractal signal shows a consistent slope, whereas the multifractal signal shows variability in the slopes.
 
 **Figure 4**
 
 *mfdfa.plots for mono-(top) and multifractal series (bottom). The four panels correspond to DETAILS HERE.*
 
 ```{r, echo=FALSE}
-mfdfa.plot(mono.mf.dfa.out, do.surrogate = TRUE)
-mfdfa.plot(multi.mf.dfa.out, do.surrogate = TRUE)
+mfdfa.plot(mono.mf.dfa.out, do.surrogate = FALSE)
+mfdfa.plot(multi.mf.dfa.out, do.surrogate = FALSE)
 ```
 
-A common metric for comparing the multifractal spectrum is to calculate the width ($W$) as $h_{max} - h_{min}$. Let's do this to compare the monofractal and multifractal time series. We observe in this case that for the monofractal signal $W_{mono} =$ `r max(mono.mf.dfa.out$h) - min(mono.mf.dfa.out$h)` and $W_{multi} =$ `r max(multi.mf.dfa.out$h) - min(multi.mf.dfa.out$h)`. If plot the multifractal spectra D(h) against h, we clearly observe the difference in the widths of the multifractal spectra for the mono- and multifractal signals, as shown in Figure 4 above.
+A common metric for comparing multifractal spectra is to calculate the width ($W$) as $h_{max} - h_{min}$. Let's do this to compare the monofractal and multifractal time series. We observe in this case that for the monofractal signal $W_{mono} =$ `r max(mono.mf.dfa.out$h) - min(mono.mf.dfa.out$h)` and $W_{multi} =$ `r max(multi.mf.dfa.out$h) - min(multi.mf.dfa.out$h)`. If plot the multifractal spectra D(h) against h, we clearly observe the difference in the widths of the multifractal spectra for the mono- and multifractal signals, as shown in Figure 4 above.
 
 For our empirical analysis, we again turn to the postural data. We set out parameters appropriate for the data and run `mfdfa()`.
 
@@ -259,16 +259,17 @@ open_foam_copx_diff_mfdfa <- mfdfa(x=open_foam_copx_diff, q = -5:5, order = 1, s
 ```
 
 ```{r}
-
+mfdfa.plot(open_firm_copx_diff_mfdfa, do.surrogate = FALSE)
+mfdfa.plot(open_foam_copx_diff_mfdfa, do.surrogate = FALSE)
 ```
 
 #### DFA and MFDFA Considerations
 
-We recommend a few points of consideration here in using this function. One is to be sure to evaluate whether there are cross-over points in the log scale-log fluctuation plots [@pengMosaicOrganizationDNA1994; @perakakis2009]. Cross-over points (or a visible change in the slope as a function of scale) indicate that a mono-fractal characterization does not sufficiently characterize the data. If cross-over points are evident, we recommend proceeding to estimate the two scaling regions with a piece-wise regression.
+We recommend a few points of consideration in using these functions. One is to be sure to evaluate whether there are cross-over points in the log scale-log fluctuation plots [@pengMosaicOrganizationDNA1994; @perakakis2009]. Cross-over points (or a visible change in the slope as a function of scale) indicate that a simple mono-fractal characterization does not sufficiently characterize the data. If cross-over points are evident, we recommend proceeding to estimate the two scaling regions with a piece-wise regression.
 
-While it is common to use only linear detrending with DFA, it is important to inspect the trends in the data to determine if it would be more appropriate to use a higher order polynomial for detrending, and/or compare the DFA output for different polynomial orders [@kantelhardtDetectingLongrangeCorrelations2001].
+While it is common to use only linear detrending with DFA, this is not necessarily best practice. Instead, a more rigorous approach requires inspection trends in the data to determine if a higher order polynomial would be more appropriate for detrending. One can then compare the DFA output for different polynomial orders [@kantelhardtDetectingLongrangeCorrelations2001] to determine if a genuine inflection point is present or if nonlinearity in DFA and MFDFA emerges due to unadressed nonlinear trends in the original series [@likens2019].
 
-General recommendations for choosing the min and max scale are minimum scale of 10 and a maximum scale of N/4, where N is the total number of observations in the signal. See Eke et al. (2002) [@ekeFractalCharacterizationComplexity2002] and Gulich and Zunino (2014) [@gulichCriterionDeterminationOptimal2014] for additional considerations.
+General recommendations for choosing the min and max scale are minimum scale of 10 and a maximum scale of N/4, where N is the total number of observations in the signal. See Eke et al. (2002) [@ekeFractalCharacterizationComplexity2002] and Gulich and Zunino (2014) [@gulichCriterionDeterminationOptimal2014] for additional considerations but also keep in mind specific research areas may also have other criteria [@damouras2010 @marmelat2019].
 
 ## Bivariate Methods
 
