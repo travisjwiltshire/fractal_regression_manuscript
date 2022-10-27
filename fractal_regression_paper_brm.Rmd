@@ -1,3 +1,4 @@
+---
 title             : "fractalRegression: An R package for multiscale regression and fractal analyses"
 shorttitle        : "FRACTAL REGRESSION"
 author: 
@@ -48,7 +49,6 @@ editor_options:
     wrap: 72
 bibliography: library.bib #DELETE THIS BEFORE KNIT NEEDED FOR ZOTERO COMPATIBILITY
 ---
-
 ```{r setup, include = FALSE}
 library("papaja")
 library("fractalRegression")
