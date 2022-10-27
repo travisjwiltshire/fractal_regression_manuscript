@@ -1,5 +1,3 @@
-<<<<<<< HEAD
----
 title             : "fractalRegression: An R package for multiscale regression and fractal analyses"
 shorttitle        : "FRACTAL REGRESSION"
 author: 
