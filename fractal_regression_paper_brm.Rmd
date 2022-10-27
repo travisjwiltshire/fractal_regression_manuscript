@@ -283,7 +283,7 @@ Simplified, with DFA, the key metric is $\alpha$, but in DCCA, one estimates the
 
 #### DCCA Examples
 
-To demonstrate the use of `dcca()`, we used the `mc_arfima()` function from our package to simulate two time series with known properties. Specifically, we use the multicorrelated ARFIMA examples from Kristoufec's work [@kristoufekMixedcorrelatedARFIMAProcesses2013]. In this case, we use the parameters from Kristoufec (2013) for Model 1 (p. 6,487), that generates two time series of length 10,000 that exhibit long range correlations (LRC) as well as long range cross-correlations (LRCC). The code for simulating these two time series is shown below. Additionally, Figure #, shown below, visualizes a subset of these time series.
+To demonstrate the use of `dcca()`, we used the `mc_arfima()` function from our package to simulate two time series with known properties. Specifically, we use the multicorrelated ARFIMA examples from Kristoufek's work [@kristoufekMixedcorrelatedARFIMAProcesses2013]. In this case, we use the parameters from Kristoufek (2013) for Model 1 (p. 6,487), that generates two time series of length 10,000 that exhibit long range correlations (LRC) as well as long range cross-correlations (LRCC). The code for simulating these two time series is shown below. Additionally, Figure #, shown below, visualizes a subset of these time series.
 
 ```{r message=FALSE}
 set.seed(987345757)
@@ -303,7 +303,7 @@ plot(sim1[2000:3000,1],type='l', ylab= "Signal Amplitude", xlab='Time', main = "
 lines(sim1[2000:3000,2], col='blue')
 ```
 
-To perform the `dcca()` on these time series, we could use the code below, where we first define the `scales` using using the `logscale()` to define a set of logarithmically spaced scales to use for the analysis.
+As can be seen in \hl{Figure **}, the simulated time series, although quite noisy, appear to covary over time with similar trends. To perform the `dcca()` on these time series, we use the code below, where we first define the `scales` using the `logscale()` function described earlier along with the `dcca()` function itself.
 
 ```{r}
 scales <- logscale(scale_min = 10, scale_max = 1000, scale_ratio = 1.1)
@@ -311,7 +311,7 @@ scales <- logscale(scale_min = 10, scale_max = 1000, scale_ratio = 1.1)
 dcca.out.arfima <- dcca(sim1[,1], sim1[,2], order = 1, scales = scales)
 ```
 
-From here, we can visualize the output of the analysis as shown below in Figure #. We observe that, as expected, the correlation between the MC-ARFIMA processes are consistently high (all $\rho$'s $> .8$) and continue to be high at increasing time scales. We also add standard errors plotted around each point, but note these are based on one simulation only and more robust estimates of standard error could be calculated using many time series.
+Next, we visualize the output of DCCA in Figure #. We observe that, as expected, the correlation between the MC-ARFIMA processes are consistently high (all $\rho$'s $> .8$) and continue to be high at increasing time scales.
 
 **Figure \#**
 
@@ -331,7 +331,17 @@ dcca.plot(dcca.out.arfima, order = 1, ci = FALSE, iterations = NULL, return.ci =
 #dcca.plot
 ```
 
-As a point of comparison, we can generate a time series in contrast with this that exhibits processes with LRC and short-range cross-correlation (SRCC) using the code below. In contrast to the previous DCCA analysis, Figure \# shows a signal that begins with a high cross-correlation ($\rho$'s $> .6$) , but that begins to deviate and trend substantially lower at increasing scale sizes approaching $\rho = 0$.
+Figure \## alone is difficult to interpret on its own. Next we demonstrate additional plot and analysis features of `dcca()` by modifying the above code as shown below by setting. Loess smoothing can also be applied to both $\rho(s)$ and its confidence intervals using `loess.rho = TRUE` and `loess.ci = TRUE`. Those latter options are useful for reducing the impact of increasing variance in estimates of $\rho(s)$ at large scales [@likens2019].
+
+**Figure \#**
+
+*DCCA output for long range correlation and long range cross-correlation*
+
+```{r, echo = FALSE}
+dcca.plot(dcca.out.arfima, order = 1, ci = TRUE, iterations = NULL, return.ci = FALSE, loess.rho = TRUE, loess.ci = TRUE)
+```
+
+As a point of comparison, we can generate a time series in contrast with this that exhibits processes with LRC and short-range cross-correlation (SRCC) using the code below. In contrast to the previous DCCA analysis, Figure \# shows a signal that begins with a high cross-correlation ($\rho$'s $> .6$) , but that begins to deviate and trend substantially lower at increasing scale sizes approaching $\rho = 0$. In fact, based on the plotted confidence intervals, it is apparent that the correlation between the two series becomes non-significant from a conventional statistical standpoint.
 
 ```{r}
 sim2 <- mc_ARFIMA(process="Mixed_ARFIMA_AR", alpha = 1,beta = 1,gamma = 1,delta = 1,n =10000,d1=0.4,d2=0.4,theta1=0.8,theta2=0.8,rho=0.9)
@@ -344,11 +354,8 @@ sim2 <- mc_ARFIMA(process="Mixed_ARFIMA_AR", alpha = 1,beta = 1,gamma = 1,delta 
 ```{r, echo=FALSE}
 scales <- logscale(scale_min = 10, scale_max = 1000, scale_ratio = 1.1)
 dcca.out.arfima2 <- dcca(sim2[,1], sim2[,2], order = 1, scales = scales)
-dcca.plot(dcca.out.arfima2, order = 1, ci = FALSE, iterations = NULL, return.ci = FALSE)
-#dcca.out.arfima2 <- as.data.frame(dcca.out.arfima2)
-#error <- sd(dcca.out.arfima2$rho)/sqrt(length(dcca.out.arfima2$rho))
-#dcca.plot2 <- ggplot(data=dcca.out.arfima2, aes(x=scales,y=rho)) + geom_point() +geom_line() + ggtitle("DCCA on MC-ARFIMA processes with LRC and SRCC") + geom_pointrange(aes(ymin=rho-error,ymax=rho+error))
-#dcca.plot2
+dcca.plot(dcca.out.arfima2, order = 1, ci = TRUE, iterations = NULL, return.ci = FALSE, loess.rho = TRUE, loess.ci = TRUE)
+
 ```
 
 Turning next to the empirical balance data, we apply DCCA to the differenced COPx and COPy data for the firm and foam platforms. We again set appropriate values for `scales` and apply the `dcca()` function to the pairs of time series.
@@ -367,17 +374,23 @@ dcca.out.open.foam <- dcca(open_foam_copx_diff, open_foam_copy_diff, order = 1, 
 *DCCA output for empirical COPx and COPy balance data for the eyes open while standing on the firm surface (top) and foam surface (bottom).*
 
 ```{r echo=FALSE}
-dcca.plot(dcca.out.open.firm, order = 1, ci = FALSE, iterations = NULL, return.ci = FALSE)
+dcca.plot(dcca.out.open.firm, order = 1, ci = TRUE, iterations = NULL, return.ci = FALSE, loess.rho = TRUE, loess.ci = TRUE)
 
-dcca.plot(dcca.out.open.foam, order = 1, ci = FALSE, iterations = NULL, return.ci = FALSE)
+dcca.plot(dcca.out.open.foam, order = 1, ci = TRUE, iterations = NULL, return.ci = FALSE, loess.rho = TRUE, loess.ci = TRUE)
 
 ```
 
-In examining the output from these analyses, Figure \# shows a clear difference between the two conditions. First, in the firm platform example, the $\rho$ values reach an order of magnitude greater than in the foam condition with the max $\rho$ = `r max(dcca.out.open.firm$rho)`' compared to `r max(dcca.out.open.foam$rho)` for the foam condition. In addition, we observe for the foam example, that the time scale of maximum correlation is `r dcca.out.open.firm$scales[which.max(dcca.out.open.firm$rho)]`, which is a larger time scale when compared to the foam example, which had a maximum correlation at scale r `dcca.out.open.foam$scales[which.max(dcca.out.open.foam$rho)]`. In addition, the pattern of change in correlation across scales is slightly different. Th firm example is higher overall, it starts relatively low at very small time scales before a rapid increase and then steady decrease before exhibiting some pseudo-periodic behavior at increasingly larger scales. By contrast, the foam example has relatively lower overall correlation values, the smallest scale is the highest followed by a steady decrease and then also some pseudo-periodic behavior at increasingly larger scales.
+In examining the output from these analyses, Figure \# shows a clear difference between the two conditions. First, in the firm platform example, the $\rho(s)$ values reach an order of magnitude greater than in the foam condition with the max $\rho(s)$ = `r max(dcca.out.open.firm$rho)`' compared to `r max(dcca.out.open.foam$rho)` for the foam condition. In addition, we observe for the foam example, that the time scale of maximum correlation is `r dcca.out.open.firm$scales[which.max(dcca.out.open.firm$rho)]`, which is a larger time scale when compared to the foam example, which had a maximum correlation at scale r `dcca.out.open.foam$scales[which.max(dcca.out.open.foam$rho)]`. In addition, the pattern of change in correlation across scales is slightly different. Th firm example is higher overall, it starts relatively low at very small time scales before a rapid increase and then steady decrease before exhibiting some pseudo-periodic behavior at increasingly larger scales. By contrast, the foam example has relatively lower overall correlation values, the smallest scale is the highest followed by a steady decrease and then also some pseudo-periodic behavior at increasingly larger scales. Lastly, we can also derive statistical conclusions because, in the firm condition, the two series are correlated at all scales, whereas the series are only correlated at the finest scales in the foam condition.
 
-### Multi-scale Regression Analysis
+### Multiscale Regression Analysis
 
-Multi-scale regression analysis (MRA) is an adaptation of DCCA that brings the analyses into a predictive, regression framework @kristoufek2015 . The key questions that can be answered by it are: a) *How does the influence of one time series on another time series change as a function of scale?* and b) *What is/are the dominant (time) scale(s) of influence of one time series on another time series?* The algorithm is largely the same as DCCA, with a key difference being that instead of estimating scale-wise symmetric correlation coefficients, leveraging methods of Ordinary Least Squares (OLS) regression, asymmetric $\beta$ coefficients are estimated (see @likens2019; @kristoufek2015 ).
+Multiscale regression analysis (MRA) is an adaptation of DCCA that brings the analyses into a predictive, regression framework [@kristoufek2015]. The key questions that can be answered by it are: a) *How does the influence of one time series on another time series change as a function of scale?* and b) *What is/are the dominant (time) scale(s) of influence of one time series on another time series?* The algorithm is largely the same as DCCA, with a key difference being that instead of estimating scale-wise symmetric correlation coefficients, leveraging methods of Ordinary Least Squares (OLS) regression, asymmetric $\beta$ coefficients are estimated (see @likens2019; @kristoufek2015 ) according to the following equation
+
+$$
+\beta(s)=\frac{F_{xy}(s)}{F^2_x(s)}
+$$
+
+The $\beta(s)$ equation differs from the $\rho(s)$ equation only in the denominator where $F^2_x(s)$ is the average squared residual at each scale and $F_xy(s)$ is still the scale-wise covariance.
 
 #### MRA Examples
 
@@ -389,18 +402,15 @@ scales <- logscale(scale_min = 10, scale_max = 1000, scale_ratio = 1.1)
 mra.out <- mra(x = sim1[,1], y = sim1[,2],order = 1, scales = scales)
 ```
 
-We can then visualize these results as shown below in Figure #. Generally, we observe that the $\beta$ coefficients are relatively stable at increasing time scales with a general, perhaps quadratically increasing trend. Here it is also important to investigate the change in $R^2$ as well as the $t$-values. Below we see that the $R^2$ is quite high at most of the time scales with $R^2_{min} =$ `r round(min(mra.out$r2),2)` and $R^2_{max} =$ `r round(max(mra.out$r2),2)` and all of the $t$-values greater than the conventional cut-off at 1.96. So between these two component ARFIMA processes, the output of MRA shows that much of the scale specific variance in $y_t$ is explained and predicted by $x_t$.
+We can then visualize these results as shown below in Figure #. Generally, we observe that the $\beta$ coefficients are relatively stable at increasing time scales with a general, perhaps quadratically increasing trend. Here it is also important to investigate the change in $R^2$ as well as the $t$-values. Below we see that the $R^2$ is quite high at most of the time scales with $R^2_{min} =$ `r round(min(mra.out$r2),2)` and $R^2_{max} =$ `r round(max(mra.out`\$r2),2) and all $\beta(s)$ exceed the confidence intervals, implying conventional statistical significance. So between these two component ARFIMA processes, the output of MRA shows that much of the scale specific variance in $y_t$ is explained and predicted by $x_t$.
 
 **Figure \#**
 
 *MRA output for long range correlation and long range cross-correlation.*
 
 ```{r echo=FALSE}
-mra.plot(mra.out)
-#error <- sd(mra.out$betas)/sqrt(length(mra.out$betas))
-#mra.plot <- ggplot(data=mra.out, aes(x=scales,y=betas)) + geom_point() +geom_line() +ggtitle("Multiscale Regression Analysis for MC-ARFIMA with LRC and LRCC") + geom_pointrange(aes(ymin=betas-error,ymax=betas+error))
-#geom_smooth(method=lm, formula = y ~ poly(x, 2), se = TRUE)
-#mra.plot
+mra.plot(mra.out, order = 1, ci = TRUE, iterations = NULL, return.ci = FALSE, loess.beta = TRUE, loess.ci = TRUE)
+
 ```
 
 ```{r warning=FALSE, include=FALSE}
@@ -413,24 +423,54 @@ mra.firm.out.yx <- mra(open_firm_copy_diff, open_firm_copx_diff, order = 1, scal
 
 ```
 
-Turning next to the empirical balance data, we can determine whether postural adjustments in the COPx are predictive of adjustments in COPy, and vice versa. This means that we use the `mra()` function two times and reverse the order of entry for the x and y arguments to allow for determining the degree to which each signal can predict the other across scales. In Figure \# below, we see the resulting $\beta$'s we observed for the the balance data on the firm surface. Notably, the COPx predicting COPy (max $\beta$ = `r max(mra.firm.out.xy$betas)`) has noticeably smaller $\beta$ values compared to COPy predicting COPx (max $\beta$ = `r max(mra.firm.out.yx$betas)`). Notice as well how Figure \# (bottom), where adjustments in the y dimension are predicting adjustments in the x dimension, resembles the DCCA plot for this analysis (see Figure \#). Given the assemtry in the magnitude of the $\beta$s, this example suggests that postural adjustments in the y dimension appear to be driving changes in the x dimension. And, there is a clear time scale where this relationship is strongest at scales = `r mra.firm.out.yx$scales[which.max(mra.firm.out.yx$betas)]`.
+Turning next to the empirical balance data, we can determine whether postural adjustments in the COPx are predictive of adjustments in COPy, and vice versa. This means that we use the `mra()` function two times and reverse the order of entry for the x and y arguments to allow for determining the degree to which each signal can predict the other across scales. In Figure \# below, we see the resulting $\beta$'s we observed for the the balance data on the firm surface. Notably, the COPx predicting COPy (max $\beta$ = `r max(mra.firm.out.xy$betas)`) has noticeably smaller $\beta$ values compared to COPy predicting COPx (max $\beta$ = `r max(mra.firm.out.yx$betas)`). Notice as well how Figure \# (bottom), where adjustments in the y dimension are predicting adjustments in the x dimension, resembles the DCCA plot for this analysis (see Figure \#). Given the assymetry in the magnitude of the $\beta$s, this example suggests that postural adjustments in the y dimension appear to be driving changes in the x dimension. And, there is a clear time scale where this relationship is strongest at scales = `r mra.firm.out.yx$scales[which.max(mra.firm.out.yx$betas)]`, implying a dominant mode of coordination between mediolateral and anterioposterior control processes.
 
 **Figure \#**
 
 *MRA output for balance data on foam surface with COPx predicting COPy (top) and COPy predicting COPx (bottom).*
 
 ```{r echo=FALSE}
-mra.plot(mra.firm.out.xy)
-mra.plot(mra.firm.out.yx)
+mra.plot(mra.firm.out.xy, order = 1, ci = TRUE, iterations = NULL, return.ci = FALSE, loess.beta = TRUE, loess.ci = TRUE)
+mra.plot(mra.firm.out.yx, order = 1, ci = TRUE, iterations = NULL, return.ci = FALSE, loess.beta = TRUE, loess.ci = TRUE)
 ```
 
-### Multi-scale Lagged Regression Analysis
+### Multiscale Lagged Regression Analysis
 
-Multi-scale lagged regression analysis is an extension of MRA that allows for examining the influence as a function of scale, but also of time lag. In particular, the key questions that can be asked with MLRA are: a) *How does the influence of one time series on another time series change as a function of scale at different time lags?* and b) *Does the dominant time scale of influence change over successive time lags?* The MLRA algorithm performs the same as MRA with a key distinction. It runs the MRA algorithm for each of a desired number of lags.
+Multiscale lagged regression analysis is an extension of MRA that allows for examining the influence as a function of scale, but also of time lag. In particular, the key questions that can be asked with MLRA are: a) *How does the influence of one time series on another time series change as a function of scale at different time lags?* and b) *Does the dominant time scale of influence change over successive time lags?* The MLRA algorithm performs the same as MRA with a key distinction. It runs the MRA algorithm for each of a desired number of lags.
 
 #### MLRA Examples
 
-    -   Simulated data: Equation from Aaron from grant on MLRA
+We demonstrate the use of MLRA on a simple two-element system
+
+$$
+y(t)=1+0.0y(t-50)+1.0x(t-50)+e_1(t)
+$$
+
+$$
+x(t)=1+0.0y(t-50)+0.0x(t-50)+e_1(t)
+$$
+In the above system, $y(t)$ is coupled to $x(t)$ at lag 50 but $x(t)$ is not coupled to $y(t)$. In Figure #, we see the output of MLRA when regression $y(t)$ on $x(t)$.
+
+```{r, echo = FALSE}
+e1 = rnorm(1000)
+e2 = rnorm(1000)
+x = 1 + e1
+y = rep(0, length(e2))
+for (t in 51:length(x)){
+  y[t] = 1 + 0.0*y[t-50] + 1.0*x[t-50] + e2[t]
+  # x[t] = 1 + 0.0*y[t-50] + 0.0*x[t-50] + e2[t]
+}
+x = x[51:length(x)]
+y = y[51:length(y)]
+scales = seq(10, 50, by = 5)
+mlra.out = mlra(x, y, order = 1, scales = scales, lags = 100,'n')
+
+breaks = 101
+
+fields::image.plot(x = 0:100, y = scales, z = mlra.out$betas,
+                   xlab = 'Lag', ylab = 'Scale')
+```
+
 
 In terms of the empirical data, below we apply the MLRA to the COPxy data for the firm and the foam examples. We investigate up to a lag of 100.
 
@@ -457,7 +497,7 @@ fields::image.plot(x, y, mlra.foam.out$betas, axes=TRUE, legend.lab = "Beta Coef
 
 ## Surrogate Methods
 
-In all of the above methods, one gets either a single estimate of a parameter (e.g., $\alpha$) or a range of estimates (e.g., $\rho$, $\beta$). While those estimates are meaningful in and of themselves, it is common practice to perform some form of null hypothesis test regarding the estimate. These are generally referred to as surrogate methods @kantz2003 . We present several options here that could be ranked in terms of increasing levels of rigor: randomized surrogates, iterative amplitude adjusted Fourier transformed (IAAFT) surrogates, and model based surrogates.
+In all of the above methods, one gets either a single estimate of a parameter (e.g., $\alpha$) or a range of estimates (e.g., $\rho(s)$, $\beta(s)$). While those estimates are meaningful in and of themselves, it is common practice to perform some form of null hypothesis test regarding the estimate. These are generally referred to as surrogate methods @kantz2003 . We present several options here that could be ranked in terms of increasing levels of rigor: randomized surrogates, iterative amplitude adjusted Fourier transformed (IAAFT) surrogates, and model based surrogates.
 
 ### Randomized Surrogates
 
