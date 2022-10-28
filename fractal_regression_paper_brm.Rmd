@@ -606,7 +606,7 @@ $\widehat{u}_t(s) = y_t - x_t\widehat{\beta}(s) - \overline{y_t - x_t\widehat{\b
 
 # Acknowledgments
 
-Author AL receives support from a National Institutes of Health Center grant (P20GM109090), National Science Foundation grant, National Strategic Research Institute/Department of Defense, and the Nebraska Collaboration Iinitiative.
+Author AL receives support from a National Institutes of Health Center grant (P20GM109090), National Science Foundation grant, National Strategic Research Institute/Department of Defense, and the Nebraska Collaboration Initiative.
 
 \newpage
 
