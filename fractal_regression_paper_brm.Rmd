@@ -448,8 +448,7 @@ $$
 
 $$
 x(t)=1+0.0y(t-50)+0.0x(t-50)+e_1(t)
-$$
-In the above system, $y(t)$ is coupled to $x(t)$ at lag 50 but $x(t)$ is not coupled to $y(t)$. In Figure #, we see the output of MLRA when regression $y(t)$ on $x(t)$.
+$$ In the above system, $y(t)$ is coupled to $x(t)$ at lag 50 but $x(t)$ is not coupled to $y(t)$. In Figure #, we see the output of MLRA when regressing $y(t)$ on $x(t)$.
 
 ```{r, echo = FALSE}
 e1 = rnorm(1000)
@@ -470,7 +469,6 @@ breaks = 101
 fields::image.plot(x = 0:100, y = scales, z = mlra.out$betas,
                    xlab = 'Lag', ylab = 'Scale')
 ```
-
 
 In terms of the empirical data, below we apply the MLRA to the COPxy data for the firm and the foam examples. We investigate up to a lag of 100.
 
