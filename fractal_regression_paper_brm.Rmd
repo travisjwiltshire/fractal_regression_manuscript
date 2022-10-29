@@ -87,7 +87,7 @@ In order to demonstrate the methods within the 'fractalRegression' package, we g
 *Overview of package functions, objectives, and output*
 
 | Function      | Objective                                                                                                                         | Output                                                                                                                                                                                                                                         |
-|------------------|-----------------------|-------------------------------|
+|---------------|-----------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `dfa()`       | Estimate long-range correlation in a time series                                                                                  | Object containing the overall $\alpha$ estimate and, if desired the `logScales` and `logRMS`                                                                                                                                                   |
 | `mfdfa()`     | Estimate the magnitude and range of long-range correlations in a time series                                                      | Object containing the $\log$ scales used for the analysis, the $\log$ fluctuation function for each scale and $q$, the various q-order exponents, $Hq$, $Tau$, $h$, and \$Dh\$. The base of $log$ depends on scale construction and user input |
 | `dcca()`      | Estimates of scale-specific correlation between two time-series                                                                   | Object containing the scales used for the analysis and the $\rho$ '`rho'` values for each scale                                                                                                                                                |
@@ -275,7 +275,7 @@ General recommendations for choosing the min and max scale are minimum scale of 
 
 ### Detrended Cross-Correlation Analysis
 
-Detrended Cross-Correlation Analysis (DCCA; @podobnikDetrendedCrossCorrelationAnalysis2008, @zebendeDCCACrosscorrelationCoefficient2011 ) is a bivariate extension of the DFA algorithm generalizing it to a correlational case between two time series that may be non-stationary. The key questions that can be asked with it are: a) *How does correlation between two time series change as a function of scale?* and b) *What is/are the dominant (time) scale(s) of coordination?* Such decisions are based on a predetermined threshold such as a conventional statistical significance as we demonstrate below. Researchers may also select other criteria appropriate for their research area.The DCCA algorithm is a direct genralization of the DFA algorithm but applied to two concomitantly measured time series, say *x* and *y*. As in DFA, time series are split into multiple bins and detrended using least squares regression. Separate regressions are performed for *x* and *y*. Within each bin, three quantities are estimated, the average squared residual of *x,* the average squared residual of *y*, and the average cross product (i.e., the covariance) between the residuals for *x* and the residuals for *y*. Each of those quantities is averaged across all bins of a given size. After taking the squared residual for *x* and *y*, we obtain scale-wise equivalents of covariance $F_{xy}(s)$ and standard deviations for *x* $F_x(s)$ and *y* $F_y(s)$. The use of $F$ to designate these quantities derives from originating literature. Thus, the scale-wise regression coefficient, the estimand of DCCA, is nothing more than the following quotient
+Detrended Cross-Correlation Analysis (DCCA; @podobnikDetrendedCrossCorrelationAnalysis2008, @zebendeDCCACrosscorrelationCoefficient2011 ) is a bivariate extension of the DFA algorithm generalizing it to a correlational case between two time series that may be non-stationary. The key questions that can be asked with it are: a) *How does correlation between two time series change as a function of scale?* and b) *What is/are the dominant (time) scale(s) of coordination?* Such decisions are based on a predetermined threshold such as a conventional statistical significance as we demonstrate below. Researchers may also select other criteria appropriate for their research area.The DCCA algorithm is a direct genralization of the DFA algorithm but applied to two concomitantly measured time series, say *x* and *y*. As in DFA, time series are split into multiple bins and detrended using least squares regression. Separate regressions are performed for *x* and *y*. Within each bin, three quantities are estimated, the average squared residual of *x,* the average squared residual of *y*, and the average cross product (i.e., the covariance) between the residuals for *x* and the residuals for *y*. Each of those quantities is averaged across all bins of a given size. After taking the squared residual for *x* and *y*, we obtain scale-wise equivalents of covariance $F_{xy}(s)$ and standard deviations for *x* $F_x(s)$ and *y* $F_y(s)$. The use of $F$ to designate these quantities derives from originating literature[@kristoufek2015 @likens2019]. Thus, the scale-wise regression coefficient, the estimand of DCCA, is nothing more than the following quotient
 
 $$\rho(s)=\frac{F_{xy}(s)}{F_x(s)F_y(s)}$$
 
@@ -331,7 +331,7 @@ dcca.plot(dcca.out.arfima, order = 1, ci = FALSE, iterations = NULL, return.ci =
 #dcca.plot
 ```
 
-Figure \## alone is difficult to interpret on its own. Next we demonstrate additional plot and analysis features of `dcca()` by modifying the above code as shown below by setting. Loess smoothing can also be applied to both $\rho(s)$ and its confidence intervals using `loess.rho = TRUE` and `loess.ci = TRUE`. Those latter options are useful for reducing the impact of increasing variance in estimates of $\rho(s)$ at large scales [@likens2019].
+Figure \#\# is difficult to interpret on its own. Next we demonstrate additional plot and analysis features of `dcca()` by modifying the above code as shown below `ci = TRUE`. Loess smoothing can also be applied to both $\rho(s)$ and its confidence intervals using `loess.rho = TRUE` and `loess.ci = TRUE`. Those latter options are useful for reducing the impact of increasing variance in estimates of $\rho(s)$ at large scales [@likens2019]. Note though that a much larger set of calculations takes place and may take sevral seconds up to several minutes (for long time series) to complete.
 
 **Figure \#**
 
@@ -380,11 +380,11 @@ dcca.plot(dcca.out.open.foam, order = 1, ci = TRUE, iterations = NULL, return.ci
 
 ```
 
-In examining the output from these analyses, Figure \# shows a clear difference between the two conditions. First, in the firm platform example, the $\rho(s)$ values reach an order of magnitude greater than in the foam condition with the max $\rho(s)$ = `r max(dcca.out.open.firm$rho)`' compared to `r max(dcca.out.open.foam$rho)` for the foam condition. In addition, we observe for the foam example, that the time scale of maximum correlation is `r dcca.out.open.firm$scales[which.max(dcca.out.open.firm$rho)]`, which is a larger time scale when compared to the foam example, which had a maximum correlation at scale r `dcca.out.open.foam$scales[which.max(dcca.out.open.foam$rho)]`. In addition, the pattern of change in correlation across scales is slightly different. Th firm example is higher overall, it starts relatively low at very small time scales before a rapid increase and then steady decrease before exhibiting some pseudo-periodic behavior at increasingly larger scales. By contrast, the foam example has relatively lower overall correlation values, the smallest scale is the highest followed by a steady decrease and then also some pseudo-periodic behavior at increasingly larger scales. Lastly, we can also derive statistical conclusions because, in the firm condition, the two series are correlated at all scales, whereas the series are only correlated at the finest scales in the foam condition.
+In examining the output from these analyses, Figure \# shows a clear difference between the two conditions. First, in the firm platform example, the $\rho(s)$ values reach an order of magnitude greater than in the foam condition with the max $\rho(s)$ = `r max(dcca.out.open.firm$rho)`' compared to `r max(dcca.out.open.foam$rho)` for the foam condition. Second, we observe for the foam example, that the time scale of maximum correlation is `r dcca.out.open.firm$scales[which.max(dcca.out.open.firm$rho)]`, which is a larger time scale when compared to the foam example, which had a maximum correlation at scale r `dcca.out.open.foam$scales[which.max(dcca.out.open.foam$rho)]`. Third, the pattern of change in correlation across scales is slightly different. The firm example is higher overall; it starts relatively low at very small time scales before a rapid increase and then steady decrease before stabilizing at increasingly larger scales. By contrast, the foam example has relatively lower overall correlation values, the smallest scale is the highest followed by a steady decrease and then also stabilizing at larger scales. Lastly, we can also derive statistical conclusions because, in the firm condition, the two series are correlated at all scales, whereas the series are only correlated at the finest scales in the foam condition.
 
 ### Multiscale Regression Analysis
 
-Multiscale regression analysis (MRA) is an adaptation of DCCA that brings the analyses into a predictive, regression framework [@kristoufek2015]. The key questions that can be answered by it are: a) *How does the influence of one time series on another time series change as a function of scale?* and b) *What is/are the dominant (time) scale(s) of influence of one time series on another time series?* The algorithm is largely the same as DCCA, with a key difference being that instead of estimating scale-wise symmetric correlation coefficients, leveraging methods of Ordinary Least Squares (OLS) regression, asymmetric $\beta$ coefficients are estimated (see @likens2019; @kristoufek2015 ) according to the following equation
+Multiscale regression analysis (MRA) is a further generalization of DCCA that brings the analyses into a predictive, regression framework [@kristoufek2015]. The key questions that can be answered by it are: a) *How does the influence of one time series on another time series change as a function of scale?* and b) *What is/are the dominant (time) scale(s) of influence of one time series on another time series?* The algorithm is largely the same as DCCA, with a key difference being that instead of estimating scale-wise symmetric correlation coefficients, leveraging methods of Ordinary Least Squares (OLS) regression, asymmetric $\beta$ coefficients are estimated (see @likens2019; @kristoufek2015 ) according to the following equation
 
 $$
 \beta(s)=\frac{F_{xy}(s)}{F^2_x(s)}
@@ -448,7 +448,9 @@ $$
 
 $$
 x(t)=1+0.0y(t-50)+0.0x(t-50)+e_1(t)
-$$ In the above system, $y(t)$ is coupled to $x(t)$ at lag 50 but $x(t)$ is not coupled to $y(t)$. In Figure #, we see the output of MLRA when regressing $y(t)$ on $x(t)$.
+$$ 
+
+In the above system, $y(t)$ is coupled to $x(t)$ at lag 50 but $x(t)$ is not coupled to $y(t)$. In Figure #, we see the output of MLRA when regressing $y(t)$ on $x(t)$.
 
 ```{r, echo = FALSE}
 e1 = rnorm(1000)
@@ -457,7 +459,7 @@ x = 1 + e1
 y = rep(0, length(e2))
 for (t in 51:length(x)){
   y[t] = 1 + 0.0*y[t-50] + 1.0*x[t-50] + e2[t]
-  # x[t] = 1 + 0.0*y[t-50] + 0.0*x[t-50] + e2[t]
+  x[t] = 1 + 0.0*y[t-50] + 0.0*x[t-50] + e1[t]
 }
 x = x[51:length(x)]
 y = y[51:length(y)]
@@ -470,7 +472,9 @@ fields::image.plot(x = 0:100, y = scales, z = mlra.out$betas,
                    xlab = 'Lag', ylab = 'Scale')
 ```
 
-In terms of the empirical data, below we apply the MLRA to the COPxy data for the firm and the foam examples. We investigate up to a lag of 100.
+Figure \#\# clearly represents the expected results. There is a strong positive relationship $\beta(s,l)$ at lag 50 that clearly approaches 1.0 but is close to zero elsewhere.
+
+In terms of the empirical data, below we apply MLRA to the COPxy data for the firm and the foam examples. We investigate up to a lag of 100.
 
 **Figure \#**
 
@@ -662,7 +666,7 @@ The following demonstration of the `fractalRegression` package is grouped in int
 *Overview of package functions, objectives, and output*
 
 | Function      | Objective                                                                                                                         | Output                                                                                                                                                                                                                           |
-|------------------|-----------------------|-------------------------------|
+|---------------|-----------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `dfa()`       | Estimate long-range correlation in a time series                                                                                  | Object containing the overall $\alpha$ estimate and, if desired the `logScales` and `logRMS`                                                                                                                                     |
 | `mfdfa()`     | Estimate the magnitude and range of long-range correlations in a time series                                                      | Object containing the $\log_m$ scales used for the analysis, the $\log_m$ fluctuation function for each scale and $q$, the various q-order exponents, $Hq$, $Tau$, $h$, and \$Dh\$. $m$ refers to an arbitrary logarithmic base. |
 | `dcca()`      | Estimates of scale-specific correlation between two time-series                                                                   | Object containing the scales used for the analysis and the $\rho$ '`rho'` values for each scale                                                                                                                                  |
