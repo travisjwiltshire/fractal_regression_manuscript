@@ -331,7 +331,7 @@ dcca.plot(dcca.out.arfima, order = 1, ci = FALSE, iterations = NULL, return.ci =
 #dcca.plot
 ```
 
-Figure \#\# is difficult to interpret on its own. Next we demonstrate additional plot and analysis features of `dcca()` by modifying the above code as shown below `ci = TRUE`. Loess smoothing can also be applied to both $\rho(s)$ and its confidence intervals using `loess.rho = TRUE` and `loess.ci = TRUE`. Those latter options are useful for reducing the impact of increasing variance in estimates of $\rho(s)$ at large scales [@likens2019]. Note though that a much larger set of calculations takes place and may take sevral seconds up to several minutes (for long time series) to complete.
+Figure \## is difficult to interpret on its own. Next we demonstrate additional plot and analysis features of `dcca()` by modifying the above code as shown below `ci = TRUE`. Loess smoothing can also be applied to both $\rho(s)$ and its confidence intervals using `loess.rho = TRUE` and `loess.ci = TRUE`. Those latter options are useful for reducing the impact of increasing variance in estimates of $\rho(s)$ at large scales [@likens2019]. Note though that a much larger set of calculations takes place and may take sevral seconds up to several minutes (for long time series) to complete.
 
 **Figure \#**
 
@@ -448,7 +448,7 @@ $$
 
 $$
 x(t)=1+0.0y(t-50)+0.0x(t-50)+e_1(t)
-$$ 
+$$
 
 In the above system, $y(t)$ is coupled to $x(t)$ at lag 50 but $x(t)$ is not coupled to $y(t)$. In Figure #, we see the output of MLRA when regressing $y(t)$ on $x(t)$.
 
@@ -472,7 +472,7 @@ fields::image.plot(x = 0:100, y = scales, z = mlra.out$betas,
                    xlab = 'Lag', ylab = 'Scale')
 ```
 
-Figure \#\# clearly represents the expected results. There is a strong positive relationship $\beta(s,l)$ at lag 50 that clearly approaches 1.0 but is close to zero elsewhere.
+Figure \## clearly represents the expected results. There is a strong positive relationship $\beta(s,l)$ at lag 50 that clearly approaches 1.0 but is close to zero elsewhere.
 
 In terms of the empirical data, below we apply MLRA to the COPxy data for the firm and the foam examples. We investigate up to a lag of 100.
 
