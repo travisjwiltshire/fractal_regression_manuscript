@@ -72,7 +72,7 @@ In particular, various methods related to Detrended Fluctuation Analysis (DFA) [
 
 Thus, there is a broad scientific appeal for these fractal-based analyses. While, the basic DFA algorithm has been implemented in numerous packages and software programs, more advanced methods such as Multifractal Detrended Fluctuation Analysis (MFDFA) [@kantelhardtMultifractalDetrendedFluctuation2002], Detrended Cross Correlation (DCCA) [@zebendeDCCACrosscorrelationCoefficient2011; @podobnikDetrendedCrossCorrelationAnalysis2008], and, in particular, fractal regression techniques such as Multiscale Regression Analysis (MRA) [@kristoufekDetrendedFluctuationAnalysis2015; @likensStatisticalPropertiesMultiscale2019] have not yet been implemented in a comprehensive software package. Thus, there is a clear need for a package that incorporates this functionality in order to advance theoretical research focused on understanding the time varying properties of natural phenomena and applied research that uses those insights in important areas such as healthcare [@cavanaugh2017] and education [@snow2016]. In this work, we provide an overview of our `fractalRegression` package, provide simulated and empirical examples of it's functions, and provide practical advice on the successful application of these methods.
 
-*Connect better to regression part (see 2019 paper from Aaron and Nia Multiscale regression intro and discussion)*
+*NEED THIS: Connect better to regression part (see 2019 paper from Aaron and Nia Multiscale regression intro and discussion)*
 
 # Package Overview
 
@@ -87,7 +87,7 @@ In order to demonstrate the methods within the 'fractalRegression' package, we g
 *Overview of package functions, objectives, and output*
 
 | Function      | Objective                                                                                                                         | Output                                                                                                                                                                                                                                         |
-|--------------|--------------------|---------------------------------------|
+|---------------|-----------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `dfa()`       | Estimate long-range correlation in a time series                                                                                  | Object containing the overall $\alpha$ estimate and, if desired the `logScales` and `logRMS`                                                                                                                                                   |
 | `mfdfa()`     | Estimate the magnitude and range of long-range correlations in a time series                                                      | Object containing the $\log$ scales used for the analysis, the $\log$ fluctuation function for each scale and $q$, the various q-order exponents, $Hq$, $Tau$, $h$, and \$Dh\$. The base of $log$ depends on scale construction and user input |
 | `dcca()`      | Estimates of scale-specific correlation between two time-series                                                                   | Object containing the scales used for the analysis and the $\rho$ '`rho'` values for each scale                                                                                                                                                |
@@ -402,7 +402,7 @@ scales <- logscale(scale_min = 10, scale_max = 1000, scale_ratio = 1.1)
 mra.out <- mra(x = sim1[,1], y = sim1[,2],order = 1, scales = scales)
 ```
 
-We can then visualize these results as shown below in Figure #. Generally, we observe that the $\beta$ coefficients are relatively stable at increasing time scales with a general, perhaps quadratically increasing trend. Here it is also important to investigate the change in $R^2$ as well as the $t$-values. Below we see that the $R^2$ is quite high at most of the time scales with $R^2_{min} =$ `r round(min(mra.out$r2),2)` and $R^2_{max} =$ `r round(max(mra.out`\$r2),2) and all $\beta(s)$ exceed the confidence intervals, implying conventional statistical significance. So between these two component ARFIMA processes, the output of MRA shows that much of the scale specific variance in $y_t$ is explained and predicted by $x_t$.
+We can then visualize these results as shown below in Figure #. Generally, we observe that the $\beta$ coefficients are relatively stable at increasing time scales with a general, perhaps quadratically increasing trend. Here it is also important to investigate the change in $R^2$ as well as the $t$-values. Below we see that the $R^2$ is quite high at most of the time scales with $R^2_{min} =$ `r round(min(mra.out$r2),2)` and $R^2_{max} =$ `r round(max(mra.out\$r2),2)` and all $\beta(s)$ exceed the confidence intervals, implying conventional statistical significance. So between these two component ARFIMA processes, the output of MRA shows that much of the scale specific variance in $y_t$ is explained and predicted by $x_t$.
 
 **Figure \#**
 
@@ -440,7 +440,7 @@ Multiscale lagged regression analysis is an extension of MRA that allows for exa
 
 #### MLRA Examples
 
-We demonstrate the use of MLRA on a simple two-element system
+We demonstrate the use of MLRA on a simple two-element system defined by:
 
 $$
 y(t)=1+0.0y(t-50)+1.0x(t-50)+e_1(t)
@@ -450,7 +450,11 @@ $$
 x(t)=1+0.0y(t-50)+0.0x(t-50)+e_1(t)
 $$
 
-In the above system, $y(t)$ is coupled to $x(t)$ at lag 50 but $x(t)$ is not coupled to $y(t)$. In Figure #, we see the output of MLRA when regressing $y(t)$ on $x(t)$.
+In the above system, $y(t)$ is coupled to $x(t)$ at lag 50 but $x(t)$ is not coupled to $y(t)$. Running `mlra()` is the same as `mra` with one additional parameter: `lags`. In Figure #, we see the output of MLRA when regressing $y(t)$ on $x(t)$ with a maximum lag of 100 time points. Figure \## clearly represents the expected results. There is a strong positive relationship $\beta(s,l)$ at lag 50 that clearly approaches 1.0. At other lags however, the values are close to zero.
+
+**Figure \#**
+
+*MLRA output for simulated simple two-element system regressing* $y(t)$ on $x(t)$*.*
 
 ```{r, echo = FALSE}
 e1 = rnorm(1000)
@@ -472,9 +476,7 @@ fields::image.plot(x = 0:100, y = scales, z = mlra.out$betas,
                    xlab = 'Lag', ylab = 'Scale')
 ```
 
-Figure \## clearly represents the expected results. There is a strong positive relationship $\beta(s,l)$ at lag 50 that clearly approaches 1.0 but is close to zero elsewhere.
-
-In terms of the empirical data, below we apply MLRA to the COPxy data for the firm and the foam examples. We investigate up to a lag of 100.
+In terms of the empirical data, below we apply MLRA to the COPxy data for the firm and the foam examples. Here we also investigate up to a lag of 100.
 
 **Figure \#**
 
@@ -543,11 +545,11 @@ Assuming we were using IAAFFT to compare the multifractal width ($W$) between th
 
 ### Model-based Surrogates
 
-Surrogates can also be generated when a theoretical model exists that explains the data generating process for the observed time series. Well-defined mathematical models of this nature are rare in behavioral sciences but useful because they allow for more targeted and (potentially) realistic hypothesis testing of the underlying dynamics and how they might change due to experimental constraints. We do not provide a worked out example of such processes but readers can consult cited papers for examples of this kind [@likens2019 @roumeWindowedDetrendedCrosscorrelation2018 @delignières2011].
+Surrogates can also be generated when a theoretical model exists that explains the data generating process for the observed time series. Well-defined mathematical models of this nature are rare in behavioral sciences, but useful because they allow for more targeted and (potentially) realistic hypothesis testing of the underlying dynamics and how they might change due to experimental constraints. We do not provide a worked out example of such processes, but readers can consult cited papers for examples of this kind [@likens2019 @roumeWindowedDetrendedCrosscorrelation2018 @delignières2011].
 
 # General Discussion
 
-In this manuscript, we provide details about the first version of a new R package aimed at bringing together a number of fractal methods that we have many other researchers have found useful in analyzing a range of behavioral and physiological data. Indeed, these collective methods have found utility in virtually every area of science. Despite that reach, many researchers are not aware of these methods or lack software for their implementation. This `fractalRegression` package is our effort to bridge those gaps by demonstrating each of several methods first with simulated data, followed by equivalent demonstrations with human movement data. This allows the reader to see both the 'best case' scenario as well as the idiosyncrasies that rear their heads when we transition from the pristine world of simulation to the noisiness inherent in human behavioral data.
+In this manuscript, we provide details about the first version of a new R package aimed at bringing together a number of fractal methods that we and other researchers have found useful in analyzing a range of behavioral and physiological data. Indeed, these collective methods have found utility in virtually every area of science. Despite that reach, many researchers are not aware of these methods or lack software for their implementation. This `fractalRegression` package is our effort to bridge those gaps by demonstrating each of several methods first with simulated data, followed by equivalent demonstrations with human movement data. This allows the reader to see both the 'best case' scenario as well as the idiosyncrasies that rear their heads when we transition from the pristine world of simulation to the noisiness inherent in human behavioral data.
 
 -   General value of methods and the types of questions (mention the types of data used in empirical examples.
 
