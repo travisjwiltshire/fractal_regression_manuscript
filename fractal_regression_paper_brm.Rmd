@@ -546,26 +546,29 @@ Surrogates can also be generated when a theoretical model exists that explains t
 
 # General Discussion
 
-In this manuscript, we provide details about the first version of a new R package aimed at bringing together a number of fractal methods that we and other researchers have found useful in analyzing a range of behavioral and physiological data. Indeed, these collective methods have found utility in virtually every area of science. Despite that reach, many researchers are not aware of these methods or lack software for their implementation. This `fractalRegression` package is our effort to bridge those gaps by demonstrating each of several methods first with simulated data, followed by equivalent demonstrations with human movement data. This allows the reader to see both the 'best case' scenario as well as the idiosyncrasies that rear their heads when we transition from the pristine world of simulation to the noisiness inherent in human behavioral data.
+In this manuscript, we provide details about the first version of a new R package aimed at bringing together a number of fractal methods that we and other researchers have found useful in analyzing a range of behavioral and physiological data. Indeed, these collective methods have found utility in virtually every area of science. Despite that reach, many researchers are not aware of these methods or lack software for their implementation. This `fractalRegression` package is our effort to bridge those gaps by demonstrating each of several methods first with simulated data, followed by equivalent demonstrations with human movement data. This allows the reader to see both the 'best case' scenario as well as the idiosyncrasies that rear their heads when we transition from the pristine world of simulation to the noisiness inherent in empirical human behavioral data.
 
--   General value of methods and the types of questions (mention the types of data used in empirical examples.
+Taken together, these methods allow for examining in univariate time seriesthe magnitude and direction of long range correlation and/or how that magnitude and direction might change over time? And in bivariate cases, these methods allow for determining: how the correlation between two time series change as a function of scale and what the dominant (time) scale(s) of coordination are. Or, relatedly, how does the influence of one time series on another change as a function of scale (at different time lags) as well as determining what the dominant (time) scale(s) of influence of one time series on another time series is (and how that might change at different time lags). Thus, these methods provide general value and can answer several types of questions on many types of data. To do so effectively, requires careful and appropriate application though. We next discusss some of these considerations.
 
-    #### Practical considerations for univariate methods (DFA, MFDFA)
+#### Practical considerations for univariate methods (DFA, MFDFA)
 
-    -   Length of time series
+-   Length of time series
 
-    We recommend a few points of consideration in conducting DFA and MFDFA. One is to be sure to evaluate whether there are cross-over points in the log scale-log fluctuation plots [@pengMosaicOrganizationDNA1994; @perakakis2009]. Cross-over points (or a visible change in the slope as a function of scale) indicate that a simple mono-fractal characterization does not sufficiently characterize the data. If cross-over points are evident, we recommend proceeding to estimate the two scaling regions with a piece-wise regression. NEED: MFDFA incorporation into this paragraph and cite Nagy et al 2017.
+We recommend a few points of consideration in conducting DFA and MFDFA. One is to be sure to evaluate whether there are cross-over points in the log scale-log fluctuation plots [@pengMosaicOrganizationDNA1994; @perakakis2009]. Cross-over points (or a visible change in the slope as a function of scale) indicate that a simple mono-fractal characterization does not sufficiently characterize the data. If cross-over points are evident, we recommend proceeding to estimate the two scaling regions with a piece-wise regression. NEED: MFDFA incorporation into this paragraph and cite Nagy et al 2017.
 
-    While it is common to use only linear detrending with DFA, this is not necessarily best practice. Instead, a more rigorous approach requires inspection trends in the data to determine if a higher order polynomial would be more appropriate for detrending. One can then compare the DFA output for different polynomial orders [@kantelhardtDetectingLongrangeCorrelations2001] to determine if a genuine inflection point is present or if nonlinearity in DFA and MFDFA emerges due to unadressed nonlinear trends in the original series [@likens2019].
+While it is common to use only linear detrending with DFA, this is not necessarily best practice. Instead, a more rigorous approach requires inspection trends in the data to determine if a higher order polynomial would be more appropriate for detrending. One can then compare the DFA output for different polynomial orders [@kantelhardtDetectingLongrangeCorrelations2001] to determine if a genuine inflection point is present or if nonlinearity in DFA and MFDFA emerges due to unadressed nonlinear trends in the original series [@likens2019].
 
-    General recommendations for choosing the min and max scale are minimum scale of 10 and a maximum scale of N/4, where N is the total number of observations in the signal. See Eke et al. (2002) [@ekeFractalCharacterizationComplexity2002] and Gulich and Zunino (2014) [@gulichCriterionDeterminationOptimal2014] for additional considerations but also keep in mind specific research areas may also have other criteria [@damouras2010 @marmelat2019].
+General recommendations for choosing the min and max scale are minimum scale of 10 and a maximum scale of N/4, where N is the total number of observations in the signal. See Eke et al. (2002) [@ekeFractalCharacterizationComplexity2002] and Gulich and Zunino (2014) [@gulichCriterionDeterminationOptimal2014] for additional considerations but also keep in mind specific research areas may also have other criteria [@damouras2010 @marmelat2019].
 
-    #### Practical considerations for bivariate methods (DCCA, MRA, MLRA)
+#### Practical considerations for bivariate methods (DCCA, MRA, MLRA)
 
-    -   Length of time series
+-   Length of time series
 
-    -   Likens et al. 2019 found positive bias of linear and quadratic trends on MRA beta estimates at larger scales that could be mitigated with larger detrending order. This involves checking the time series with time as a predictor and polynomials.
+-   Likens et al. 2019 found positive bias of linear and quadratic trends on MRA beta estimates at larger scales that could be mitigated with larger detrending order. This involves checking the time series with time as a predictor and polynomials.
 
+```{=html}
+<!-- -->
+```
 -   Unique contribution of the methods
 
 -   Unanswered questions about the methods
