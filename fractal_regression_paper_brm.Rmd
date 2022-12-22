@@ -553,32 +553,21 @@ Taken together, these methods allow for examining in univariate time seriesthe m
 
 #### Practical considerations for univariate methods (DFA, MFDFA)
 
--   Length of time series
+We recommend a few points of consideration in conducting DFA and MFDFA. One is to be sure to evaluate whether there are cross-over points in the log scale-log fluctuation plots [@pengMosaicOrganizationDNA1994; @perakakis2009]. Cross-over points (or a visible change in the slope as a function of scale) indicate that a simple mono-fractal characterization does not sufficiently characterize the data. If cross-over points are evident, we recommend proceeding to estimate the two scaling regions with a piece-wise regression (as we showed for the empirical DFA example). Note however, that for the empirical MFDFA example above, we did not parse the signal for piece-wise MFDFA although some efforts have been conducted for decomposing crossovers in multifractal signals [@nagy2017].
 
-We recommend a few points of consideration in conducting DFA and MFDFA. One is to be sure to evaluate whether there are cross-over points in the log scale-log fluctuation plots [@pengMosaicOrganizationDNA1994; @perakakis2009]. Cross-over points (or a visible change in the slope as a function of scale) indicate that a simple mono-fractal characterization does not sufficiently characterize the data. If cross-over points are evident, we recommend proceeding to estimate the two scaling regions with a piece-wise regression. NEED: MFDFA incorporation into this paragraph and cite Nagy et al 2017.
+While it is common to use only linear detrending with DFA, this is not necessarily best practice. Instead, a more rigorous approach requires inspection of trends in the data to determine if a higher order polynomial would be more appropriate for detrending. One can then compare the DFA output for different polynomial orders [@kantelhardtDetectingLongrangeCorrelations2001] to determine if a genuine inflection point is present or if nonlinearity in DFA and MFDFA emerges due to undressed nonlinear trends in the original series [@likens2019].
 
-While it is common to use only linear detrending with DFA, this is not necessarily best practice. Instead, a more rigorous approach requires inspection trends in the data to determine if a higher order polynomial would be more appropriate for detrending. One can then compare the DFA output for different polynomial orders [@kantelhardtDetectingLongrangeCorrelations2001] to determine if a genuine inflection point is present or if nonlinearity in DFA and MFDFA emerges due to unadressed nonlinear trends in the original series [@likens2019].
-
-General recommendations for choosing the min and max scale are minimum scale of 10 and a maximum scale of N/4, where N is the total number of observations in the signal. See Eke et al. (2002) [@ekeFractalCharacterizationComplexity2002] and Gulich and Zunino (2014) [@gulichCriterionDeterminationOptimal2014] for additional considerations but also keep in mind specific research areas may also have other criteria [@damouras2010 @marmelat2019].
+It's also important to consider the length of the time series being analyzed. It's common practice that in order to get reliable estimates of the metrics that minimum length of the time series is at least 512 observations although larger is better [@delignieres2006]. If multiple time series are to be compared, then it's also important that they have matching lengths. Relatedly, general recommendations for choosing the min and max scale are a minimum scale of 10 and a maximum scale of N/4, where N is the total number of observations in the signal. See Eke et al. (2002) [@ekeFractalCharacterizationComplexity2002] and Gulich and Zunino (2014) [@gulichCriterionDeterminationOptimal2014] for additional considerations but also keep in mind specific research areas may also have other criteria [@damouras2010 @marmelat2019].
 
 #### Practical considerations for bivariate methods (DCCA, MRA, MLRA)
 
--   Length of time series
+Many of the above considerations also apply in the bivariate case such as recommendations for length, scales sizes, and detrending. In particular, prior work has a shown a positive bias of linear and quadratic trends on MRA beta estimates at larger scales that could be mitigated with a larger detrending order [@likens2019]. Therefore it is also important to check the time series with time and polynomial permutations of time as predictors.
 
--   Likens et al. 2019 found positive bias of linear and quadratic trends on MRA beta estimates at larger scales that could be mitigated with larger detrending order. This involves checking the time series with time as a predictor and polynomials.
+Choosing a maximum time lag for example, for MLRA, entails it's own considerations. This can in part be based on a theoretically motivated temporal distance in which the two processes might be related. In this case, it can also be a process of trial and error to determine the maximum lag to include in the analysis using visual inspection. Alternatively, there are other methods for determining a maximum time lag using a critical value that is dependent on time scales [@shen2015].
 
-```{=html}
-<!-- -->
-```
--   Unique contribution of the methods
+#### Conclusion
 
--   Unanswered questions about the methods
-
-    -   When multifractal methods indicate similarity to surrogate for some values of q (for example) but not others?
-
-    -   Systematic evaluation of simulated data for the bivariate mfdfa methods to better understand the methods, particularly when cross-overs are present.
-
--   Concluding paragraph
+In this paper, we advance the `fractalRegression` R package and provide examples of its use on simulated and empirical data. We hope that in collating these methods, and making them efficient, that they will be more accessible and systematically utilized across disciplines. There are many unanswered questions about these methods and the complex dynamics they are characterizing. Our hope is that this work inspires future efforts that not only apply these methods, but that also expand on them.
 
 # Appendix 1: Fundamental Equations
 
