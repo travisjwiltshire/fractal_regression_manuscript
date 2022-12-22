@@ -339,9 +339,10 @@ Figure 8 is difficult to interpret on its own. Next we demonstrate an additional
 dcca.plot(dcca.out.arfima, order = 1, ci = TRUE, iterations = NULL, return.ci = FALSE, loess.rho = TRUE, loess.ci = TRUE)
 ```
 
-As a point of comparison, we can generate a time series in contrast with this that exhibits processes with LRC and short-range cross-correlation (SRCC) using the code below. In contrast to the previous DCCA analysis, Figure 10 shows a signal that begins with a high cross-correlation ($\rho$'s $> .6$) , but that begins to deviate and trend substantially lower at increasing scale sizes approaching $\rho = 0$. In fact, based on the plotted confidence intervals, it is apparent that the correlation between the two series becomes non-significant from a conventional statistical standpoint. NEED: DOUBLE CHECK THIS CLAIM OR SET SEED BECAUSE I"M SEEING DIFFERENT PATTERNS.
+As a point of comparison, we can generate a time series in contrast with this that exhibits processes with LRC and short-range cross-correlation (SRCC) using the code below. In contrast to the previous DCCA analysis, Figure 10 shows a signal that begins with a high cross-correlation ($\rho$'s \$\\approx .6\$) , but that begins to deviate and trend substantially lower at increasing scale sizes with $\rho$ entering the confidence interval containing 0. In fact, based on the plotted confidence intervals, the correlation between the two series becomes non-significant from a conventional standpoint.
 
 ```{r}
+set.seed(98732346)
 sim2 <- mc_ARFIMA(process="Mixed_ARFIMA_AR", alpha = 1,beta = 1,gamma = 1,delta = 1,n =10000,d1=0.4,d2=0.4,theta1=0.8,theta2=0.8,rho=0.9)
 ```
 
