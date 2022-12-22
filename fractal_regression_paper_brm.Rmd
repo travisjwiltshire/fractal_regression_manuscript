@@ -258,7 +258,7 @@ mfdfa.plot(multi.mf.dfa.out, do.surrogate = FALSE)
 
 A common metric for comparing multifractal spectra is to calculate the width ($W$) as $h_{max} - h_{min}$. Let's do this to compare the monofractal and multifractal time series. We observe in this case that for the monofractal signal $W_{mono} =$ `r max(mono.mf.dfa.out$h) - min(mono.mf.dfa.out$h)` and $W_{multi} =$ `r max(multi.mf.dfa.out$h) - min(multi.mf.dfa.out$h)`. If we compare the spectra for the mono- and multifractal signals above (bottom right of both plots), we observe this clear difference in the widths of the multifractal spectra for the signals.
 
-For our empirical analysis, we again turn to the postural data. We set our parameters appropriate for the data and run `mfdfa()` on the differenced COPx data for the firm and foam surfaces. Figure 6 shows the plots for these analyses. In particular, NEED: DESCRIPTION OF FINDINGS/FIGURES WITH REGARD TO KEY MFDFA QUESTION. *how does the magnitude and direction of long range correlation change over time within a single time series?*
+For our empirical analysis, we again turn to the postural data. We set our parameters appropriate for the data and run `mfdfa()` on the differenced COPx data for the firm and foam surfaces. Figure 6 shows the plots for these analyses. In particular, we observe for both surfaces that the q-order Hurst exponents range from `r min(c(open_firm_copx_diff_mfdfa$Hq,open_foam_copx_diff_mfdfa$Hq))`  - `r maxin(c(open_firm_copx_diff_mfdfa$Hq,open_foam_copx_diff_mfdfa$Hq))`, all suggesting positive long-range correlations with a weakening of the strength at larger values of q (i.e., trending towards white noise). The multifractal spectrum widths of the two surfaces were also similar, $W_{foam} =$ `r max(open_foam_copx_diff_mfdfa$h) - min(open_foam_copx_diff_mfdfa$h)` and $W_{firm} =$ `r max(open_firm_copx_diff_mfdfa$h) - min(open_firm_copx_diff_mfdfa$h)`.
 
 ```{r}
 scales <- logscale(scale_min=16, scale_max=length(open_firm_copx_diff)/4,scale_ratio=1.1)
@@ -486,13 +486,13 @@ scales <- logscale(scale_min = 16, scale_max = length(open_firm_copx_diff)/4, sc
 mlra.firm.out <- mlra(scale(open_firm_copy_diff), scale(open_firm_copx_diff), order = 1, scales = scales, lags = 100, direction = 'p')
 x <- 0:100
 y <- scales
-fields::image.plot(x, y, mlra.firm.out$betas, axes=TRUE, legend.lab = "Beta Coefficient", ylab="Scale", xlab="Lag", main="MLRA on COPxy firm")
+fields::image.plot(x, y, mlra.firm.out$betas, axes=TRUE, legend.lab = "Beta Coefficient", ylab="Scale", xlab="Lag", main="MLRA on COPxy firm",zlim=c(-5,5))
 
 scales <- logscale(scale_min = 16, scale_max = length(open_foam_copx_diff)/4, scale_ratio = 1.1)
 mlra.foam.out <- mlra(scale(open_foam_copy_diff), scale(open_foam_copx_diff),order = 1, scales = scales, lags = 100, direction = 'p')
 x <- 0:100
 y <- scales
-fields::image.plot(x, y, mlra.foam.out$betas, axes=TRUE, legend.lab = "Beta Coefficient", ylab="Scale", xlab="Lag", main="MLRA on COPxy foam")
+fields::image.plot(x, y, mlra.foam.out$betas, axes=TRUE, legend.lab = "Beta Coefficient", ylab="Scale", xlab="Lag", main="MLRA on COPxy foam",zlim=c(-5,5))
 
 
 ```
