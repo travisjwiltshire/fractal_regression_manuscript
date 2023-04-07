@@ -1,0 +1,195 @@
+---
+title: "Investigating MLRA Edge Effects"
+author: "Travis J. Witshire"
+format: html
+editor: visual
+---
+
+## Load Packages and Data
+
+```{r warnings=FALSE}
+library(fractalRegression)
+library(ggplot2)
+library(crqa)
+data(crqa)
+scales <- logscale(scale_min = 16, scale_max = length(handmovement$P1_TT_d)/4, scale_ratio = 1.1)
+```
+
+## Original Data Increasing Lags
+
+```{r include=FALSE}
+
+mlra.hand.out.100 <- mlra(scale(handmovement$P1_TT_d), scale(handmovement$P2_TT_d), order = 1, scales = scales, lags = 100, direction = 'p')
+
+mlra.hand.out.150 <- mlra(scale(handmovement$P1_TT_d), scale(handmovement$P2_TT_d), order = 1, scales = scales, lags = 150, direction = 'p')
+
+mlra.hand.out.200 <- mlra(scale(handmovement$P1_TT_d), scale(handmovement$P2_TT_d), order = 1, scales = scales, lags = 200, direction = 'p')
+
+
+```
+
+```{r}
+x <- 0:100
+y <- scales
+fields::image.plot(x, y, mlra.hand.out.100$betas, axes=TRUE, legend.lab = "Beta Coefficient", ylab="Scale", xlab="Lag", main="Hand Movement Lag 100",zlim=c(-3,3))
+min(mlra.hand.out.100$betas)
+max(mlra.hand.out.100$betas)
+range(mlra.hand.out.100$betas[101,])
+```
+
+```{r}
+x <- 0:150
+y <- scales
+fields::image.plot(x, y, mlra.hand.out.150$betas, axes=TRUE, legend.lab = "Beta Coefficient", ylab="Scale", xlab="Lag", main="Hand Movement Lag 150",zlim=c(-3,3))
+min(mlra.hand.out.150$betas)
+max(mlra.hand.out.150$betas)
+range(mlra.hand.out.150$betas[101,])
+range(mlra.hand.out.150$betas[151,])
+```
+
+```{r}
+x <- 0:200
+y <- scales
+fields::image.plot(x, y, mlra.hand.out.200$betas, axes=TRUE, legend.lab = "Beta Coefficient", ylab="Scale", xlab="Lag", main="Hand Movement Lag 200",zlim=c(-3,3))
+min(mlra.hand.out.200$betas)
+max(mlra.hand.out.200$betas)
+range(mlra.hand.out.200$betas[101,])
+range(mlra.hand.out.200$betas[151,])
+range(mlra.hand.out.200$betas[201,])
+```
+
+## Surrogate Data
+
+These are just a randomized version of the time series. From the quick surrogate methods (randomization), it seems that the edge patterns completely disappear.
+
+```{r include = FALSE}
+mlra.surr.out.100 <- mlra(permute::shuffle(scale(handmovement$P1_TT_d)), permute::shuffle(scale(handmovement$P2_TT_d)), order = 1, scales = scales, lags = 100, direction = 'p')
+
+mlra.surr.out.150 <- mlra(permute::shuffle(scale(handmovement$P1_TT_d)), permute::shuffle(scale(handmovement$P2_TT_d)), order = 1, scales = scales, lags = 150, direction = 'p')
+
+mlra.surr.out.200 <- mlra(permute::shuffle(scale(handmovement$P1_TT_d)), permute::shuffle(scale(handmovement$P2_TT_d)), order = 1, scales = scales, lags = 200, direction = 'p')
+
+```
+
+```{r}
+x <- 0:100
+y <- scales
+fields::image.plot(x, y, mlra.surr.out.100$betas, axes=TRUE, legend.lab = "Beta Coefficient", ylab="Scale", xlab="Lag", main="Surr Hand Movement Lag 100",zlim=c(-3,3))
+min(mlra.surr.out.100$betas)
+max(mlra.surr.out.100$betas)
+range(mlra.surr.out.100$betas[101,])
+```
+
+```{r}
+x <- 0:150
+y <- scales
+fields::image.plot(x, y, mlra.surr.out.150$betas, axes=TRUE, legend.lab = "Beta Coefficient", ylab="Scale", xlab="Lag", main="Surr Hand Movement Lag 150",zlim=c(-3,3))
+min(mlra.surr.out.150$betas)
+max(mlra.surr.out.150$betas)
+range(mlra.surr.out.150$betas[101,])
+```
+
+```{r}
+x <- 0:200
+y <- scales
+fields::image.plot(x, y, mlra.surr.out.200$betas, axes=TRUE, legend.lab = "Beta Coefficient", ylab="Scale", xlab="Lag", main="Surr Hand Movement Lag 200",zlim=c(-3,3))
+min(mlra.surr.out.200$betas)
+max(mlra.surr.out.200$betas)
+range(mlra.surr.out.200$betas[101,])
+```
+
+## IAAFFT
+
+I only tested out one IAAFT permutation of the time series. The pattern of betas is different than the original. But the edge effect remains (particularly at the largest lags.
+
+```{r include=FALSE}
+P1.i <- iaafft(scale(handmovement$P1_TT_d),N=1)
+P2.i <- iaafft(scale(handmovement$P2_TT_d),N=1)
+
+mlra.iaafft.out.100 <- mlra(P1.i$Re.sgates., P2.i$Re.sgates., order = 1, scales = scales, lags = 100, direction = 'p')
+
+mlra.iaafft.out.150 <- mlra(P1.i$Re.sgates., P2.i$Re.sgates., order = 1, scales = scales, lags = 150, direction = 'p')
+
+mlra.iaafft.out.200 <- mlra(P1.i$Re.sgates., P2.i$Re.sgates., order = 1, scales = scales, lags = 200, direction = 'p')
+```
+
+```{r}
+  x <- 0:100
+  y <- scales
+  fields::image.plot(x, y, mlra.iaafft.out.100$betas, axes=TRUE, legend.lab = "Beta Coefficient", ylab="Scale", xlab="Lag", main="iaafft Hand Movement Lag 100",zlim=c(-3,3))
+  min(mlra.iaafft.out.100$betas)
+  max(mlra.iaafft.out.100$betas)
+  range(mlra.iaafft.out.100$betas[101,])
+```
+
+```{r}
+  x <- 0:150
+  y <- scales
+  fields::image.plot(x, y, mlra.iaafft.out.150$betas, axes=TRUE, legend.lab = "Beta Coefficient", ylab="Scale", xlab="Lag", main="iaafft Hand Movement Lag 150",zlim=c(-3,3))
+  min(mlra.iaafft.out.150$betas)
+  max(mlra.iaafft.out.150$betas)
+  range(mlra.iaafft.out.100$betas[101,])
+```
+
+```{r}
+  x <- 0:200
+  y <- scales
+  fields::image.plot(x, y, mlra.iaafft.out.200$betas, axes=TRUE, legend.lab = "Beta Coefficient", ylab="Scale", xlab="Lag", main="iaafft Hand Movement Lag 200",zlim=c(-3,3))
+  min(mlra.iaafft.out.200$betas)
+  max(mlra.iaafft.out.200$betas)
+  range(mlra.iaafft.out.200$betas[101,])
+  
+```
+
+## Detrending Order
+
+Below I try out increasing the detending order. o2 the edge pattern remains at increased lags. o3 the edge pattern remains at increased lags.
+
+```{r include=FALSE}
+mlra.hand.out.100.o2 <- mlra(scale(handmovement$P1_TT_d), scale(handmovement$P2_TT_d), order = 2, scales = scales, lags = 100, direction = 'p')
+
+mlra.hand.out.150.o2 <- mlra(scale(handmovement$P1_TT_d), scale(handmovement$P2_TT_d), order = 2, scales = scales, lags = 150, direction = 'p')
+
+ 
+mlra.hand.out.100.o3 <- mlra(scale(handmovement$P1_TT_d), scale(handmovement$P2_TT_d), order = 3, scales = scales, lags = 100, direction = 'p')
+
+mlra.hand.out.150.o3 <- mlra(scale(handmovement$P1_TT_d), scale(handmovement$P2_TT_d), order = 2, scales = scales, lags = 150, direction = 'p')
+
+```
+
+```{r}
+  x <- 0:100
+  y <- scales
+  fields::image.plot(x, y, mlra.hand.out.100.o2$betas, axes=TRUE, legend.lab = "Beta Coefficient", ylab="Scale", xlab="Lag", main="Hand Movement Lag 100 O2",zlim=c(-3,3))
+  min(mlra.hand.out.100.o2$betas)
+  max(mlra.hand.out.100.o2$betas)
+  range(mlra.hand.out.100.o2$betas[101,])
+  
+```
+
+```{r}
+  x <- 0:150
+  y <- scales
+  fields::image.plot(x, y, mlra.hand.out.150.o2$betas, axes=TRUE, legend.lab = "Beta Coefficient", ylab="Scale", xlab="Lag", main="Hand Movement Lag 150 O2",zlim=c(-3,3))
+  min(mlra.hand.out.150.o2$betas)
+  max(mlra.hand.out.150.o2$betas)
+  range(mlra.hand.out.150.o2$betas[101,])
+```
+
+```{r}
+  x <- 0:100
+  y <- scales
+  fields::image.plot(x, y, mlra.hand.out.100.o2$betas, axes=TRUE, legend.lab = "Beta Coefficient", ylab="Scale", xlab="Lag", main="Hand Movement Lag 100 O3",zlim=c(-3,3))
+  min(mlra.hand.out.100.o3$betas)
+  max(mlra.hand.out.100.o3$betas)
+  range(mlra.hand.out.100.o3$betas[101,])
+```
+
+```{r}
+  x <- 0:150
+  y <- scales
+  fields::image.plot(x, y, mlra.hand.out.150.o3$betas, axes=TRUE, legend.lab = "Beta Coefficient", ylab="Scale", xlab="Lag", main="Hand Movement Lag 150 O3",zlim=c(-3,3))
+  min(mlra.hand.out.150.o3$betas)
+  max(mlra.hand.out.150.o3$betas)
+  range(mlra.hand.out.150.o3$betas[101,])
+```

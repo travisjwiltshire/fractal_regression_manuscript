@@ -89,7 +89,7 @@ In order to demonstrate the methods within the 'fractalRegression' package, we g
 *Overview of core package functions, objectives, and output*
 
 | Function      | Objective                                                                                                                         | Output                                                                                                                                                                                                                                         |
-|--------------|--------------------|---------------------------------------|
+|-----------------|-------------------|------------------------------------|
 | `dfa()`       | Estimate long-range correlation in a time series                                                                                  | Object containing the overall $\alpha$ estimate and, if desired the `logScales` and `logRMS`                                                                                                                                                   |
 | `mfdfa()`     | Estimate the magnitude and range of long-range correlations in a time series                                                      | Object containing the $\log$ scales used for the analysis, the $\log$ fluctuation function for each scale and $q$, the various q-order exponents, $Hq$, $Tau$, $h$, and \$Dh\$. The base of $log$ depends on scale construction and user input |
 | `dcca()`      | Estimates of scale-specific correlation between two time-series                                                                   | Object containing the scales used for the analysis and the $\rho$ '`rho'` values for each scale                                                                                                                                                |
@@ -147,7 +147,7 @@ dfa.plot(dfa.anti.corr)
 
 For an empirical example, we apply the `dfa()` function to the Human Balance Dataset [@santos2016]. This publicly available dataset includes signals from a force platform that measures the center of pressure in the x and y dimensions for 87 young adults (we exclude the older adults from our analyses for simplicity). Trials lasted 60s. See original paper for additional details on data processing [@santos2016]. For the empirical examples, we use two different time series featuring a participant standing on a firm (rigid) surface with eyes open and a foam (unstable) surface with eyes open. We chose this dataset because postural sway data are known to exhibit interesting fractal dynamics [@collins1993; @delignières2011; @delignieresTransitionPersistentAntiPersistent2011] and we can systematically evaluate the data for all of the univariate and bivariate analyses included in the package.
 
-For center of pressure (COP) data, we take the first order differences of each series using the `diff()` function as a rough approximation of COP velocity. For the univariate analyses, we focus on analyses of the COP data in the x dimension. Then, we define the appropriate scales for the analyses using the same methods shown above, except we use a `scale ratio = 1.1` for a higher density of points. Figure 2 shows the results of these analyses
+For center of pressure (COP) data, we take the first order differences of each series using the `diff()` function as a rough approximation of COP velocity. For the univariate analyses, we focus on analyses of the COP data in the x dimension. Then, we define the appropriate scales for the analyses using the same methods shown above, except we use a `scale ratio = 1.1` for a higher density of points. Figure 2 shows the results of these analyses.
 
 ```{r include=FALSE}
 open_firm <- read.csv("./BDS00001.csv")
@@ -258,7 +258,7 @@ mfdfa.plot(multi.mf.dfa.out, do.surrogate = FALSE)
 
 A common metric for comparing multifractal spectra is to calculate the width ($W$) as $h_{max} - h_{min}$. Let's do this to compare the monofractal and multifractal time series. We observe in this case that for the monofractal signal $W_{mono} =$ `r max(mono.mf.dfa.out$h) - min(mono.mf.dfa.out$h)` and $W_{multi} =$ `r max(multi.mf.dfa.out$h) - min(multi.mf.dfa.out$h)`. If we compare the spectra for the mono- and multifractal signals above (bottom right of both plots), we observe this clear difference in the widths of the multifractal spectra for the signals.
 
-For our empirical analysis, we again turn to the postural data. We set our parameters appropriate for the data and run `mfdfa()` on the differenced COPx data for the firm and foam surfaces. Figure 6 shows the plots for these analyses. In particular, we observe for both surfaces that the q-order Hurst exponents range from `r min(c(open_firm_copx_diff_mfdfa$Hq,open_foam_copx_diff_mfdfa$Hq))`  - `r maxin(c(open_firm_copx_diff_mfdfa$Hq,open_foam_copx_diff_mfdfa$Hq))`, all suggesting positive long-range correlations with a weakening of the strength at larger values of q (i.e., trending towards white noise). The multifractal spectrum widths of the two surfaces were also similar, $W_{foam} =$ `r max(open_foam_copx_diff_mfdfa$h) - min(open_foam_copx_diff_mfdfa$h)` and $W_{firm} =$ `r max(open_firm_copx_diff_mfdfa$h) - min(open_firm_copx_diff_mfdfa$h)`.
+For our empirical analysis, we again turn to the postural data. We set our parameters appropriate for the data and run `mfdfa()` on the differenced COPx data for the firm and foam surfaces. Figure 6 shows the plots for these analyses. In particular, we observe for both surfaces that the q-order Hurst exponents range from `r min(c(open_firm_copx_diff_mfdfa$Hq,open_foam_copx_diff_mfdfa$Hq))` - `r maxin(c(open_firm_copx_diff_mfdfa$Hq,open_foam_copx_diff_mfdfa$Hq))`, all suggesting positive long-range correlations with a weakening of the strength at larger values of q (i.e., trending towards white noise). The multifractal spectrum widths of the two surfaces were also similar, $W_{foam} =$ `r max(open_foam_copx_diff_mfdfa$h) - min(open_foam_copx_diff_mfdfa$h)` and $W_{firm} =$ `r max(open_firm_copx_diff_mfdfa$h) - min(open_firm_copx_diff_mfdfa$h)`.
 
 ```{r}
 scales <- logscale(scale_min=16, scale_max=length(open_firm_copx_diff)/4,scale_ratio=1.1)
@@ -484,16 +484,21 @@ In terms of the empirical data, below we apply MLRA to the COPxy data for the fi
 ```{r, echo=FALSE}
 
 scales <- logscale(scale_min = 16, scale_max = length(open_firm_copx_diff)/4, scale_ratio = 1.1)
-mlra.firm.out <- mlra(scale(open_firm_copy_diff), scale(open_firm_copx_diff), order = 1, scales = scales, lags = 100, direction = 'p')
-x <- 0:100
+mlra.firm.out <- mlra(scale(open_firm_copy_diff), scale(open_firm_copx_diff), order = 1, scales = scales, lags = 1000, direction = 'p')
+x <- 0:1000
 y <- scales
-fields::image.plot(x, y, mlra.firm.out$betas, axes=TRUE, legend.lab = "Beta Coefficient", ylab="Scale", xlab="Lag", main="MLRA on COPxy firm",zlim=c(-5,5))
+fields::image.plot(x, y, mlra.firm.out$betas, axes=TRUE, legend.lab = "Beta Coefficient", ylab="Scale", xlab="Lag", main="MLRA on COPxy firm",zlim=c(-10,10))
 
 scales <- logscale(scale_min = 16, scale_max = length(open_foam_copx_diff)/4, scale_ratio = 1.1)
-mlra.foam.out <- mlra(scale(open_foam_copy_diff), scale(open_foam_copx_diff),order = 1, scales = scales, lags = 100, direction = 'p')
-x <- 0:100
+mlra.foam.out <- mlra(scale(open_foam_copy_diff), scale(open_foam_copx_diff),order = 1, scales = scales, lags = 1000, direction = 'p')
+x <- 0:1000
 y <- scales
-fields::image.plot(x, y, mlra.foam.out$betas, axes=TRUE, legend.lab = "Beta Coefficient", ylab="Scale", xlab="Lag", main="MLRA on COPxy foam",zlim=c(-5,5))
+fields::image.plot(x, y, mlra.foam.out$betas, axes=TRUE, legend.lab = "Beta Coefficient", ylab="Scale", xlab="Lag", main="MLRA on COPxy foam",zlim=c(-10,10))
+
+min(mlra.foam.out$betas)
+max(mlra.foam.out$betas)
+min(mlra.firm.out$betas)
+max(mlra.firm.out$betas)
 
 
 ```
