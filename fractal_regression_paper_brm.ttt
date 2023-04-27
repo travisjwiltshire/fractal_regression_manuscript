@@ -16,7 +16,6 @@ Output
 \texttt{mfdfa()} & Estimate the magnitude and range of long-range correlations in a time series & Object containing the \(\log\) scales used for the analysis, the \(\log\) fluctuation function for each scale and \(q\), the various q-order exponents, \(Hq\), \(Tau\), \(h\), and \$Dh\$. The base of \(log\) depends on scale construction and user input \\
 \texttt{dcca()} & Estimates of scale-specific correlation between two time-series & Object containing the scales used for the analysis and the \(\rho\) '\texttt{rho\textquotesingle{}} values for each scale \\
 \texttt{mra()} & Estimates the scale specific regression coefficients for a predictor time series on and outcome time series & Object containing the scales and scale specific \(\beta\) estimates, \(R^2\), and \(t\) statistics \\
-\texttt{mlra()} & Estimates the scale specific regression coefficients for a predictor time series on and outcome time series at pre-specified lags & Object with scale- and lag-specific \(\beta\) coefficients \\
 \texttt{fgn\_sim()} & Simulate univariate fractional Gaussian noise & Returns a vector of length \texttt{n} according to the specified \texttt{H} Hurst exponent \\
 \texttt{mBm\_mGn()} & Simulate univariate multi-fractional Brownian motion and Gaussian noise & Returns two vectors of length \texttt{N} according to the specified \(H_t\) series \\
 \texttt{mc\_ARFIMA()} & Simulate various types of bivariate correlated noise processes. & Returns two vectors of length \texttt{N} according to the specified noise \texttt{process} and parameters \\
@@ -38,3 +37,26 @@ slope2 & 0.42692 & 0.013663 & 31.246 & 0.39938 & 0.45445\\
 \hline
 \end{tabular}
 \end{table*}
+\efloatseparator
+ 
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.6629}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1573}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1798}}@{}}
+\toprule()
+\begin{minipage}[b]{\linewidth}\raggedright
+Function
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Next Release
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Future Release
+\end{minipage} \\
+\midrule()
+\endhead
+DLCCA & X & \\
+MLRA & X & \\
+Chabra-Jensen's Direct Estimation of Multifractal Spectra & X & \\
+Bayesian Estimation of Hurst Exponent & & X \\
+Time Lag Optimization Function & & X \\
+\bottomrule()
+\end{longtable}
