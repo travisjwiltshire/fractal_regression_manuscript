@@ -72,33 +72,32 @@ Over time, many signals from living and complex systems exhibit systematic regul
 
 In particular, various methods related to Detrended Fluctuation Analysis (DFA) [@pengMosaicOrganizationDNA1994] have rose to prominence due to their relative ease of understanding and broad applicability to stationary and non-stationary time series, alike. More specifically, in areas of the social and cognitive sciences, DFA, or variants of DFA, have been used to study, for example, reaction times [@vanordenSelforganizationCognitivePerformance2003], eye gaze [@stephenDynamicsInsightMathematical2009], gait [@hausdorffFractalDynamicsHuman1996, @delignières2009], limb movements [@delignieresFractalModelsEventbased2008], heart rate [@goldbergerFractalDynamicsPhysiology2002], and neurophysiological oscillations [@hardstoneDetrendedFluctuationAnalysis2012, @schaworonkowLongitudinalChangesAperiodic2021, @eulerWorkingMemoryPerformance2016]. And, beyond an individual level, the methods have been used to study human-machine system interaction [@likensExperimentalControlScaling2015], tool use [@kelty-stephenMultifractalTemporalCorrelations2016, @favela2021], and interpersonal coordination in a variety of modalities [@davisMultiscaleInteractionsInterpersonal2016, @delignieresMultifractalSignaturesComplexity2016].
 
-Thus, there is a broad scientific appeal for these fractal-based analyses. While, the basic DFA algorithm has been implemented in numerous packages and software programs, more advanced methods such as Multifractal Detrended Fluctuation Analysis (MFDFA) [@kantelhardtMultifractalDetrendedFluctuation2002], Detrended Cross Correlation (DCCA) [@zebendeDCCACrosscorrelationCoefficient2011; @podobnikDetrendedCrossCorrelationAnalysis2008], and, in particular, fractal regression techniques such as Multiscale Regression Analysis (MRA) [@kristoufekDetrendedFluctuationAnalysis2015; @likensStatisticalPropertiesMultiscale2019] have not yet been implemented in a comprehensive software package. A key aspect of this effort is to draw more attention and make more available these *fractal regression* techniques. In particular, we find these methods widely promising because they allow for uncovering "the time scales most relevant to relationships between a system's components" (p. 2) within a predictive framework [@likensStatisticalPropertiesMultiscale2019].
+Thus, there is a broad scientific appeal for these fractal-based analyses. While, the basic DFA algorithm has been implemented in numerous packages and software programs, more advanced methods such as Multifractal Detrended Fluctuation Analysis (MFDFA) [@kantelhardtMultifractalDetrendedFluctuation2002], Detrended Cross Correlation Analysis (DCCA) [@zebendeDCCACrosscorrelationCoefficient2011; @podobnikDetrendedCrossCorrelationAnalysis2008], and, in particular, fractal regression techniques such as Multiscale Regression Analysis (MRA) [@kristoufekDetrendedFluctuationAnalysis2015; @likensStatisticalPropertiesMultiscale2019] have not yet been implemented in a comprehensive software package. A key aspect of this effort is to draw more attention and make more available these *fractal regression* techniques. In particular, we find these methods widely promising because they allow for uncovering "the time scales most relevant to relationships between a system's components" (p. 2) within a predictive framework [@likensStatisticalPropertiesMultiscale2019].
 
 Thus, there is a clear need for a package that incorporates this functionality in order to advance theoretical research focused on understanding the time varying properties of natural phenomena and applied research that uses those insights in important and diverse areas such as healthcare [@cavanaugh2017] and education [@snow2016]. In this work, we provide an overview of our `fractalRegression` package, provide simulated and empirical examples of it's functions, and provide practical advice on the successful application of these methods.
 
 # Package Overview
 
-Our `fractalRegression` package for R [@rcoreteamLanguageEnvironmentStatistical2018] is built on a C++ architecture and includes a variety of uni- and bivariate fractal methods as well as functions for simulating data with known fractional properties (e.g., scaling, dependence, etc.), and surrogate testing. Some foundational efforts in fractal analyses, which partially overlap with the functionality of this package, have been implemented elsewhere. For example, a number of univariate fractal and multifractal analyses have been implemented in the 'fracLab' library for MATLAB [@legrand2003] and other toolboxes that are mainly targeted at multifractal analysis [@ihlen2010; @ihlenIntroductionMultifractalDetrended2012]. In terms of open access packages, there are other packages that implement some, but not all of the same functions such as the `fathon` package [@bianchi2020] that has been implemented in Python as well as the R packages: `fractal` [defunct], `nonlinearTseries` [@garciaNonlinearTseriesNonlinearTime2020], and `MFDFA` [@laibMultifractalAnalysisTime2018]. However, none of the above packages incorporate univariate monofractal and multifractal DFA with bivariate DCCA and MRA and some are only written in less efficient base R code. Our `fractalRegression` package is unique in this combination of analyses and efficiency (particularly for long time series). For instance, we are not aware of any other packages that feature MRA and Multiscale Lagged Regression (MLRA). In addition, we expect that featuring simulation methods as well as surrogate testing strongly bolsters the accessibility of these methods for the social and cognitive science community in particular, but also science, more generally.
+Our `fractalRegression` package for R [@rcoreteamLanguageEnvironmentStatistical2018] is built on a C++ architecture and includes a variety of uni- and bivariate fractal methods as well as functions for simulating data with known fractional properties (e.g., scaling, dependence, etc.), and surrogate testing. Some foundational efforts in fractal analyses, which partially overlap with the functionality of this package, have been implemented elsewhere. For example, a number of univariate fractal and multifractal analyses have been implemented in the 'fracLab' library for MATLAB [@legrand2003] and other toolboxes that are mainly targeted at multifractal analysis [@ihlen2010; @ihlenIntroductionMultifractalDetrended2012]. In terms of open access packages, there are other packages that implement some, but not all of the same functions such as the `fathon` package [@bianchi2020] that has been implemented in Python as well as the R packages: `fractal` [defunct], `nonlinearTseries` [@garciaNonlinearTseriesNonlinearTime2020], and `MFDFA` [@laibMultifractalAnalysisTime2018]. However, none of the above packages incorporate univariate monofractal and multifractal DFA with bivariate DCCA and MRA and some are only written in less efficient base R code. Our `fractalRegression` package is unique in this combination of analyses and efficiency (particularly for long time series). For instance, we are not aware of any other packages that feature MRA. In addition, we expect that featuring simulation methods as well as surrogate testing strongly bolsters the accessibility of these methods for the social and cognitive science community in particular, but also science, more generally.
 
 # Methodological Details and Examples
 
-In order to demonstrate the methods within the 'fractalRegression' package, we group this into univariate (DFA, MFDFA) and bivariate methods (DCCA, MRA, MRLA). For each method, we 1) highlight the key question(s) that can be answered with that method, 2) briefly describe the algorithm with references to additional details, 3) describe some key considerations for appropriately applying the algorithm, and demonstrate the use of the functions on a 4) simulated and 5) empirical application of the function. An overview of the core functions included in the package, the general objective of that function, and the output are shown below in Table 1. Note that there are some additional helper and plotting functions included as well. The additional details are included in the sections corresponding to those methods, in the package documentation, and in the original sources for the methods.
+In order to demonstrate the methods within the 'fractalRegression' package, we group this into univariate (DFA, MFDFA) and bivariate methods (DCCA, MRA). For each method, we 1) highlight the key question(s) that can be answered with that method, 2) briefly describe the algorithm with references to additional details, 3) describe some key considerations for appropriately applying the algorithm, and demonstrate the use of the functions on a 4) simulated and 5) empirical application of the function. An overview of the core functions included in the package, the general objective of that function, and the output are shown below in Table 1. Note that there are some additional helper and plotting functions included as well. The additional details are included in the sections corresponding to those methods, in the package documentation, and in the original sources for the methods.
 
 **Table 1.**
 
 *Overview of core package functions, objectives, and output*
 
-| Function      | Objective                                                                                                                         | Output                                                                                                                                                                                                                                         |
-|---------------|-----------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `dfa()`       | Estimate long-range correlation in a time series                                                                                  | Object containing the overall $\alpha$ estimate and, if desired the `logScales` and `logRMS`                                                                                                                                                   |
-| `mfdfa()`     | Estimate the magnitude and range of long-range correlations in a time series                                                      | Object containing the $\log$ scales used for the analysis, the $\log$ fluctuation function for each scale and $q$, the various q-order exponents, $Hq$, $Tau$, $h$, and \$Dh\$. The base of $log$ depends on scale construction and user input |
-| `dcca()`      | Estimates of scale-specific correlation between two time-series                                                                   | Object containing the scales used for the analysis and the $\rho$ '`rho'` values for each scale                                                                                                                                                |
-| `mra()`       | Estimates the scale specific regression coefficients for a predictor time series on and outcome time series                       | Object containing the scales and scale specific $\beta$ estimates, $R^2$, and $t$ statistics                                                                                                                                                   |
-| `mlra()`      | Estimates the scale specific regression coefficients for a predictor time series on and outcome time series at pre-specified lags | Object with scale- and lag-specific $\beta$ coefficients                                                                                                                                                                                       |
-| `fgn_sim()`   | Simulate univariate fractional Gaussian noise                                                                                     | Returns a vector of length `n` according to the specified `H` Hurst exponent                                                                                                                                                                   |
-| `mBm_mGn()`   | Simulate univariate multi-fractional Brownian motion and Gaussian noise                                                           | Returns two vectors of length `N` according to the specified $H_t$ series                                                                                                                                                                      |
-| `mc_ARFIMA()` | Simulate various types of bivariate correlated noise processes.                                                                   | Returns two vectors of length `N` according to the specified noise `process` and parameters                                                                                                                                                    |
-| `iaaft()`     | Generate surrogate series using the iterative amplitude adjusted Fourier transform                                                | Returns a vector of same length as input time series                                                                                                                                                                                           |
+| Function      | Objective                                                                                                   | Output                                                                                                                                                                                                                                         |
+|------------------|-------------------|-----------------------------------|
+| `dfa()`       | Estimate long-range correlation in a time series                                                            | Object containing the overall $\alpha$ estimate and, if desired the `logScales` and `logRMS`                                                                                                                                                   |
+| `mfdfa()`     | Estimate the magnitude and range of long-range correlations in a time series                                | Object containing the $\log$ scales used for the analysis, the $\log$ fluctuation function for each scale and $q$, the various q-order exponents, $Hq$, $Tau$, $h$, and \$Dh\$. The base of $log$ depends on scale construction and user input |
+| `dcca()`      | Estimates of scale-specific correlation between two time-series                                             | Object containing the scales used for the analysis and the $\rho$ '`rho'` values for each scale                                                                                                                                                |
+| `mra()`       | Estimates the scale specific regression coefficients for a predictor time series on and outcome time series | Object containing the scales and scale specific $\beta$ estimates, $R^2$, and $t$ statistics                                                                                                                                                   |
+| `fgn_sim()`   | Simulate univariate fractional Gaussian noise                                                               | Returns a vector of length `n` according to the specified `H` Hurst exponent                                                                                                                                                                   |
+| `mBm_mGn()`   | Simulate univariate multi-fractional Brownian motion and Gaussian noise                                     | Returns two vectors of length `N` according to the specified $H_t$ series                                                                                                                                                                      |
+| `mc_ARFIMA()` | Simulate various types of bivariate correlated noise processes.                                             | Returns two vectors of length `N` according to the specified noise `process` and parameters                                                                                                                                                    |
+| `iaaft()`     | Generate surrogate series using the iterative amplitude adjusted Fourier transform                          | Returns a vector of same length as input time series                                                                                                                                                                                           |
 
 ## Univariate Methods
 
@@ -433,76 +432,6 @@ mra.plot(mra.firm.out.xy, order = 1, ci = TRUE, iterations = NULL, return.ci = F
 mra.plot(mra.firm.out.yx, order = 1, ci = TRUE, iterations = NULL, return.ci = FALSE, loess.beta = TRUE, loess.ci = TRUE)
 ```
 
-### Multiscale Lagged Regression Analysis
-
-Multiscale lagged regression analysis is an extension of MRA that allows for examining the influence as a function of scale, but also of time lag. In particular, the key questions that can be asked with MLRA are: a) *How does the influence of one time series on another time series change as a function of scale at different time lags?* and b) *Does the dominant time scale of influence change over successive time lags?* The MLRA algorithm performs the same as MRA with a key distinction. It runs the MRA algorithm for each of a desired number of lags.
-
-#### MLRA Examples
-
-We demonstrate the use of MLRA on a simple two-element system defined by:
-
-$$
-y(t)=1+0.0y(t-50)+1.0x(t-50)+e_1(t)
-$$
-
-$$
-x(t)=1+0.0y(t-50)+0.0x(t-50)+e_1(t)
-$$
-
-In the above system, $y(t)$ is coupled to $x(t)$ at lag 50 but $x(t)$ is not coupled to $y(t)$. Running `mlra()` is the same as `mra()` with one additional parameter: `lags`. In Figure 14, we see the output of MLRA when regressing $y(t)$ on $x(t)$ with a maximum lag of 100 time points. Figure 14 clearly represents the expected results. There is a strong positive relationship $\beta(s,l)$ at lag 50 that clearly approaches 1.0. At other lags however, the values are close to zero.
-
-**Figure 14**
-
-*MLRA output for simulated simple two-element system regressing* $y(t)$ on $x(t)$
-
-```{r, echo = FALSE}
-e1 = rnorm(1000)
-e2 = rnorm(1000)
-x = 1 + e1
-y = rep(0, length(e2))
-for (t in 51:length(x)){
-  y[t] = 1 + 0.0*y[t-50] + 1.0*x[t-50] + e2[t]
-  x[t] = 1 + 0.0*y[t-50] + 0.0*x[t-50] + e1[t]
-}
-x = x[51:length(x)]
-y = y[51:length(y)]
-scales = seq(10, 50, by = 5)
-mlra.out = mlra(x, y, order = 1, scales = scales, lags = 100,'n')
-
-breaks = 101
-
-fields::image.plot(x = 0:100, y = scales, z = mlra.out$betas,
-                   xlab = 'Lag', ylab = 'Scale')
-```
-
-In terms of the empirical data, below we apply MLRA to the COPxy data for the firm and the foam examples. Here we also investigate up to a lag of 100. NEED TO DECIDE ON ORDER HERE FOR MLRA AND ADD SUMMARY OF PLOTS/ANSWER TO QUESTION.
-
-**Figure 15**
-
-*MLRA output for balance data on foam surface with COPx predicting COPy for the firm (top) and foam (bottom) examples*
-
-```{r, echo=FALSE}
-
-scales <- logscale(scale_min = 16, scale_max = length(open_firm_copx_diff)/4, scale_ratio = 1.1)
-mlra.firm.out <- mlra(scale(open_firm_copy_diff), scale(open_firm_copx_diff), order = 1, scales = scales, lags = 1000, direction = 'p')
-x <- 0:1000
-y <- scales
-fields::image.plot(x, y, mlra.firm.out$betas, axes=TRUE, legend.lab = "Beta Coefficient", ylab="Scale", xlab="Lag", main="MLRA on COPxy firm",zlim=c(-10,10))
-
-scales <- logscale(scale_min = 16, scale_max = length(open_foam_copx_diff)/4, scale_ratio = 1.1)
-mlra.foam.out <- mlra(scale(open_foam_copy_diff), scale(open_foam_copx_diff),order = 1, scales = scales, lags = 1000, direction = 'p')
-x <- 0:1000
-y <- scales
-fields::image.plot(x, y, mlra.foam.out$betas, axes=TRUE, legend.lab = "Beta Coefficient", ylab="Scale", xlab="Lag", main="MLRA on COPxy foam",zlim=c(-10,10))
-
-min(mlra.foam.out$betas)
-max(mlra.foam.out$betas)
-min(mlra.firm.out$betas)
-max(mlra.firm.out$betas)
-
-
-```
-
 ## Surrogate Methods
 
 In all of the above methods, one gets either a single estimate of a parameter (e.g., $\alpha$) or a range of estimates (e.g., $\rho(s)$, $\beta(s)$). While those estimates are meaningful in and of themselves, it is common practice to perform some form of null hypothesis test regarding the estimate(s). These are generally referred to as surrogate methods @kantz2003 . We present several options here that could be ranked in terms of increasing levels of rigor: randomized surrogates, iterative amplitude adjusted Fourier transformed (IAAFT) surrogates, and model-based surrogates.
@@ -564,19 +493,33 @@ While it is common to use only linear detrending with DFA, this is not necessari
 
 It's also important to consider the length of the time series being analyzed. It's common practice that in order to get reliable estimates of the metrics that minimum length of the time series is at least 512 observations although larger is better [@delignieres2006]. If multiple time series are to be compared, then it's also important that they have matching lengths. Relatedly, general recommendations for choosing the min and max scale are a minimum scale of 10 and a maximum scale of N/4, where N is the total number of observations in the signal. See Eke et al. (2002) [@ekeFractalCharacterizationComplexity2002] and Gulich and Zunino (2014) [@gulichCriterionDeterminationOptimal2014] for additional considerations but also keep in mind specific research areas may also have other criteria [@damouras2010 @marmelat2019].
 
-#### Practical considerations for bivariate methods (DCCA, MRA, MLRA)
+#### Practical considerations for bivariate methods (DCCA, MRA)
 
-Many of the above considerations also apply in the bivariate case such as recommendations for length, scales sizes, and detrending. In particular, prior work has a shown a positive bias of linear and quadratic trends on MRA beta estimates at larger scales that could be mitigated with a larger detrending order [@likens2019]. Therefore it is also important to check the time series with time and polynomial permutations of time as predictors.
+Many of the above considerations also apply in the bivariate case such as recommendations for length, scales sizes, and detrending. In particular, prior work has a shown a positive bias of linear and quadratic trends on MRA beta estimates at larger scales that could be mitigated with a larger detrending order [@likens2019]. Therefore it is also important to check the time series with both time and polynomial permutations of time as predictors. Additionally, pairs of signals should be equal length and at equally sampled time intervals.
 
-Choosing a maximum time lag for example, for MLRA, entails it's own considerations. This can in part be based on a theoretically motivated temporal distance in which the two processes might be related. In this case, it can also be a process of trial and error to determine the maximum lag to include in the analysis using visual inspection. Alternatively, there are other methods for determining a maximum time lag using a critical value that is dependent on time scales [@shen2015].
+#### Development Plan
+
+The current release version of the `fractalRegression` package features the functions shown in Table 1. There are some additional functions that are either currently available and require some additional evaluation, or are forthcoming in future iterations of the package. For example, lagged versions of DCCA and MRA, known as Detrended Lagged Cross Correlation Analysis (DLCCA) or Multiscale Lagged Regression Analysis (MLRA) respectively, are forthcoming. These pose some new challenges for scientists as choosing a maximum time lag for example entails it's own considerations. This can in part be based on a theoretically motivated temporal distance in which the two processes might be related. In this case, it can also be a process of trial and error to determine the maximum lag to include in the analysis using visual inspection. Alternatively, there are other methods for determining a maximum time lag using a critical value that is dependent on time scales [@shen2015]. Table 3 below shows our initial plan for function to include in future iterations of the package. Of course, as the package becomes more utilized new ideas and resources may be come available to build on the current functionality.
+
+**Table 3**
+
+*Overview of development plan for* `fractalRegression` *package*
+
+| Function                                                  | Next Release | Future Release |
+|-----------------------------------------------------------|--------------|----------------|
+| DLCCA                                                     | X            |                |
+| MLRA                                                      | X            |                |
+| Chabra-Jensen's Direct Estimation of Multifractal Spectra | X            |                |
+| Bayesian Estimation of Hurst Exponent                     |              | X              |
+| Time Lag Optimization Function                            |              | X              |
 
 #### Conclusion
 
-In this paper, we advance the `fractalRegression` R package and provide examples of its use on simulated and empirical data. We hope that in collating these methods, and making them efficient, that they will be more accessible and systematically utilized across disciplines. There are many unanswered questions about these methods and the complex dynamics they are characterizing. Our hope is that this work inspires future efforts that not only apply these methods, but that also expand on them.
+In this paper, we advance the `fractalRegression` R package and provide examples of its use on simulated and empirical data. We hope that in collating these methods, and making them efficient, that they will be more accessible and systematically utilized across disciplines. There are many unanswered questions about these methods and the complex dynamics they are characterizing. Our hope is that this work inspires future efforts that not only apply these methods, but that also expand on them to further our understanding of the complexities of multiscale interactions in dynamic systems.
 
 # Appendix 1: Fundamental Equations
 
-Here we will insert the fundamental equations for showcasing the algorithms. WE NEED Lagged functions and MFDFA.
+Here we will insert the fundamental equations for showcasing the algorithms. .
 
 DFA
 
