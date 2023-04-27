@@ -1,0 +1,32 @@
+---
+title: "Cover Letter Draft"
+output: word_document
+date: "2023-04-27"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+April 28, 2023
+
+
+Dear Dr. Brysbaert,
+
+We are writing in submission of our article entitled “fractalRegression: An R package for multiscale regression and fractal analyses” for consideration for publication in Behavior Research Methods (BRM).  Our paper introduces a new R package that his currently hosted both on the Comprehensive R Network as well as on github: (https://github.com/aaronlikens/fractalRegression)
+
+We believe that that our manuscript aligns well with the Aims and Scope of the BRM. In particular, our manuscript describes a software package that encompasses a set of analysis techniques that have been used extensively within experimental psychology along with more cutting edge techniques that we as behavioral researchers are using and developing in our own work. These include methods such as fractal regression, the namesake of our package, that are not currently elsewhere in any publicly available software package. 
+
+The manuscript is written in a patient, tutorial style with ample code demonstrations on simulated data where outcomes are known as well as on behavioral data from the larger literature. In addition, the paper links an exhaustive vignette on the github page mentioned above. That is all data and code associated with the paper are freely available and ready for research and learning by the BRM audience and the general scientific community.
+
+We believe that this manuscript and the software it documents will be of great interest to the readers of BRM. The manuscript is not currently under consideration and will not be submitted elsewhere while under consideration at BRM. 
+
+We look forward to hearing from you.
+
+Kind Regards,
+
+Aaron D. Likens
+University of Nebraska at Omaha
+
+Travis J. Wiltshire
+Tilburg University 
