@@ -94,8 +94,8 @@ have been used to study, for example, reaction times
 [@goldbergerFractalDynamicsPhysiology2002], and neurophysiological
 oscillations [@hardstoneDetrendedFluctuationAnalysis2012;
 @schaworonkowLongitudinalChangesAperiodic2021;
-@eulerWorkingMemoryPerformance2016]. And, beyond an individual level,
-the methods have been used to study human-machine system interaction
+@eulerWorkingMemoryPerformance2016]. Beyond an individual level, the
+methods have been used to study human-machine system interaction
 [@likensExperimentalControlScaling2015], tool use
 [@kelty-stephenMultifractalTemporalCorrelations2016;
 @favelaCognitiveScienceComplexity2020], and interpersonal coordination
@@ -133,20 +133,21 @@ advice on the successful application of these methods.
 # Package Overview
 
 Our `fractalRegression` package for R
-[@rcoreteamLanguageEnvironmentStatistical2018] is built on a C++
-architecture and includes a variety of uni- and bivariate fractal
-methods as well as functions for simulating data with known fractional
-properties (e.g., scaling, dependence, etc.), and surrogate testing.
-Some foundational efforts in fractal analyses, which partially overlap
-with the functionality of this package, have been implemented elsewhere.
-For example, a number of univariate fractal and multifractal analyses
-have been implemented in the 'fracLab' library for MATLAB [@legrand2003]
-and other toolboxes that are mainly targeted at multifractal analysis
-[@ihlen2010; @ihlenIntroductionMultifractalDetrended2012]. In terms of
-open access packages, there are other packages that implement some, but
-not all of the same functions such as the `fathon` package
-[@bianchi2020] that has been implemented in Python as well as the R
-packages: `fractal` [defunct], `nonlinearTseries`
+[@rcoreteamLanguageEnvironmentStatistical2018] is built for speed, based
+on a C++ architecture and includes a variety of uni- and bivariate
+fractal methods as well as functions for simulating data with known
+fractional properties (e.g., scaling, dependence, etc.), and surrogate
+testing. Some foundational efforts in fractal analyses, which partially
+overlap with the functionality of this package, have been implemented
+elsewhere. For example, a number of univariate fractal and multifractal
+analyses have been implemented in the 'fracLab' library for MATLAB
+[@legrand2003] and other toolboxes that are mainly targeted at
+multifractal analysis [@ihlen2010;
+@ihlenIntroductionMultifractalDetrended2012]. In terms of open access
+packages, there are other packages that implement some, but not all of
+the same functions such as the `fathon` package [@bianchi2020] that has
+been implemented in Python as well as the R packages: `fractal`
+[defunct], `nonlinearTseries`
 [@garciaNonlinearTseriesNonlinearTime2020], and `MFDFA`
 [@laibMultifractalAnalysisTime2018]. However, none of the above packages
 incorporate univariate monofractal and multifractal DFA with bivariate
@@ -170,11 +171,11 @@ the methods.
 *Overview of core package functions, objectives, and output*
 
 | Function      | Objective                                                                                                   | Output                                                                                                                                                                                                                                       |
-|-------------------|-------------------|-----------------------------------|
+|-------------------|-------------------|----------------------------------|
 | `dfa()`       | Estimate long-range correlation in a time series                                                            | Object containing the overall $\alpha$ estimate and, if desired the `logScales` and `logRMS`                                                                                                                                                 |
 | `mfdfa()`     | Estimate the magnitude and range of long-range correlations in a time series                                | Object containing the $\log$ scales used for the analysis, the $\log$ fluctuation function for each scale and $q$, the various q-order exponents, $Hq$, $Tau$, $h$, and $Dh$. The base of $log$ depends on scale construction and user input |
 | `dcca()`      | Estimates of scale-specific correlation between two time-series                                             | Object containing the scales used for the analysis and the $\rho$ '`rho'` values for each scale                                                                                                                                              |
-| `mra()`       | Estimates the scale specific regression coefficients for a predictor time series on and outcome time series | Object containing the scales and scale specific $\beta$ estimates, $R^2$, and $t$ statistics                                                                                                                                                 |
+| `mra()`       | Estimates the scale specific regression coefficients for a predictor time series on and outcome time series | Object containing the scales and scale specific $\beta$ estimates and $R^2$.                                                                                                                                                                 |
 | `fgn_sim()`   | Simulate univariate fractional Gaussian noise                                                               | Returns a vector of length `N` according to the specified `H` Hurst exponent                                                                                                                                                                 |
 | `mBm_mGn()`   | Simulate univariate multi-fractional Brownian motion and Gaussian noise                                     | Returns two vectors of length `N` according to the specified $H_t$ series                                                                                                                                                                    |
 | `mc_ARFIMA()` | Simulate various types of bivariate correlated noise processes.                                             | Returns two vectors of length `N` according to the specified noise `process` and parameters                                                                                                                                                  |
@@ -277,17 +278,15 @@ noise, pink noise, and anti-correlated noise conform to our
 expectations. These slope estimates (and $R^2$) are provided in the
 equation listed above each respective line.
 
-**Figure 1**
-
-*Log scale-Log fluctuation plots for white noise (top), pink noise
-(middle), and anti-correlated noise (bottom)*
-
 ```{r echo=FALSE, fig.height=7, fig.width=6}
 par(mfrow=c(3,1))
 dfa.plot(dfa.white)
 dfa.plot(dfa.pink)
 dfa.plot(dfa.anti.corr)
 ```
+
+**Figure 1.** *Log scale-Log fluctuation plots for white noise (top),
+pink noise (middle), and anti-correlated noise (bottom)*
 
 For an empirical example, we apply the `dfa()` function to the Human
 Balance Dataset [@santos2016]. This publicly available dataset includes
@@ -321,11 +320,6 @@ open_foam_copx_diff <- diff(open_foam$X.COPx.)
 open_foam_copy_diff <- diff(open_foam$X.COPy.)
 ```
 
-**Figure 2**
-
-*Log scale-Log fluctuation plots for empirical differenced COPx time
-series for rigid/firm (top) and unstable/foam (bottom) surfaces.*
-
 ```{r echo=FALSE, fig.height=6, fig.width=6}
 scales <- logscale(scale_min = 16, scale_max = length(open_firm_copx_diff)/4, scale_ratio = 1.1)
 
@@ -338,6 +332,10 @@ par(mfrow=c(2,1))
 dfa.plot(open_firm_copx_diff_dfa)
 dfa.plot(open_foam_copx_diff_dfa)
 ```
+
+**Figure 2.** *Log scale-Log fluctuation plots for empirical differenced
+COPx time series for rigid/firm (top) and unstable/foam (bottom)
+surfaces.*
 
 Importantly, regarding the question one can ask using DFA, we observe
 from Figure 2, that long range correlations are positive and
@@ -360,18 +358,16 @@ seg <- segmented(dfa.mod, seg.Z = ~log_scales)
 
 ```
 
-**Figure 3**
-
-*Log scale-Log fluctuation plots for empirical differenced COPx time
-series for rigid/firm surfaces with lines plotted for piece-wise
-regression slopes*
-
 ```{r, echo=FALSE}
 
 plot(open_firm_copx_diff_dfa$log_scale,open_firm_copx_diff_dfa$log_rms, pch=16, ylab="logF(s)", xlab = "log(s)")
 
 plot(seg,add=T, lwd=2,col="red")
 ```
+
+**Figure 3.** *Log scale-Log fluctuation plots for empirical differenced
+COPx time series for rigid/firm surfaces with lines plotted for
+piece-wise regression slopes*
 
 In the example above, we observe a crossover point at around the scale
 size of log 6. And, from the results in Table 2 below, we observe that
@@ -385,9 +381,7 @@ scales correspond to corrective movements that prevent exceeding the
 base of support and falling [@collins1993; @delignières2011;
 @delignieresTransitionPersistentAntiPersistent2011].
 
-**Table 2.**
-
-*Results from piece-wise regression analysis*
+**Table 2.** *Results from piece-wise regression analysis*
 
 |         | Estimate | SE   | *t*   | 95% CI l | 95% CI u |
 |---------|----------|------|-------|----------|----------|
@@ -431,7 +425,7 @@ algorithm is performed for each window and windows size for all values
 of $q$. We refer the reader to the work of Kelty-Stephens and
 colleagues' [@kelty-stephenMultifractalTemporalCorrelations2016] Figure
 3 for a visualization of the algorithm, Appendix 1 of this paper for
-fundemental equations, and Kantelhardt and colleagues' work
+fundamental equations, and Kantelhardt and colleagues' work
 [@kantelhardtMultifractalDetrendedFluctuation2002] for additional
 mathematical description.
 
@@ -442,11 +436,6 @@ package (`fractaldata`), that was originally provided by
 @ihlenIntroductionMultifractalDetrended2012. It includes a white noise
 time series, a monofractal time series, and a multifractal time series.
 These data are shown below in Figure 4.
-
-**Figure 4**
-
-*Time series from Ihlen (2012) corresponding to white noise,
-monofractal, and multifractal series*
 
 ```{r, echo=FALSE}
 # Load the data
@@ -460,6 +449,9 @@ multi.plot <- ggplot(fractaldata, aes(y=multifractal, x=time))+geom_line()+ggtit
 
 gridExtra::grid.arrange(white.plot,mono.plot,multi.plot,nrow=3)
 ```
+
+**Figure 4.** *Time series from Ihlen (2012) corresponding to white
+noise, monofractal, and multifractal series*
 
 Performing MFDFA is straight forward with the `mfdfa()` function. As
 shown in the example below, one enters the time series `x` to perform
@@ -508,14 +500,13 @@ singularity values (h) for their dimension (D(h) for each value of q
 (bottom right). See Ihlen (2012) for additional details of these
 metrics.
 
-**Figure 5**
-
-*Mfdfa.plots for mono-(top) and multifractal series (bottom)*
-
 ```{r echo=FALSE, message=FALSE}
 mfdfa.plot(mono.mf.dfa.out, do.surrogate = FALSE)
 mfdfa.plot(multi.mf.dfa.out, do.surrogate = FALSE)
 ```
+
+**Figure 5.** *mfdfa.plots for mono-(top) and multifractal series
+(bottom).*
 
 A common metric for comparing multifractal spectra is to calculate the
 width ($W$) as $h_{max} - h_{min}$. Let's do this to compare the
@@ -550,14 +541,13 @@ $W_{foam} =$
 and $W_{firm} =$
 `r max(open_firm_copx_diff_mfdfa$h) - min(open_firm_copx_diff_mfdfa$h)`.
 
-**Figure 6**
-
-*Mfdfa.plots for the firm (top) and foam surfaces (bottom)*
-
 ```{r message=FALSE, warning=FALSE}
 mfdfa.plot(open_firm_copx_diff_mfdfa, do.surrogate = FALSE)
 mfdfa.plot(open_foam_copx_diff_mfdfa, do.surrogate = FALSE)
 ```
+
+**Figure 6. m***fdfa.plots for the firm (top) and foam surfaces
+(bottom).*
 
 ## Bivariate Methods
 
@@ -591,7 +581,7 @@ the following quotient:
 
 $$\rho(s)=\frac{F_{xy}(s)}{F_x(s)F_y(s)}$$
 
-Simplified, like DFA, the key metric is $\alpha$, but in DCCA, one
+Simplified, in DFA, the key metric is $\alpha$, but in DCCA, one
 estimates the scale-specific, detrended cross-correlation coefficient
 $\rho(s)$ for the pair of time series.
 
@@ -617,17 +607,15 @@ d3 = 0.3, d4=0.4, rho=0.9)
 
 ```
 
-**Figure 7**
-
-*Subset of two time series exhibiting long range correlation and long
-range cross-correlation*
-
 ```{r, echo=FALSE}
 
 plot(sim1[2000:3000,1],type='l', ylab= "Signal Amplitude", xlab='Time', main = "MC-ARFIMA with LRC and LRCC")
 
 lines(sim1[2000:3000,2], col='blue')
 ```
+
+**Figure 7.** *Subset of two time series exhibiting long range
+correlation and long range cross-correlation.*
 
 As can be seen in Figure 7, the simulated time series, although quite
 noisy, appear to covary over time with similar trends. To perform the
@@ -646,16 +634,14 @@ expected, the correlation between the MC-ARFIMA processes are
 consistently high (all $\rho$'s $> .8$) and continue to be high at
 increasing time scales.
 
-**Figure 8**
-
-*DCCA output for long range correlation and long range
-cross-correlation*
-
 ```{r, echo=FALSE}
 
 dcca.plot(dcca.out.arfima, order = 1, ci = FALSE, iterations = NULL, return.ci = FALSE)
 
 ```
+
+**Figure 8.** *DCCA output for long range correlation and long range
+cross-correlation.*
 
 Figure 8 is difficult to interpret on its own. To address this, we
 demonstrate an additional plot and analysis feature of `dcca()` by
@@ -670,35 +656,28 @@ in Figure 9. Importantly, it shows us that there is evidence of long
 range cross-correlations as there $\rho(s)$ for all scales are outside
 of the surrogate confidence interval.
 
-**Figure 9**
-
-*DCCA output for long range correlation and long range cross-correlation
-with Loess smoothing on estimates and a surrogate confidence interval*
-
 ```{r, echo = FALSE}
 dcca.plot(dcca.out.arfima, order = 1, ci = TRUE, iterations = NULL, return.ci = FALSE, loess.rho = TRUE, loess.ci = TRUE)
 ```
 
+**Figure 9.** *DCCA output for long range correlation and long range
+cross-correlation with Loess smoothing on estimates and a surrogate
+confidence interval.*
+
 As a point of comparison, we can generate a time series in contrast with
-this that exhibits processes with LRC and short-range cross-correlation
-(SRCC) using the code below. In contrast to the previous DCCA analysis,
-Figure 10 shows a signal that begins with a high cross-correlation
-($\rho$'s $\approx .6$), but that begins to deviate and trend
-substantially lower at increasing scale sizes with $\rho$ entering the
-confidence interval containing 0. In fact, based on the plotted
-confidence intervals, the correlation between the two series becomes
-non-significant from a conventional standpoint.
+that example that exhibit processes with LRC and short-range
+cross-correlation (SRCC) using the code below. In contrast to the
+previous DCCA analysis, Figure 10 shows a signal that begins with a high
+cross-correlation ($\rho$'s $\approx .6$), but that begins to deviate
+and trend substantially lower at increasing scale sizes with $\rho$
+entering the confidence interval containing 0. In fact, based on the
+plotted confidence intervals, the correlation between the two series
+becomes non-significant from a conventional standpoint.
 
 ```{r}
 set.seed(98732346)
 sim2 <- mc_ARFIMA(process="Mixed_ARFIMA_AR", alpha = 1,beta = 1,gamma = 1,delta = 1,n =10000,d1=0.4,d2=0.4,theta1=0.8,theta2=0.8,rho=0.9)
 ```
-
-**Figure 10**
-
-*DCCA output for long range correlation and short range
-cross-correlation including smoothing and a surrogate confidence
-interval*
 
 ```{r, echo=FALSE}
 scales <- logscale(scale_min = 10, scale_max = 1000, scale_ratio = 1.1)
@@ -706,6 +685,10 @@ dcca.out.arfima2 <- dcca(sim2[,1], sim2[,2], order = 1, scales = scales)
 dcca.plot(dcca.out.arfima2, order = 1, ci = TRUE, iterations = NULL, return.ci = FALSE, loess.rho = TRUE, loess.ci = TRUE)
 
 ```
+
+**Figure 10.** *DCCA output for long range correlation and short range
+cross-correlation including smoothing and a surrogate confidence
+interval.*
 
 Turning next to the empirical balance data, we apply DCCA to the
 differenced COPx *and* COPy data for the firm and foam platforms. We
@@ -721,11 +704,6 @@ dcca.out.open.foam <- dcca(open_foam_copx_diff, open_foam_copy_diff, order = 1, 
 
 ```
 
-**Figure 11**
-
-*DCCA output for empirical COPx and COPy balance data for the eyes open
-while standing on the firm surface (top) and foam surface (bottom)*
-
 ```{r echo=FALSE}
 dcca.plot(dcca.out.open.firm, order = 1, ci = TRUE, iterations = NULL, return.ci = FALSE, loess.rho = TRUE, loess.ci = TRUE)
 
@@ -733,16 +711,20 @@ dcca.plot(dcca.out.open.foam, order = 1, ci = TRUE, iterations = NULL, return.ci
 
 ```
 
+**Figure 11.** *DCCA output for empirical COPx and COPy balance data for
+the eyes open while standing on the firm surface (top) and foam surface
+(bottom)*
+
 In examining the output from these analyses, Figure 11 shows a clear
 difference between the two conditions. First, in the firm platform
-example, the $\rho(s)$ values reach an order of magnitude greater than
-in the foam condition with the max $\rho(s)$ =
-`r max(dcca.out.open.firm$rho)` compared to
-`r max(dcca.out.open.foam$rho)` for the foam condition. Second, we
-observe for the foam example, that the time scale of maximum correlation
-is `r dcca.out.open.firm$scales[which.max(dcca.out.open.firm$rho)]`,
-which is a larger time scale when compared to the foam example, which
-had a maximum correlation at scale
+example, the $\rho(s)$ values are much greater than in the foam
+condition with the max $\rho(s)$ = `r max(dcca.out.open.firm$rho)`
+compared to `r max(dcca.out.open.foam$rho)` for the foam condition.
+Second, we observe for the foam example, that the time scale of maximum
+correlation is
+`r dcca.out.open.firm$scales[which.max(dcca.out.open.firm$rho)]`, which
+is a larger time scale when compared to the foam example, which had a
+maximum correlation at scale
 `r dcca.out.open.foam$scales[which.max(dcca.out.open.foam$rho)]`. Third,
 the pattern of change in correlation across scales is slightly
 different. The firm example is higher overall; it starts relatively low
@@ -803,19 +785,19 @@ $R^2$ as well as the $t$-values. Below we see that the $R^2$ is quite
 high at most of the time scales with $R^2_{min} =$
 `r round(min(mra.out$r2),2)` and $R^2_{max} =$
 `r round(max(mra.out$r2),2)` and all $\beta(s)$ exceed the confidence
-intervals, implying conventional statistical significance. So between
-these two component ARFIMA processes, the output of MRA shows that much
-of the scale specific variance in $y_t$ is explained and predicted by
-$x_t$.
-
-**Figure 12**
-
-*MRA output for long range correlation and long range cross-correlation*
 
 ```{r echo=FALSE}
 mra.plot(mra.out, order = 1, ci = TRUE, iterations = NULL, return.ci = FALSE, loess.beta = TRUE, loess.ci = TRUE)
 
 ```
+
+intervals, implying conventional statistical significance. So between
+these two component ARFIMA processes, the output of MRA shows that much
+of the scale specific variance in $y_t$ is explained and predicted by
+$x_t$.
+
+**Figure 12.** *MRA output for long range correlation and long range
+cross-correlation.*
 
 ```{r warning=FALSE, include=FALSE}
 scales <- logscale(scale_min = 16, scale_max = length(open_firm_copx_diff)/4, scale_ratio = 1.1)
@@ -847,15 +829,13 @@ a clear time scale where this relationship is strongest at scales =
 dominant mode of coordination between mediolateral and anterioposterior
 control processes.
 
-**Figure 13**
-
-*MRA output for balance data on foam surface with COPx predicting COPy
-(top) and COPy predicting COPx (bottom).*
-
 ```{r echo=FALSE}
 mra.plot(mra.firm.out.xy, order = 1, ci = TRUE, iterations = NULL, return.ci = FALSE, loess.beta = TRUE, loess.ci = TRUE)
 mra.plot(mra.firm.out.yx, order = 1, ci = TRUE, iterations = NULL, return.ci = FALSE, loess.beta = TRUE, loess.ci = TRUE)
 ```
+
+**Figure 13.** *MRA output for balance data on foam surface with COPx
+predicting COPy (top) and COPy predicting COPx (bottom).*
 
 ## Surrogate Methods
 
@@ -1087,8 +1067,8 @@ remedy also seems to apply, even when the underlying increments of
 nonstationary processes have non-Gaussian distributions. Therefore, it
 is of utmost importance to inspect time series for strong time trends
 (e.g., via OLS regression with various powers of time as a predictors)
-and nonstationarity (e.g., Dickey-Fuller tests) so that a sufficient
-order detrending function can be selected for use in the analysis.
+and nonstationarity (e.g., Dickey-Fuller tests) so that a detrending
+function of sufficient order can be selected for use in the analysis.
 
 #### Development Plan
 
@@ -1122,7 +1102,7 @@ scientific community.
 *Overview of development plan for* `fractalRegression` *package*
 
 | Function                                                  | Next Release | Future Release |
-|-----------------------------------|------------------|------------------|
+|-----------------------------------|-------------------|-------------------|
 | DLCCA                                                     | X            |                |
 | MLRA                                                      | X            |                |
 | Chabra-Jensen's Direct Estimation of Multifractal Spectra | X            |                |

@@ -5,16 +5,19 @@
 \documentclass[
   man]{apa6}
 \usepackage{amsmath,amssymb}
-\usepackage{lmodern}
 \usepackage{iftex}
 \ifPDFTeX
   \usepackage[T1]{fontenc}
   \usepackage[utf8]{inputenc}
   \usepackage{textcomp} % provide euro and other symbols
 \else % if luatex or xetex
-  \usepackage{unicode-math}
+  \usepackage{unicode-math} % this also loads fontspec
   \defaultfontfeatures{Scale=MatchLowercase}
   \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
 \fi
 % Use upquote if available, for straight quotes in verbatim environments
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
@@ -44,13 +47,13 @@
 \newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
 \newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
 \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
-\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
 \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
 \newcommand{\BuiltInTok}[1]{#1}
 \newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
 \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
 \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
-\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
 \newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
 \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
 \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
@@ -58,7 +61,7 @@
 \newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
 \newcommand{\ExtensionTok}[1]{#1}
 \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
-\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
 \newcommand{\ImportTok}[1]{#1}
 \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
 \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
@@ -67,7 +70,7 @@
 \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
 \newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
 \newcommand{\RegionMarkerTok}[1]{#1}
-\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
 \newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
 \newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
 \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
@@ -221,7 +224,7 @@
 \fi
 \IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
-\urlstyle{same} % disable monospaced font for URLs
+\urlstyle{same}
 \hypersetup{
   pdftitle={fractalRegression: An R package for multiscale regression and fractal analyses},
   pdfauthor={Aaron D. Likens1 \& Travis J. Wiltshire2},
@@ -283,8 +286,8 @@ have been used to study, for example, reaction times
 (Delignières \& Torre, 2009; Hausdorff et al., 1996), limb movements
 (Delignières, Torre, \& Lemoine, 2008), heart rate
 (Goldberger et al., 2002), and neurophysiological
-oscillations (Euler et al., 2016; Hardstone et al., 2012; Schaworonkow \& Voytek, 2021). And, beyond an individual level,
-the methods have been used to study human-machine system interaction
+oscillations (Euler et al., 2016; Hardstone et al., 2012; Schaworonkow \& Voytek, 2021). Beyond an individual level, the
+methods have been used to study human-machine system interaction
 (Likens et al., 2015), tool use
 (Favela, 2020; Kelty-Stephen, Stirling, \& Lipsitz, 2016), and interpersonal coordination
 in a variety of modalities
@@ -319,20 +322,20 @@ advice on the successful application of these methods.
 \section{Package Overview}\label{package-overview}}
 
 Our \texttt{fractalRegression} package for R
-(Team, 2018) is built on a C++
-architecture and includes a variety of uni- and bivariate fractal
-methods as well as functions for simulating data with known fractional
-properties (e.g., scaling, dependence, etc.), and surrogate testing.
-Some foundational efforts in fractal analyses, which partially overlap
-with the functionality of this package, have been implemented elsewhere.
-For example, a number of univariate fractal and multifractal analyses
-have been implemented in the `fracLab' library for MATLAB (Legrand \& Véhel, 2003)
-and other toolboxes that are mainly targeted at multifractal analysis
-(Ihlen, 2012; Ihlen \& Vereijken, 2010). In terms of
-open access packages, there are other packages that implement some, but
-not all of the same functions such as the \texttt{fathon} package
-(Bianchi, 2020) that has been implemented in Python as well as the R
-packages: \texttt{fractal} {[}defunct{]}, \texttt{nonlinearTseries}
+(Team, 2018) is built for speed, based
+on a C++ architecture and includes a variety of uni- and bivariate
+fractal methods as well as functions for simulating data with known
+fractional properties (e.g., scaling, dependence, etc.), and surrogate
+testing. Some foundational efforts in fractal analyses, which partially
+overlap with the functionality of this package, have been implemented
+elsewhere. For example, a number of univariate fractal and multifractal
+analyses have been implemented in the `fracLab' library for MATLAB
+(Legrand \& Véhel, 2003) and other toolboxes that are mainly targeted at
+multifractal analysis (Ihlen, 2012; Ihlen \& Vereijken, 2010). In terms of open access
+packages, there are other packages that implement some, but not all of
+the same functions such as the \texttt{fathon} package (Bianchi, 2020) that has
+been implemented in Python as well as the R packages: \texttt{fractal}
+{[}defunct{]}, \texttt{nonlinearTseries}
 (Garcia, 2020), and \texttt{MFDFA}
 (Laib, Golay, Telesca, \& Kanevski, 2018). However, none of the above packages
 incorporate univariate monofractal and multifractal DFA with bivariate
@@ -356,12 +359,12 @@ the methods.
 \emph{Overview of core package functions, objectives, and output}
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2603}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2603}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.4795}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2639}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2639}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.4722}}@{}}
 \caption{\textbf{Table 1.} \emph{Overview of core package functions, objectives, and
 output}}\tabularnewline
-\toprule()
+\toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 Function
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
@@ -369,9 +372,9 @@ Objective
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
 Output
 \end{minipage} \\
-\midrule()
+\midrule\noalign{}
 \endfirsthead
-\toprule()
+\toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 Function
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
@@ -379,17 +382,18 @@ Objective
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
 Output
 \end{minipage} \\
-\midrule()
+\midrule\noalign{}
 \endhead
+\bottomrule\noalign{}
+\endlastfoot
 \texttt{dfa()} & Estimate long-range correlation in a time series & Object containing the overall \(\alpha\) estimate and, if desired the \texttt{logScales} and \texttt{logRMS} \\
 \texttt{mfdfa()} & Estimate the magnitude and range of long-range correlations in a time series & Object containing the \(\log\) scales used for the analysis, the \(\log\) fluctuation function for each scale and \(q\), the various q-order exponents, \(Hq\), \(Tau\), \(h\), and \(Dh\). The base of \(log\) depends on scale construction and user input \\
 \texttt{dcca()} & Estimates of scale-specific correlation between two time-series & Object containing the scales used for the analysis and the \(\rho\) '\texttt{rho\textquotesingle{}} values for each scale \\
-\texttt{mra()} & Estimates the scale specific regression coefficients for a predictor time series on and outcome time series & Object containing the scales and scale specific \(\beta\) estimates, \(R^2\), and \(t\) statistics \\
+\texttt{mra()} & Estimates the scale specific regression coefficients for a predictor time series on and outcome time series & Object containing the scales and scale specific \(\beta\) estimates and \(R^2\). \\
 \texttt{fgn\_sim()} & Simulate univariate fractional Gaussian noise & Returns a vector of length \texttt{N} according to the specified \texttt{H} Hurst exponent \\
 \texttt{mBm\_mGn()} & Simulate univariate multi-fractional Brownian motion and Gaussian noise & Returns two vectors of length \texttt{N} according to the specified \(H_t\) series \\
 \texttt{mc\_ARFIMA()} & Simulate various types of bivariate correlated noise processes. & Returns two vectors of length \texttt{N} according to the specified noise \texttt{process} and parameters \\
 \texttt{iaaft()} & Generate surrogate series using the iterative amplitude adjusted Fourier transform & Returns a vector of same length as input time series \\
-\bottomrule()
 \end{longtable}
 
 \hypertarget{methodological-details-and-examples}{%
@@ -493,12 +497,10 @@ noise, pink noise, and anti-correlated noise conform to our
 expectations. These slope estimates (and \(R^2\)) are provided in the
 equation listed above each respective line.
 
-\textbf{Figure 1}
-
-\emph{Log scale-Log fluctuation plots for white noise (top), pink noise
-(middle), and anti-correlated noise (bottom)}
-
 \includegraphics{fractal_regression_paper_brm_files/figure-latex/unnamed-chunk-3-1.pdf}
+
+\textbf{Figure 1.} \emph{Log scale-Log fluctuation plots for white noise (top),
+pink noise (middle), and anti-correlated noise (bottom)}
 
 For an empirical example, we apply the \texttt{dfa()} function to the Human
 Balance Dataset (Santos \& Duarte, 2016). This publicly available dataset includes
@@ -522,12 +524,11 @@ the analyses using the same methods shown above, except we use a
 \texttt{scale\ ratio\ =\ 1.1} for a higher density of points. Figure 2 shows the
 results of these analyses.
 
-\textbf{Figure 2}
-
-\emph{Log scale-Log fluctuation plots for empirical differenced COPx time
-series for rigid/firm (top) and unstable/foam (bottom) surfaces.}
-
 \includegraphics{fractal_regression_paper_brm_files/figure-latex/unnamed-chunk-5-1.pdf}
+
+\textbf{Figure 2.} \emph{Log scale-Log fluctuation plots for empirical differenced
+COPx time series for rigid/firm (top) and unstable/foam (bottom)
+surfaces.}
 
 Importantly, regarding the question one can ask using DFA, we observe
 from Figure 2, that long range correlations are positive and
@@ -550,13 +551,11 @@ regression .
 \end{Highlighting}
 \end{Shaded}
 
-\textbf{Figure 3}
-
-\emph{Log scale-Log fluctuation plots for empirical differenced COPx time
-series for rigid/firm surfaces with lines plotted for piece-wise
-regression slopes}
-
 \includegraphics{fractal_regression_paper_brm_files/figure-latex/unnamed-chunk-7-1.pdf}
+
+\textbf{Figure 3.} \emph{Log scale-Log fluctuation plots for empirical differenced
+COPx time series for rigid/firm surfaces with lines plotted for
+piece-wise regression slopes}
 
 In the example above, we observe a crossover point at around the scale
 size of log 6. And, from the results in Table 2 below, we observe that
@@ -569,23 +568,22 @@ dynamics correspond to periods of exploratory sway, whereas longer time
 scales correspond to corrective movements that prevent exceeding the
 base of support and falling (Collins \& De Luca, 1993; Delignières et al., 2011a; Delignières et al., 2011b).
 
-\textbf{Table 2.}
-
-\emph{Results from piece-wise regression analysis}
+\textbf{Table 2.} \emph{Results from piece-wise regression analysis}
 
 \begin{longtable}[]{@{}llllll@{}}
 \caption{Results from piece-wise regression analysis}\tabularnewline
-\toprule()
+\toprule\noalign{}
 & Estimate & SE & \emph{t} & 95\% CI l & 95\% CI u \\
-\midrule()
+\midrule\noalign{}
 \endfirsthead
-\toprule()
+\toprule\noalign{}
 & Estimate & SE & \emph{t} & 95\% CI l & 95\% CI u \\
-\midrule()
+\midrule\noalign{}
 \endhead
+\bottomrule\noalign{}
+\endlastfoot
 Slope 1 & 1.36 & 0.03 & 40.66 & 1.30 & 0.40 \\
 Slope 2 & 0.43 & 0.01 & 31.25 & 1.43 & 0.45 \\
-\bottomrule()
 \end{longtable}
 
 \hypertarget{multifractal-detrended-fluctuation-analysis}{%
@@ -607,7 +605,7 @@ algorithm is performed for each window and windows size for all values
 of \(q\). We refer the reader to the work of Kelty-Stephens and
 colleagues' (Kelty-Stephen et al., 2016) Figure
 3 for a visualization of the algorithm, Appendix 1 of this paper for
-fundemental equations, and Kantelhardt and colleagues' work
+fundamental equations, and Kantelhardt and colleagues' work
 (Kantelhardt et al., 2002) for additional
 mathematical description.
 
@@ -620,12 +618,10 @@ Ihlen (2012). It includes a white noise
 time series, a monofractal time series, and a multifractal time series.
 These data are shown below in Figure 4.
 
-\textbf{Figure 4}
-
-\emph{Time series from Ihlen (2012) corresponding to white noise,
-monofractal, and multifractal series}
-
 \includegraphics{fractal_regression_paper_brm_files/figure-latex/unnamed-chunk-9-1.pdf}
+
+\textbf{Figure 4.} \emph{Time series from Ihlen (2012) corresponding to white
+noise, monofractal, and multifractal series}
 
 Performing MFDFA is straight forward with the \texttt{mfdfa()} function. As
 shown in the example below, one enters the time series \texttt{x} to perform
@@ -674,11 +670,10 @@ singularity values (h) for their dimension (D(h) for each value of q
 (bottom right). See Ihlen (2012) for additional details of these
 metrics.
 
-\textbf{Figure 5}
-
-\emph{Mfdfa.plots for mono-(top) and multifractal series (bottom)}
-
 \includegraphics{fractal_regression_paper_brm_files/figure-latex/unnamed-chunk-11-1.pdf} \includegraphics{fractal_regression_paper_brm_files/figure-latex/unnamed-chunk-11-2.pdf}
+
+\textbf{Figure 5.} \emph{mfdfa.plots for mono-(top) and multifractal series
+(bottom).}
 
 A common metric for comparing multifractal spectra is to calculate the
 width (\(W\)) as \(h_{max} - h_{min}\). Let's do this to compare the
@@ -705,11 +700,10 @@ multifractal spectrum widths of the two surfaces were also similar,
 and \(W_{firm} =\)
 0.70.
 
-\textbf{Figure 6}
-
-\emph{Mfdfa.plots for the firm (top) and foam surfaces (bottom)}
-
 \includegraphics{fractal_regression_paper_brm_files/figure-latex/unnamed-chunk-13-1.pdf} \includegraphics{fractal_regression_paper_brm_files/figure-latex/unnamed-chunk-13-2.pdf}
+
+\textbf{Figure 6. m}\emph{fdfa.plots for the firm (top) and foam surfaces
+(bottom).}
 
 \hypertarget{bivariate-methods}{%
 \subsection{Bivariate Methods}\label{bivariate-methods}}
@@ -744,7 +738,7 @@ the following quotient:
 
 \[\rho(s)=\frac{F_{xy}(s)}{F_x(s)F_y(s)}\]
 
-Simplified, like DFA, the key metric is \(\alpha\), but in DCCA, one
+Simplified, in DFA, the key metric is \(\alpha\), but in DCCA, one
 estimates the scale-specific, detrended cross-correlation coefficient
 \(\rho(s)\) for the pair of time series.
 
@@ -772,12 +766,10 @@ series.
 \end{Highlighting}
 \end{Shaded}
 
-\textbf{Figure 7}
-
-\emph{Subset of two time series exhibiting long range correlation and long
-range cross-correlation}
-
 \includegraphics{fractal_regression_paper_brm_files/figure-latex/unnamed-chunk-15-1.pdf}
+
+\textbf{Figure 7.} \emph{Subset of two time series exhibiting long range
+correlation and long range cross-correlation.}
 
 As can be seen in Figure 7, the simulated time series, although quite
 noisy, appear to covary over time with similar trends. To perform the
@@ -798,12 +790,10 @@ expected, the correlation between the MC-ARFIMA processes are
 consistently high (all \(\rho\)'s \(> .8\)) and continue to be high at
 increasing time scales.
 
-\textbf{Figure 8}
-
-\emph{DCCA output for long range correlation and long range
-cross-correlation}
-
 \includegraphics{fractal_regression_paper_brm_files/figure-latex/unnamed-chunk-17-1.pdf}
+
+\textbf{Figure 8.} \emph{DCCA output for long range correlation and long range
+cross-correlation.}
 
 Figure 8 is difficult to interpret on its own. To address this, we
 demonstrate an additional plot and analysis feature of \texttt{dcca()} by
@@ -818,53 +808,49 @@ in Figure 9. Importantly, it shows us that there is evidence of long
 range cross-correlations as there \(\rho(s)\) for all scales are outside
 of the surrogate confidence interval.
 
-\textbf{Figure 9}
-
-\emph{DCCA output for long range correlation and long range cross-correlation
-with Loess smoothing on estimates and a surrogate confidence interval}
-
 \includegraphics{fractal_regression_paper_brm_files/figure-latex/unnamed-chunk-18-1.pdf}
 
+\textbf{Figure 9.} \emph{DCCA output for long range correlation and long range
+cross-correlation with Loess smoothing on estimates and a surrogate
+confidence interval.}
+
 As a point of comparison, we can generate a time series in contrast with
-this that exhibits processes with LRC and short-range cross-correlation
-(SRCC) using the code below. In contrast to the previous DCCA analysis,
-Figure 10 shows a signal that begins with a high cross-correlation
-(\(\rho\)'s \(\approx .6\)), but that begins to deviate and trend
-substantially lower at increasing scale sizes with \(\rho\) entering the
-confidence interval containing 0. In fact, based on the plotted
-confidence intervals, the correlation between the two series becomes
-non-significant from a conventional standpoint.
-
-\textbf{Figure 10}
-
-\emph{DCCA output for long range correlation and short range
-cross-correlation including smoothing and a surrogate confidence
-interval}
+that example that exhibit processes with LRC and short-range
+cross-correlation (SRCC) using the code below. In contrast to the
+previous DCCA analysis, Figure 10 shows a signal that begins with a high
+cross-correlation (\(\rho\)'s \(\approx .6\)), but that begins to deviate
+and trend substantially lower at increasing scale sizes with \(\rho\)
+entering the confidence interval containing 0. In fact, based on the
+plotted confidence intervals, the correlation between the two series
+becomes non-significant from a conventional standpoint.
 
 \includegraphics{fractal_regression_paper_brm_files/figure-latex/unnamed-chunk-20-1.pdf}
+
+\textbf{Figure 10.} \emph{DCCA output for long range correlation and short range
+cross-correlation including smoothing and a surrogate confidence
+interval.}
 
 Turning next to the empirical balance data, we apply DCCA to the
 differenced COPx \emph{and} COPy data for the firm and foam platforms. We
 again set appropriate values for \texttt{scales} and apply the \texttt{dcca()}
 function to the pair of time series.
 
-\textbf{Figure 11}
-
-\emph{DCCA output for empirical COPx and COPy balance data for the eyes open
-while standing on the firm surface (top) and foam surface (bottom)}
-
 \includegraphics{fractal_regression_paper_brm_files/figure-latex/unnamed-chunk-22-1.pdf} \includegraphics{fractal_regression_paper_brm_files/figure-latex/unnamed-chunk-22-2.pdf}
+
+\textbf{Figure 11.} \emph{DCCA output for empirical COPx and COPy balance data for
+the eyes open while standing on the firm surface (top) and foam surface
+(bottom)}
 
 In examining the output from these analyses, Figure 11 shows a clear
 difference between the two conditions. First, in the firm platform
-example, the \(\rho(s)\) values reach an order of magnitude greater than
-in the foam condition with the max \(\rho(s)\) =
-0.73 compared to
-0.35 for the foam condition. Second, we
-observe for the foam example, that the time scale of maximum correlation
-is 73,
-which is a larger time scale when compared to the foam example, which
-had a maximum correlation at scale
+example, the \(\rho(s)\) values are much greater than in the foam
+condition with the max \(\rho(s)\) = 0.73
+compared to 0.35 for the foam condition.
+Second, we observe for the foam example, that the time scale of maximum
+correlation is
+73, which
+is a larger time scale when compared to the foam example, which had a
+maximum correlation at scale
 16. Third,
 the pattern of change in correlation across scales is slightly
 different. The firm example is higher overall; it starts relatively low
@@ -926,18 +912,18 @@ stable at increasing time scales with a general, perhaps quadratically
 increasing trend. Here it is also important to investigate the change in
 \(R^2\) as well as the \(t\)-values. Below we see that the \(R^2\) is quite
 high at most of the time scales with \(R^2_{min} =\)
-0.67 and \(R^2_{max} =\)
-1.85 and all \(\beta(s)\) exceed the confidence
+0.65 and \(R^2_{max} =\)
+0.87 and all \(\beta(s)\) exceed the confidence
+
+\includegraphics{fractal_regression_paper_brm_files/figure-latex/unnamed-chunk-24-1.pdf}
+
 intervals, implying conventional statistical significance. So between
 these two component ARFIMA processes, the output of MRA shows that much
 of the scale specific variance in \(y_t\) is explained and predicted by
 \(x_t\).
 
-\textbf{Figure 12}
-
-\emph{MRA output for long range correlation and long range cross-correlation}
-
-\includegraphics{fractal_regression_paper_brm_files/figure-latex/unnamed-chunk-24-1.pdf}
+\textbf{Figure 12.} \emph{MRA output for long range correlation and long range
+cross-correlation.}
 
 Turning next to the empirical balance data, we can determine whether
 postural adjustments in the COPx are predictive of adjustments in COPy,
@@ -959,12 +945,10 @@ a clear time scale where this relationship is strongest at scales =
 dominant mode of coordination between mediolateral and anterioposterior
 control processes.
 
-\textbf{Figure 13}
-
-\emph{MRA output for balance data on foam surface with COPx predicting COPy
-(top) and COPy predicting COPx (bottom).}
-
 \includegraphics{fractal_regression_paper_brm_files/figure-latex/unnamed-chunk-26-1.pdf} \includegraphics{fractal_regression_paper_brm_files/figure-latex/unnamed-chunk-26-2.pdf}
+
+\textbf{Figure 13.} \emph{MRA output for balance data on foam surface with COPx
+predicting COPy (top) and COPy predicting COPx (bottom).}
 
 \hypertarget{surrogate-methods}{%
 \subsection{Surrogate Methods}\label{surrogate-methods}}
@@ -1190,8 +1174,8 @@ remedy also seems to apply, even when the underlying increments of
 nonstationary processes have non-Gaussian distributions. Therefore, it
 is of utmost importance to inspect time series for strong time trends
 (e.g., via OLS regression with various powers of time as a predictors)
-and nonstationarity (e.g., Dickey-Fuller tests) so that a sufficient
-order detrending function can be selected for use in the analysis.
+and nonstationarity (e.g., Dickey-Fuller tests) so that a detrending
+function of sufficient order can be selected for use in the analysis.
 
 \hypertarget{development-plan}{%
 \paragraph{Development Plan}\label{development-plan}}
@@ -1226,11 +1210,11 @@ scientific community.
 \emph{Overview of development plan for} \texttt{fractalRegression} \emph{package}
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.4930}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2535}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2535}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.4795}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2603}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2603}}@{}}
 \caption{Table 3. Overview of development plan for \texttt{fractalRegression} package}\tabularnewline
-\toprule()
+\toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 Function
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
@@ -1238,9 +1222,9 @@ Next Release
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
 Future Release
 \end{minipage} \\
-\midrule()
+\midrule\noalign{}
 \endfirsthead
-\toprule()
+\toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 Function
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
@@ -1248,8 +1232,10 @@ Next Release
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
 Future Release
 \end{minipage} \\
-\midrule()
+\midrule\noalign{}
 \endhead
+\bottomrule\noalign{}
+\endlastfoot
 DLCCA & X & \\
 MLRA & X & \\
 Chabra-Jensen's Direct Estimation of Multifractal Spectra & X & \\
@@ -1258,7 +1244,6 @@ Multifractal Cross-Correlation Methods & & X \\
 Advanced Detrending Methods & & X \\
 Bayesian Estimation of Hurst Exponent & & X \\
 Time Lag Optimization Function & & X \\
-\bottomrule()
 \end{longtable}
 
 \hypertarget{conclusion}{%
