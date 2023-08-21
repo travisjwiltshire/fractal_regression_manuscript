@@ -4,7 +4,7 @@
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.4722}}@{}}
 \caption{\textbf{Table 1.} \emph{Overview of core package functions, objectives, and
 output}}\tabularnewline
-\toprule\noalign{}
+\toprule()
 \begin{minipage}[b]{\linewidth}\raggedright
 Function
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
@@ -12,9 +12,9 @@ Objective
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
 Output
 \end{minipage} \\
-\midrule\noalign{}
+\midrule()
 \endfirsthead
-\toprule\noalign{}
+\toprule()
 \begin{minipage}[b]{\linewidth}\raggedright
 Function
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
@@ -22,10 +22,8 @@ Objective
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
 Output
 \end{minipage} \\
-\midrule\noalign{}
+\midrule()
 \endhead
-\bottomrule\noalign{}
-\endlastfoot
 \texttt{dfa()} & Estimate long-range correlation in a time series & Object containing the overall \(\alpha\) estimate and, if desired the \texttt{logScales} and \texttt{logRMS} \\
 \texttt{mfdfa()} & Estimate the magnitude and range of long-range correlations in a time series & Object containing the \(\log\) scales used for the analysis, the \(\log\) fluctuation function for each scale and \(q\), the various q-order exponents, \(Hq\), \(Tau\), \(h\), and \(Dh\). The base of \(log\) depends on scale construction and user input \\
 \texttt{dcca()} & Estimates of scale-specific correlation between two time-series & Object containing the scales used for the analysis and the \(\rho\) '\texttt{rho\textquotesingle{}} values for each scale \\
@@ -34,32 +32,32 @@ Output
 \texttt{mBm\_mGn()} & Simulate univariate multi-fractional Brownian motion and Gaussian noise & Returns two vectors of length \texttt{N} according to the specified \(H_t\) series \\
 \texttt{mc\_ARFIMA()} & Simulate various types of bivariate correlated noise processes. & Returns two vectors of length \texttt{N} according to the specified noise \texttt{process} and parameters \\
 \texttt{iaaft()} & Generate surrogate series using the iterative amplitude adjusted Fourier transform & Returns a vector of same length as input time series \\
+\bottomrule()
 \end{longtable}
 \efloatseparator
  
 \begin{longtable}[]{@{}llllll@{}}
 \caption{Results from piece-wise regression analysis}\tabularnewline
-\toprule\noalign{}
+\toprule()
 & Estimate & SE & \emph{t} & 95\% CI l & 95\% CI u \\
-\midrule\noalign{}
+\midrule()
 \endfirsthead
-\toprule\noalign{}
+\toprule()
 & Estimate & SE & \emph{t} & 95\% CI l & 95\% CI u \\
-\midrule\noalign{}
+\midrule()
 \endhead
-\bottomrule\noalign{}
-\endlastfoot
 Slope 1 & 1.36 & 0.03 & 40.66 & 1.30 & 0.40 \\
 Slope 2 & 0.43 & 0.01 & 31.25 & 1.43 & 0.45 \\
+\bottomrule()
 \end{longtable}
 \efloatseparator
  
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.4795}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2603}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2603}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.4722}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2639}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2639}}@{}}
 \caption{Table 3. Overview of development plan for \texttt{fractalRegression} package}\tabularnewline
-\toprule\noalign{}
+\toprule()
 \begin{minipage}[b]{\linewidth}\raggedright
 Function
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
@@ -67,9 +65,9 @@ Next Release
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
 Future Release
 \end{minipage} \\
-\midrule\noalign{}
+\midrule()
 \endfirsthead
-\toprule\noalign{}
+\toprule()
 \begin{minipage}[b]{\linewidth}\raggedright
 Function
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
@@ -77,10 +75,8 @@ Next Release
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
 Future Release
 \end{minipage} \\
-\midrule\noalign{}
+\midrule()
 \endhead
-\bottomrule\noalign{}
-\endlastfoot
 DLCCA & X & \\
 MLRA & X & \\
 Chabra-Jensen's Direct Estimation of Multifractal Spectra & X & \\
@@ -89,4 +85,5 @@ Multifractal Cross-Correlation Methods & & X \\
 Advanced Detrending Methods & & X \\
 Bayesian Estimation of Hurst Exponent & & X \\
 Time Lag Optimization Function & & X \\
+\bottomrule()
 \end{longtable}

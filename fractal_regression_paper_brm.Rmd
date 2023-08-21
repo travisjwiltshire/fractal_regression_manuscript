@@ -1102,7 +1102,7 @@ scientific community.
 *Overview of development plan for* `fractalRegression` *package*
 
 | Function                                                  | Next Release | Future Release |
-|-----------------------------------|-------------------|-------------------|
+|----------------------------------|-------------------|-------------------|
 | DLCCA                                                     | X            |                |
 | MLRA                                                      | X            |                |
 | Chabra-Jensen's Direct Estimation of Multifractal Spectra | X            |                |
@@ -1126,6 +1126,11 @@ methods and the complex dynamics they characterize Our hope is that this
 work inspires future efforts that not only apply these methods, but that
 also expand on them to further our understanding of the complexities of
 multiscale interactions in dynamic systems.
+
+# Open Practices Statement
+
+All data, software and code are included either in this manuscript or in
+the accompanying manuscript.
 
 # Appendix 1: Fundamental Equations
 
