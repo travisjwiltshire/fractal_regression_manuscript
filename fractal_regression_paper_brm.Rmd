@@ -320,7 +320,7 @@ open_foam_copx_diff <- diff(open_foam$X.COPx.)
 open_foam_copy_diff <- diff(open_foam$X.COPy.)
 ```
 
-```{r echo=FALSE, fig.height=6, fig.width=6}
+```{r echo=FALSE, fig.height=7, fig.width=7}
 scales <- logscale(scale_min = 16, scale_max = length(open_firm_copx_diff)/4, scale_ratio = 1.1)
 
 open_firm_copx_diff_dfa <- dfa(open_firm_copx_diff, order = 1, scales = scales, verbose = 1)
