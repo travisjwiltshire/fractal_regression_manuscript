@@ -2,7 +2,7 @@
 
 This repository includes all required materials for a reproducible manuscript for the paper below including all code, data, and the knitted pdf. 
 
-Likens, A. & Wiltshire, T. J. (2023). fractalRegression: An R package for multiscale regression and fractal analyses. 
+Likens, A. D. & Wiltshire, T. J. (2023). fractalRegression: An R package for multiscale regression and fractal analyses. 
 
 It is currently available as a pre-print here: https://psyarxiv.com/gq9vz/
 
